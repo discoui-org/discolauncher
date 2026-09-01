@@ -875,6 +875,18 @@ div.disco-home-tile {
                         justify-content: center;
                         gap: 0;
 
+                        &.has-light-edges {
+                            body.light-mode & {
+                                box-shadow: inset 0px 0px 0px 1px rgb(0, 0, 0, .3);
+                            }
+                        }
+
+                        &.has-dark-edges {
+                            body:not(.light-mode) & {
+                                box-shadow: inset 0px 0px 0px 1px rgb(255, 255, 255, .18);
+                            }
+                        }
+
                         div.live-tile-notification-summary-icon {
                             position: relative;
                             flex: 0 0 auto;
@@ -1079,20 +1091,27 @@ div.disco-home-tile {
         background: var(--accent-color);
         background-size: 100% 100% !important;
 
-        &.has-light-edges {
-            body.light-mode & {
-                box-shadow: 0px 0px 0px 1px rgb(0, 0, 0, .3);
-            }
-        }
+        div.disco-home-tile-icon-background {
+            position: absolute;
+            inset: 0;
+            background: var(--accent-color);
+            background-size: 100% 100% !important;
 
-        &.has-dark-edges {
-            body:not(.light-mode) & {
-                box-shadow: 0px 0px 0px 1px rgb(255, 255, 255, .3);
+            &.svg-background {
+                background-size: cover !important;
             }
-        }
 
-        &.svg-background {
-            background-size: cover !important;
+            &.has-light-edges {
+                body.light-mode & {
+                    box-shadow: inset 0px 0px 0px 1px rgb(0, 0, 0, .3);
+                }
+            }
+
+            &.has-dark-edges {
+                body:not(.light-mode) & {
+                    box-shadow: inset 0px 0px 0px 1px rgb(255, 255, 255, .18);
+                }
+            }
         }
 
         img.disco-home-tile-imageicon {

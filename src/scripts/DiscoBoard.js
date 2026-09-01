@@ -1280,7 +1280,7 @@ const backendMethods = {
     if (isHomeTile) {
       iconElement = tileElement.querySelector('.disco-home-tile-imageicon');
       titleElement = tileElement.querySelector('.disco-home-tile-title');
-      backgroundTarget = tileElement.querySelector('.disco-home-inner-tile'); // Apply background to inner tile
+      backgroundTarget = tileElement.querySelector('.disco-home-tile-icon-background');
     } else if (isAppTile) {
       iconElement = tileElement.querySelector('.disco-app-tile-imageicon');
       titleElement = tileElement.querySelector('.disco-app-tile-title');

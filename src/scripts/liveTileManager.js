@@ -491,6 +491,9 @@ class tileController {
         const summary = document.createElement('div');
         summary.className = 'live-tile-notification-summary';
         if (notificationCount > 0) summary.classList.add('has-count');
+        const sourceBackground = tile.querySelector('.disco-home-tile-icon-background');
+        summary.classList.toggle('has-light-edges', sourceBackground?.classList.contains('has-light-edges'));
+        summary.classList.toggle('has-dark-edges', sourceBackground?.classList.contains('has-dark-edges'));
 
         const icon = document.createElement('div');
         icon.className = 'live-tile-notification-summary-icon';

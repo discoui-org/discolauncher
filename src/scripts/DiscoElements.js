@@ -51,6 +51,7 @@ function wHomeTile(
   homeTile.style.backgroundColor = color;
   homeTile.innerHTML = `
     <div class="disco-element disco-home-inner-tile">
+      <div class="disco-element disco-home-tile-icon-background"></div>
     ${//imageIcon ?
     `
             <img loading="lazy" decoding="async" width="114" height="114" class="disco-element disco-home-tile-imageicon" src="">
@@ -68,8 +69,9 @@ function wHomeTile(
   homeTile.querySelector("img.disco-home-tile-imageicon").src = sizedAppIconURL(icon, 114);
   homeTile.querySelector("p.disco-home-tile-title").innerText = title;
   if (iconbg) {
-    homeTile.querySelector(".disco-home-inner-tile").style.backgroundImage = `url('${sizedAppIconURL(iconbg, 114)}')`;
-    if (iconbg.includes("data:image/svg+xml")) homeTile.querySelector(".disco-home-inner-tile").classList.add("svg-background");
+    const iconBackground = homeTile.querySelector(".disco-home-tile-icon-background")
+    iconBackground.style.backgroundImage = `url('${sizedAppIconURL(iconbg, 114)}')`;
+    if (iconbg.includes("data:image/svg+xml")) iconBackground.classList.add("svg-background");
 
   }
 
@@ -80,9 +82,9 @@ function wHomeTile(
         homeTile.querySelector("p.disco-home-tile-title").style.color = colorContrastDetector.getTextColor(color);
 
       }
-      const innerTile = homeTile.querySelector("div.disco-home-inner-tile")
-      if (color.hasLightEdges) innerTile.classList.add("has-light-edges")
-      if (color.hasDarkEdges) innerTile.classList.add("has-dark-edges")
+      const iconBackground = homeTile.querySelector(".disco-home-tile-icon-background")
+      if (color.hasLightEdges) iconBackground.classList.add("has-light-edges")
+      if (color.hasDarkEdges) iconBackground.classList.add("has-dark-edges")
     });
     if (appPreference.textColor != "auto") {
       homeTile.querySelector("p.disco-home-tile-title").style.color = appPreference.textColor == "dark" ? "#000000" : "#FFFFFF";
