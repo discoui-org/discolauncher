@@ -282,9 +282,9 @@ class DiscoMock {
         "ACCESSIBILITY": "false"
     }
     locationMock = {
-        latitude: 41.0082,
-        longitude: 28.9784,
-        city: "Istanbul",
+        latitude: 40.7128,
+        longitude: -74.0060,
+        city: "New York",
         accuracy: 5000,
         timestamp: Date.now()
     }

@@ -60,6 +60,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -74,10 +75,12 @@ import io.github.cherryhoax.discolauncher.IconPack.IconPack;
 
 public class WebInterface {
     private static final String PREFS_NAME = "DiscoLauncherPrefs";
+    private static final long WEATHER_LOCATION_TIMEOUT_MS = 90_000L;
     private final MainActivity mainActivity;
     private final DiscoWebView webView;
     private volatile Location latestWeatherLocation;
     private volatile boolean weatherLocationRequestInFlight;
+    private final List<LocationListener> weatherLocationListeners = new ArrayList<>();
 
     WebInterface(MainActivity mainActivity, DiscoWebView webView) {
         this.mainActivity = mainActivity;
@@ -1122,23 +1125,73 @@ public class WebInterface {
 
         mainActivity.runOnUiThread(() -> {
             try {
-                String provider = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-                        ? LocationManager.NETWORK_PROVIDER
-                        : LocationManager.GPS_PROVIDER;
-                locationManager.requestSingleUpdate(provider, new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        latestWeatherLocation = location;
-                        weatherLocationRequestInFlight = false;
-                    }
-                }, Looper.getMainLooper());
-                new Handler(Looper.getMainLooper()).postDelayed(
-                        () -> weatherLocationRequestInFlight = false, 15_000);
+                List<String> providers = new ArrayList<>();
+                // Prefer a low-power approximate source, but fall back to GPS
+                // when the fused provider cannot produce a current location.
+                if (locationManager.isProviderEnabled("fused")) providers.add("fused");
+                if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    providers.add(LocationManager.NETWORK_PROVIDER);
+                }
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    providers.add(LocationManager.GPS_PROVIDER);
+                }
+                if (providers.isEmpty()) {
+                    finishCurrentWeatherLocation(null);
+                    return;
+                }
+
+                // Ask each available source at once. A continuous update is
+                // used instead of getCurrentLocation(), whose platform timeout
+                // is 30 seconds and is too short for a cold GPS fix.
+                for (String provider : providers) {
+                    requestWeatherLocationFromProvider(locationManager, provider);
+                }
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if (weatherLocationRequestInFlight) finishCurrentWeatherLocation(null);
+                }, WEATHER_LOCATION_TIMEOUT_MS);
             } catch (SecurityException | IllegalArgumentException error) {
                 Log.w(TAG, "Could not request current coarse location", error);
-                weatherLocationRequestInFlight = false;
+                finishCurrentWeatherLocation(null);
             }
         });
+    }
+
+    private void requestWeatherLocationFromProvider(LocationManager locationManager,
+                                                    String provider) {
+        if (!weatherLocationRequestInFlight) return;
+        LocationListener listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                finishCurrentWeatherLocation(location);
+            }
+        };
+        try {
+            synchronized (weatherLocationListeners) {
+                weatherLocationListeners.add(listener);
+            }
+            locationManager.requestLocationUpdates(provider, 1_000L, 0f, listener,
+                    Looper.getMainLooper());
+        } catch (SecurityException | IllegalArgumentException error) {
+            Log.w(TAG, "Could not request location from " + provider, error);
+            synchronized (weatherLocationListeners) {
+                weatherLocationListeners.remove(listener);
+            }
+        }
+    }
+
+    private void finishCurrentWeatherLocation(Location location) {
+        if (location != null) latestWeatherLocation = location;
+        weatherLocationRequestInFlight = false;
+        LocationManager locationManager = (LocationManager) mainActivity
+                .getSystemService(Context.LOCATION_SERVICE);
+        synchronized (weatherLocationListeners) {
+            if (locationManager != null) {
+                for (LocationListener listener : weatherLocationListeners) {
+                    locationManager.removeUpdates(listener);
+                }
+            }
+            weatherLocationListeners.clear();
+        }
     }
 
     private String getLocationCity(Location location) {

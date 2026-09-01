@@ -146,7 +146,10 @@ function requestWeatherLocation(worker, retryCount = 0) {
     try {
         const location = JSON.parse(window.Disco.getLocation());
         if (location?.latitude == null || location?.longitude == null) {
-            if (location?.error === "pending" && retryCount < 15) {
+            // A GPS cold start routinely takes longer than the old 15-second
+            // window. The native bridge owns the final timeout; keep polling
+            // until it has a definitive result.
+            if (location?.error === "pending" && retryCount < 120) {
                 setTimeout(() => requestWeatherLocation(worker, retryCount + 1), 1000);
                 return;
             }
