@@ -869,6 +869,7 @@ div.disco-home-tile {
                     div.live-tile-notification-summary {
                         position: absolute;
                         inset: 0;
+                        z-index: 1;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -899,6 +900,15 @@ div.disco-home-tile {
                             line-height: 1;
                             margin-left: -8px;
                         }
+                    }
+
+                    img.live-tile-notification-summary-background {
+                        position: absolute;
+                        inset: 0;
+                        z-index: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: fill;
                     }
 
                     img.live-tile-media-fallback-icon {

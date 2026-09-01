@@ -498,10 +498,10 @@ class tileController {
         const backgroundSource = tile.getAttribute('icon-bg');
         if (backgroundSource && backgroundSource !== 'none') {
             const background = document.createElement('img');
-            background.className = 'live-tile-notification-summary-icon-background';
+            background.className = 'live-tile-notification-summary-background';
             background.src = backgroundSource;
             background.alt = '';
-            icon.appendChild(background);
+            page.appendChild(background);
         }
 
         const sourceIcon = tile.querySelector('img.disco-home-tile-imageicon');

@@ -551,9 +551,12 @@ const iconPackConverter = [
             "com.yahoo.mobile.client.android.weather",
             "de.beowulf.wetter",
             "net.oneplus.weather",
-            "com.metro.weather"
+            "com.metro.weather",
+            "org.omnirom.omnijaws",
+            "org.breezyweather"
         ],
-        "icon": "weather"
+        "icon": "weather",
+        "accent": "cyan"
     },
     //MAIL
     {
