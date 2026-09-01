@@ -6,7 +6,10 @@ const $ = jquery
 // Configuration for touch/click detection thresholds
 const clickDetectorConfig = {
     tapDistanceThreshold: 8,
-    touchUpDistanceThreshold: 200
+    // A scrolling gesture must release Flow Touch almost immediately. Keeping
+    // its 3D rotation alive for 200px made every pointermove force a layout
+    // read and a second transform update alongside the list scroller.
+    touchUpDistanceThreshold: 12
 }
 
 // Track elements currently being touched/clicked
@@ -142,13 +145,14 @@ window.addEventListener("pointermove", (e) => {
     if (!pointerDownElements[e.pointerId]) return
     const el = getElementFromPointerId(e.pointerId)
     const hypotenuse = Math.sqrt(Math.pow(el.lastPointerPosition[0] - e.pageX, 2) + Math.pow(el.lastPointerPosition[1] - e.pageY, 2))
-    flowTouchRotate(el, e.pageX, e.pageY)
     if (hypotenuse > clickDetectorConfig.touchUpDistanceThreshold) {
         el.classList.remove("active")
         el.classList.remove("t_active")
         deleteProperties(el)
         delete pointerDownElements[e.pointerId]
+        return
     }
+    flowTouchRotate(el, e.pageX, e.pageY)
 
     if (el.classList.contains("metro-toggle-switch")) metroToggleSwitch.pointerMove(el, e)
 

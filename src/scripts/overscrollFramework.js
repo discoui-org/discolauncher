@@ -13,6 +13,7 @@ const resolveElement = (selector) => typeof selector === "string" ? document.que
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const now = () => performance.now();
 const DRAG_START_DISTANCE = 8;
+const MAX_OVERSCROLL_DISTANCE = 120;
 
 class DiscoScroller {
   constructor(selector, options = {}, { slide = false } = {}) {
@@ -317,8 +318,10 @@ class DiscoScroller {
 
   dampen(value, min) {
     if (this.options.bounce === false) return clamp(value, min, 0);
-    if (value > 0) return value * 0.42;
-    if (value < min) return min + (value - min) * 0.42;
+    // Scale and translation must reach their limit together. Otherwise the
+    // content keeps travelling after its visual compression has stopped.
+    if (value > 0) return Math.min(MAX_OVERSCROLL_DISTANCE, value * 0.42);
+    if (value < min) return Math.max(min - MAX_OVERSCROLL_DISTANCE, min + (value - min) * 0.42);
     return value;
   }
 
@@ -330,8 +333,8 @@ class DiscoScroller {
   }
 
   momentumOverscroll(projected, min) {
-    if (projected > 0) return Math.min(125, projected * 0.18 + 8);
-    if (projected < min) return min - Math.min(125, (min - projected) * 0.18 + 8);
+    if (projected > 0) return Math.min(MAX_OVERSCROLL_DISTANCE, projected * 0.18 + 8);
+    if (projected < min) return min - Math.min(MAX_OVERSCROLL_DISTANCE, (min - projected) * 0.18 + 8);
     return projected;
   }
 
@@ -348,8 +351,13 @@ class DiscoScroller {
     const point = this.point();
     this.translaterHooks.emit("beforeTranslate", point, point);
     const scale = this.overscrollScale();
+    // Keep physics at sub-pixel precision, but rasterize the moving content
+    // on physical CSS pixels. Fractional translations make text and small
+    // icons continually re-rasterize on some Android WebViews.
+    const visualX = Math.round(x);
+    const visualY = Math.round(y);
     this.content.style.transformOrigin = scale.origin;
-    this.content.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale.x}, ${scale.y})`;
+    this.content.style.transform = `translate3d(${visualX}px, ${visualY}px, 0) scale(${scale.x}, ${scale.y})`;
     this.updateScrollbar();
     this.translaterHooks.emit("translate", point);
     if (emit) this.emit("scroll", point);
@@ -373,7 +381,7 @@ class DiscoScroller {
   overscrollScale() {
     const distanceX = this.x > 0 ? this.x : this.x < this.maxScrollX ? this.maxScrollX - this.x : 0;
     const distanceY = this.y > 0 ? this.y : this.y < this.maxScrollY ? this.maxScrollY - this.y : 0;
-    const factor = (distance) => 1 - Math.min(125, distance) * (1 - 58 / 62) / 125;
+    const factor = (distance) => 1 - Math.min(MAX_OVERSCROLL_DISTANCE, distance) * (1 - 58 / 62) / MAX_OVERSCROLL_DISTANCE;
     const originX = this.x > 0 ? "0%" : this.x < this.maxScrollX ? "100%" : "50%";
     const originY = this.y > 0 ? "0%" : this.y < this.maxScrollY ? "100%" : "50%";
     return { x: factor(distanceX), y: factor(distanceY), origin: `${originX} ${originY}` };

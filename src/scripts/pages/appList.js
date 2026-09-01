@@ -10,6 +10,134 @@ const letterSelector = $("div.letter-selector")
 const stickyLetterTile = $("#sticky-letter")
 const appListElement = document.querySelector("div.app-list")
 
+class VirtualAppList {
+    constructor(container) {
+        this.container = container
+        this.entries = []
+        this.visibleEntries = []
+        this.rendered = new Map()
+        this.spacer = document.createElement("div")
+        this.spacer.setAttribute("aria-hidden", "true")
+        Object.assign(this.spacer.style, { width: "1px", pointerEvents: "none" })
+        this.active = false
+        this.layoutDirty = false
+        this.buffer = 8 * 64
+        container.style.position = "relative"
+        window.addEventListener("resize", () => this.relayout())
+    }
+
+    setEntries(entries) {
+        this.entries = entries.map((entry, index) => ({ ...entry, key: index }))
+        this.active = true
+        this.rendered.clear()
+        this.container.replaceChildren()
+        this.container.append(this.spacer)
+        this.setFilter("")
+    }
+
+    setFilter(query) {
+        const normalizedQuery = window.normalizeDiacritics(query || "").toLocaleLowerCase("en")
+        this.visibleEntries = this.entries.filter((entry) =>
+            entry.type === "letter" || !normalizedQuery || entry.searchTitle.includes(normalizedQuery)
+        )
+        // Letter headers without a matching app should not take a row in search.
+        if (normalizedQuery) {
+            this.visibleEntries = this.visibleEntries.filter((entry, index, all) =>
+                entry.type !== "letter" || all.slice(index + 1).some((next) => next.type === "app")
+            )
+        }
+        this.relayout()
+    }
+
+    relayout() {
+        if (!this.active) return
+        const styles = getComputedStyle(this.container)
+        const paddingLeft = parseFloat(styles.paddingLeft) || 0
+        const paddingRight = parseFloat(styles.paddingRight) || 0
+        const paddingTop = parseFloat(styles.paddingTop) || 0
+        const paddingBottom = parseFloat(styles.paddingBottom) || 0
+        const columns = window.innerWidth >= 700 ? 2 : 1
+        const width = Math.max(1, (this.container.clientWidth - paddingLeft - paddingRight) / columns)
+        let top = paddingTop
+        let column = 0
+
+        this.visibleEntries.forEach((entry) => {
+            if (entry.type === "letter") {
+                if (column) { top += 64; column = 0 }
+                entry.top = top
+                entry.left = paddingLeft
+                entry.width = width * columns
+                top += 64
+                return
+            }
+            entry.top = top
+            entry.left = paddingLeft + column * width
+            entry.width = width
+            column += 1
+            if (column === columns) { top += 64; column = 0 }
+        })
+        if (column) top += 64
+        // Virtual rows are absolutely positioned and therefore do not affect
+        // scrollHeight. A normal-flow spacer gives the custom scroller the
+        // real extent of the virtual list instead of maxScrollY = 0.
+        this.container.style.height = "auto"
+        this.spacer.style.height = `${top + paddingBottom}px`
+        this.layoutDirty = true
+        this.render()
+        if (window.scrollers?.app_page_scroller) window.scrollers.app_page_scroller.refresh()
+    }
+
+    render() {
+        if (!this.active || !window.scrollers?.app_page_scroller) return
+        const scrollTop = -window.scrollers.app_page_scroller.y
+        const viewportBottom = scrollTop + window.scrollers.app_page_scroller.wrapper.clientHeight
+        const wanted = new Set()
+        this.visibleEntries.forEach((entry) => {
+            if (entry.top + 64 < scrollTop - this.buffer || entry.top > viewportBottom + this.buffer) return
+            wanted.add(entry.key)
+            let node = this.rendered.get(entry.key)
+            if (!node) {
+                node = entry.type === "letter"
+                    ? DiscoBoard.boardMethods.createLetterTile(entry.icon)
+                    : DiscoBoard.boardMethods.createAppTile(entry)
+                this.rendered.set(entry.key, node)
+                this.applyLayout(node, entry)
+            } else if (this.layoutDirty) this.applyLayout(node, entry)
+        })
+        this.rendered.forEach((node, key) => {
+            if (!wanted.has(key)) {
+                node.remove()
+                this.rendered.delete(key)
+            }
+        })
+        this.layoutDirty = false
+    }
+
+    applyLayout(node, entry) {
+        Object.assign(node.style, {
+            position: "absolute",
+            top: `${entry.top}px`,
+            left: `${entry.left}px`,
+            width: `${entry.width}px`,
+            marginRight: "0",
+        })
+    }
+
+    getLetterTiles() {
+        return this.visibleEntries
+            .filter((entry) => entry.type === "letter")
+            .map((entry) => ({ top: entry.top, icon: entry.icon }))
+    }
+
+    scrollToLetter(icon) {
+        const entry = this.entries.find((item) => item.type === "letter" && item.icon === icon)
+        if (!entry) return
+        window.scrollers.app_page_scroller.scrollTo(0, Math.max(window.scrollers.app_page_scroller.maxScrollY, window.windowInsets().top - entry.top), 0)
+    }
+}
+
+window.appListVirtualizer = new VirtualAppList(appListContainer[0])
+
 let letterTileLayout = null
 let stickyLetterFrame = null
 let pendingStickyScroll = 0
@@ -27,6 +155,7 @@ new MutationObserver(invalidateLetterTileLayout).observe(appListContainer[0], {
 window.addEventListener("resize", invalidateLetterTileLayout)
 
 function getLetterTileLayout() {
+    if (window.appListVirtualizer.active) return window.appListVirtualizer.getLetterTiles()
     if (!letterTileLayout) {
         letterTileLayout = Array.from(appListContainer[0].querySelectorAll("div.disco-element.disco-app-tile.disco-letter-tile"))
             .map((element) => ({ element, top: element.offsetTop }))
@@ -120,9 +249,10 @@ const searchModeSwitch = {
         }, 250 * animationDurationScale);
         setTimeout(() => { scrollers.app_page_scroller.refresh() }, 500 * animationDurationScale);
         // history.pushState("searchmodeon", document.title, location.href);
-    appListPage.removeClass("no-search-result")
-    $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").removeClass("search-hidden")
-    invalidateLetterTileLayout()
+        appListPage.removeClass("no-search-result")
+        $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").removeClass("search-hidden")
+        if (window.appListVirtualizer.active) window.appListVirtualizer.setFilter("")
+        invalidateLetterTileLayout()
         scrollers.app_page_scroller.scrollTo(0, 0, 0, "linear")
         $("div.app-search-search-store").css("visibility", "hidden")
     },
@@ -152,6 +282,7 @@ const searchModeSwitch = {
 
         appListPage.removeClass("no-search-result")
         $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").removeClass("search-hidden")
+        if (window.appListVirtualizer.active) window.appListVirtualizer.setFilter("")
     }
 }
 const letterSelectorSwitch = {
@@ -223,12 +354,14 @@ $(window).on("finishedLoading", () => {
         scrollers.app_page_scroller.refresh()
     })
     window.scrollers.app_page_scroller.scroller.translater.hooks.on('translate', (point) => {
+        window.appListVirtualizer.render()
         scheduleStickyLetter(-point.y)
     })
     $("div.letter-selector-letter").on("flowClick", function (e) {
         if (e.target.classList.contains("disabled")) return
         letterSelectorSwitch.off()
-        scrollers.app_page_scroller.scrollTo(0, Math.max(scrollers.app_page_scroller.maxScrollY, window.windowInsets().top - document.querySelector(`div.disco-app-tile.disco-letter-tile[icon='${e.target.innerText.toLowerCase()}']`).offsetTop,), 0, "linear")
+        if (window.appListVirtualizer.active) window.appListVirtualizer.scrollToLetter(e.target.innerText.toLowerCase())
+        else scrollers.app_page_scroller.scrollTo(0, Math.max(scrollers.app_page_scroller.maxScrollY, window.windowInsets().top - document.querySelector(`div.disco-app-tile.disco-letter-tile[icon='${e.target.innerText.toLowerCase()}']`).offsetTop,), 0, "linear")
         e.stopPropagation()
         e.stopImmediatePropagation()
         e.preventDefault()
@@ -237,6 +370,11 @@ $(window).on("finishedLoading", () => {
 appListSearch.on("input", _.debounce(function (e) {
     const search = window.normalizeDiacritics(this.value).toLocaleLowerCase("en")
     if (search.length == 0) $("div.app-search-search-store").css("visibility", "hidden"); else $("div.app-search-search-store").css("visibility", "");
+    if (window.appListVirtualizer.active) {
+        window.appListVirtualizer.setFilter(search)
+        appListPage.toggleClass("no-search-result", !window.appListVirtualizer.visibleEntries.some((entry) => entry.type === "app"))
+        return
+    }
     $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").each(function (index, element) {
         try {
             const app_title = window.normalizeDiacritics(element.title).toLocaleLowerCase("en")
@@ -438,13 +576,13 @@ function stickyLetter(scroll) {
     var stickyEl
     var overthrowingEl
     const wInsets = windowInsets()
-    getLetterTileLayout().slice().reverse().forEach(({ element, top }) => {
+    getLetterTileLayout().slice().reverse().forEach(({ element, top, icon }) => {
         const scrollTop = top - scroll - wInsets.top
-        if (scrollTop < 0 && !stickyEl) stickyEl = { element, top }; else if (0 <= scrollTop && scrollTop < 64 && !overthrowingEl) overthrowingEl = { element, top };
+        if (scrollTop < 0 && !stickyEl) stickyEl = { element, top, icon }; else if (0 <= scrollTop && scrollTop < 64 && !overthrowingEl) overthrowingEl = { element, top, icon };
     })
     if (stickyEl) {
         const offset = overthrowingEl ? overthrowingEl.top - scroll - wInsets.top - 64 : 0
-        const icon = stickyEl.element.getAttribute("icon")
+        const icon = stickyEl.icon || stickyEl.element.getAttribute("icon")
         if (!stickyLetterState.visible) stickyLetterTile.css({ visibility: "visible" })
         if (stickyLetterState.icon !== icon) stickyLetterTile.children("p.disco-app-tile-icon").text(icon)
         // The expensive clip-path update is only necessary while the next

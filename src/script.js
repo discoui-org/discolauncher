@@ -441,31 +441,18 @@ window.addEventListener("pointerdown", (e) => {
 );*/
 const slideContent = document.querySelector("#main-home-slider > div.slide-content");
 const mainHomeSlider = document.querySelector("#main-home-slider");
-
-function updateShadeOpacity(x) {
-    const newOpacity = (-x / window.innerWidth);
-    window.requestAnimationFrame(() => {
-        slideContent.style.setProperty("--shade-opacity", newOpacity);
-    });
-}
-let lastUpdateTime = 0;
 let shadeOpacityLast = null;
 
-function shadeOpacity(timestamp) {
-    // Limit updates to roughly 60fps (~16ms between frames)
-    if (timestamp - lastUpdateTime > 16) {
-        const x = slideContent.getBoundingClientRect().left;
-        if (!document.body.classList.contains("activity-paused") && x !== shadeOpacityLast) {
-            const newOpacity = (-x / window.innerWidth);
-            const isLightMode = document.body.classList.contains("light-mode")
-            const c = isLightMode ? 255 : 0
-            slideContent.style.setProperty("background-color", `rgba(${c}, ${c}, ${c}, ${newOpacity * .75})`);
-            mainHomeSlider.style.setProperty("background-position", `calc(50% + ${(x / window.innerWidth) * 100 - 50}px) 50%`)
-
-        }
-        shadeOpacityLast = x;
-        lastUpdateTime = timestamp;
-    }
-    requestAnimationFrame(shadeOpacity);
+// This used to run forever and force a layout read every animation frame.
+// The slider already gives us its transform position, so only update the shade
+// when the horizontal slider itself moves.
+function updateSliderShade(x) {
+    if (document.body.classList.contains("activity-paused") || x === shadeOpacityLast) return;
+    const newOpacity = -x / window.innerWidth;
+    const c = document.body.classList.contains("light-mode") ? 255 : 0;
+    slideContent.style.setProperty("background-color", `rgba(${c}, ${c}, ${c}, ${newOpacity * .75})`);
+    mainHomeSlider.style.setProperty("background-position", `calc(50% + ${(x / window.innerWidth) * 100 - 50}px) 50%`);
+    shadeOpacityLast = x;
 }
-requestAnimationFrame(shadeOpacity);
+scrollers.main_home_scroller.scroller.translater.hooks.on("translate", ({ x }) => updateSliderShade(x));
+updateSliderShade(scrollers.main_home_scroller.x);

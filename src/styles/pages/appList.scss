@@ -267,6 +267,13 @@ div.inner-page.app-list-page {
 
 .disco-element.disco-app-tile {
   @include flow-touch;
+  // The idle Flow Touch transform contains translateZ(0), which promotes
+  // every visible row to its own GPU layer. Keep the press animation, but do
+  // not retain compositor layers while the list is being scrolled.
+  &:not(.active) {
+    transform: none;
+  }
+
   transition: transform calc(.5s * var(--animation-duration-scale)),
     background-color calc(.5s * var(--animation-duration-scale));
   display: flex;
@@ -329,6 +336,15 @@ div.inner-page.app-list-page {
     text-overflow: ellipsis;
     font-weight: 320;
     pointer-events: none;
+  }
+}
+
+// The list can contain hundreds of apps. Offscreen rows keep their geometry
+// but WebView can skip their layout and paint work until they approach view.
+@supports (content-visibility: auto) {
+  .disco-element.disco-app-tile:not(.disco-letter-tile) {
+    content-visibility: auto;
+    contain-intrinsic-block-size: 64px;
   }
 }
 

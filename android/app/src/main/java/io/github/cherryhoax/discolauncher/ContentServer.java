@@ -48,10 +48,17 @@ public class ContentServer extends WebViewClientCompat {
     private static final String APP_ASSET_SCHEME = "https";
     private static final String APP_ASSET_HOST = "appassets.androidplatform.net";
     private static final int ICON_PACK_CACHE_SIZE = 16;
+    private static final int ICON_BYTES_CACHE_SIZE = 4 * 1024 * 1024;
     private final DiscoWebView discoWebView;
     private final WebViewAssetLoader assetLoader;
     private final String TAG = "ContentServer";
     private final LruCache<String, IconPack> iconPackCache = new LruCache<>(ICON_PACK_CACHE_SIZE);
+    private final LruCache<String, byte[]> iconBytesCache = new LruCache<String, byte[]>(ICON_BYTES_CACHE_SIZE) {
+        @Override
+        protected int sizeOf(@NonNull String key, @NonNull byte[] value) {
+            return value.length;
+        }
+    };
 
     public ContentServer(DiscoWebView discoWebView, WebViewAssetLoader assetLoader) {
         this.discoWebView = discoWebView;
@@ -104,6 +111,33 @@ public class ContentServer extends WebViewClientCompat {
         return new WebResourceResponse("image/svg+xml", "UTF-8", new ByteArrayInputStream(image));
     }
 
+    private String getIconPackIdentity(String appPackageName) {
+        String perAppIconPack = mainActivity.iconPackPerApp.get(appPackageName);
+        if (perAppIconPack != null && !perAppIconPack.isEmpty()) {
+            return "per-app:" + perAppIconPack;
+        }
+        return "global:" + mainActivity.iconPack;
+    }
+
+    private String iconCacheKey(String endpoint, String appPackageName, String iconPackageNameWithIntent,
+                                int requestedIconSize) {
+        return endpoint + "|" + appPackageName + "|" + iconPackageNameWithIntent + "|"
+                + requestedIconSize + "|" + getIconPackIdentity(appPackageName);
+    }
+
+    @Nullable
+    private WebResourceResponse cachedIconResponse(String cacheKey) {
+        byte[] bytes = iconBytesCache.get(cacheKey);
+        return bytes == null ? null
+                : new WebResourceResponse("image/webp", "UTF-8", new ByteArrayInputStream(bytes));
+    }
+
+    private WebResourceResponse cacheIconResponse(String cacheKey, Bitmap bitmap, int requestedIconSize) {
+        byte[] bytes = Utils.bitmapAsWebpBytes(bitmap, requestedIconSize);
+        iconBytesCache.put(cacheKey, bytes);
+        return new WebResourceResponse("image/webp", "UTF-8", new ByteArrayInputStream(bytes));
+    }
+
     /**
      * The WebView exposes privileged Android APIs through JavascriptInterface.
      * Do not let a navigation replace the bundled app with remote content that
@@ -135,7 +169,9 @@ public class ContentServer extends WebViewClientCompat {
                     if (iconFileName.length() > 5) {
                         String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);
                         String iconPackageName = iconPackageNameWithIntent.split("\\|")[0];
-                        InputStream inputStream = null;
+                        String cacheKey = iconCacheKey(key, iconPackageName, iconPackageNameWithIntent, requestedIconSize);
+                        WebResourceResponse cachedResponse = cachedIconResponse(cacheKey);
+                        if (cachedResponse != null) return cachedResponse;
                         Bitmap dra = discoWebView.getAppIcon(discoWebView.packageManager,
                                 iconPackageNameWithIntent);
                         IconPack selectedIconPack = getSelectedIconPack(iconPackageName);
@@ -148,19 +184,16 @@ public class ContentServer extends WebViewClientCompat {
                             return transparentImageResponse();
                         }
 
-                        if (dra != null) {
-                            inputStream = Utils.loadBitmapAsStream(dra, requestedIconSize);
-                        }
-                        if (inputStream != null) {
-                            return new WebResourceResponse("image/webp", "UTF-8", inputStream);
-                        }
+                        if (dra != null) return cacheIconResponse(cacheKey, dra, requestedIconSize);
                     }
                     break;
                 case "icons-bg":
                     if (iconFileName.length() > 5) {
                         String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);
                         String iconPackageName = iconPackageNameWithIntent.split("\\|")[0];
-                        InputStream inputStream = null;
+                        String cacheKey = iconCacheKey(key, iconPackageName, iconPackageNameWithIntent, requestedIconSize);
+                        WebResourceResponse cachedResponse = cachedIconResponse(cacheKey);
+                        if (cachedResponse != null) return cachedResponse;
                         Bitmap dra = discoWebView.getAppIconBackground(discoWebView.packageManager,
                                 iconPackageNameWithIntent);
                         IconPack selectedIconPack = getSelectedIconPack(iconPackageName);
@@ -173,12 +206,7 @@ public class ContentServer extends WebViewClientCompat {
                             }
                         }
 
-                        if (dra != null) {
-                            inputStream = Utils.loadBitmapAsStream(dra, requestedIconSize);
-                        }
-                        if (inputStream != null) {
-                            return new WebResourceResponse("image/webp", "UTF-8", inputStream);
-                        }
+                        if (dra != null) return cacheIconResponse(cacheKey, dra, requestedIconSize);
                     }
                     break;
 

@@ -505,28 +505,28 @@ const backendMethods = {
       Object.entries(appSortCategories).sort(sortObjectsByKey)
     );
 
+    const virtualEntries = [];
     Object.keys(appSortCategories).forEach((labelSortCategory) => {
-      let letter = boardMethods.createLetterTile(
-        labelSortCategory == "0-9"
-          ? "#"
-          : labelSortCategory == "&"
-            ? ""
-            : labelSortCategory.toLocaleLowerCase("en")
-      );
+      const letter = labelSortCategory == "0-9"
+        ? "#"
+        : labelSortCategory == "&"
+          ? ""
+          : labelSortCategory.toLocaleLowerCase("en");
+      virtualEntries.push({ type: "letter", icon: letter });
       appSortCategories[labelSortCategory].forEach((app) => {
-        const ipe = window.iconPackDB[app.packageName];
-        const iconurl = JSON.parse(Disco.getAppIconURL(app.packageName));
         const appdetail = backendMethods.getAppDetails(app.packageName);
-
-        const el = boardMethods.createAppTile({
+        virtualEntries.push({
+          type: "app",
           title: appdetail.label,
           packageName: app.packageName,
           imageIcon: true,
           icon: appdetail.icon.foreground,
           iconbg: appdetail.icon.background,
+          searchTitle: window.normalizeDiacritics(appdetail.label).toLocaleLowerCase("en"),
         });
       });
     });
+    if (window.appListVirtualizer) window.appListVirtualizer.setEntries(virtualEntries);
     scrollers.app_page_scroller.refresh();
   },
   getAppDetails: (packageName, rawDetails = false) => {

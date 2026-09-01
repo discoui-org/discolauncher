@@ -52,6 +52,11 @@ public class Utils {
      * much smaller CSS image.
      */
     public static InputStream loadBitmapAsStream(Bitmap bitmap, int maxSize) {
+        return new ByteArrayInputStream(bitmapAsWebpBytes(bitmap, maxSize));
+    }
+
+    /** Encodes an icon once so ContentServer can retain its WebP bytes. */
+    public static byte[] bitmapAsWebpBytes(Bitmap bitmap, int maxSize) {
         if (maxSize > 0 && (bitmap.getWidth() > maxSize || bitmap.getHeight() > maxSize)) {
             float ratio = Math.min((float) maxSize / bitmap.getWidth(), (float) maxSize / bitmap.getHeight());
             bitmap = Bitmap.createScaledBitmap(
@@ -64,7 +69,6 @@ public class Utils {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         // Compress the bitmap (you can change the format and quality)
         bitmap.compress(Bitmap.CompressFormat.WEBP, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        return new ByteArrayInputStream(byteArray);
+        return byteArrayOutputStream.toByteArray();
     }
 }
