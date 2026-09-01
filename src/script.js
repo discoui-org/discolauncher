@@ -200,7 +200,7 @@ startUpSequence([
         } else {
 
             if (location.search.includes("firstload")) {
-                DiscoBoard.backendMethods.setUIScale(1)
+                DiscoBoard.backendMethods.setUIScale(1, true)
                 document.querySelector("#loader").style.visibility = "visible"
                 document.querySelector("#loader").classList.add("enter")
 
