@@ -556,7 +556,7 @@ const iconPackConverter = [
             "org.breezyweather"
         ],
         "icon": "weather",
-        "accent": "cyan"
+        "accent": "cobalt"
     },
     //MAIL
     {

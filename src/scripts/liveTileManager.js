@@ -513,8 +513,10 @@ class tileController {
         summary.className = 'live-tile-notification-summary';
         if (notificationCount > 0) summary.classList.add('has-count');
         const sourceBackground = tile.querySelector('.disco-home-tile-icon-background');
-        summary.classList.toggle('has-light-edges', sourceBackground?.classList.contains('has-light-edges'));
-        summary.classList.toggle('has-dark-edges', sourceBackground?.classList.contains('has-dark-edges'));
+        const hasLightEdges = sourceBackground?.classList.contains('has-light-edges');
+        const hasDarkEdges = sourceBackground?.classList.contains('has-dark-edges');
+        summary.classList.toggle('has-light-edges', hasLightEdges);
+        summary.classList.toggle('has-dark-edges', hasDarkEdges);
 
         const icon = document.createElement('div');
         icon.className = 'live-tile-notification-summary-icon';
@@ -523,6 +525,8 @@ class tileController {
         if (backgroundSource && backgroundSource !== 'none') {
             const background = document.createElement('img');
             background.className = 'live-tile-notification-summary-background';
+            background.classList.toggle('has-light-edges', hasLightEdges);
+            background.classList.toggle('has-dark-edges', hasDarkEdges);
             background.src = backgroundSource;
             background.alt = '';
             page.appendChild(background);

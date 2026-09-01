@@ -923,6 +923,17 @@ div.disco-home-tile {
                         width: 100%;
                         height: 100%;
                         object-fit: fill;
+
+                        // App backgrounds may contain transparent antialiased
+                        // edge pixels. Fill those from the detected edge color
+                        // instead of letting the notification card accent show.
+                        &.has-light-edges {
+                            background: #fff;
+                        }
+
+                        &.has-dark-edges {
+                            background: #000;
+                        }
                     }
 
                     img.live-tile-media-fallback-icon {
