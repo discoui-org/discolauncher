@@ -66,10 +66,6 @@ div.tile-list-page {
         transition: .75s cubic-bezier(0.075, 0.82, 0.165, 1), --shake-distance 1s !important;
         transform: translateZ(-50px) !important;
 
-        div.live-tile-container {
-            display: none !important;
-        }
-
         div.disco-home-tile {
             div.disco-home-inner-tile {
 
