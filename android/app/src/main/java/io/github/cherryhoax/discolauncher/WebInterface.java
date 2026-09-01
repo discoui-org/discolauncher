@@ -213,17 +213,19 @@ public class WebInterface {
     @JavascriptInterface
     public String getAppIconURL(String packageName) throws JSONException {
         PackageNameInfo packageNameInfo = parsePackageName(packageName);
+        String iconIdentifier = packageNameInfo.packageName == null
+                ? "undefined"
+                : packageNameInfo.packageName
+                        + (packageNameInfo.intentId == null ? "" : "|" + packageNameInfo.intentId);
 
         // '{"foreground":"http://localhost:5500/www/mock/icons/default/.png","background":"data:image/svg+xml,<svg
         // xmlns=\\"http://www.w3.org/2000/svg\\"/>"}
         JSONObject appicon = new JSONObject();
         appicon.put("foreground", "https://appassets.androidplatform.net/assets/icons/"
-                + (packageNameInfo.packageName == null ? "undefined"
-                : packageNameInfo.packageName + "|" + packageNameInfo.intentId)
+                + iconIdentifier
                 + ".webp");
         appicon.put("background", "https://appassets.androidplatform.net/assets/icons-bg/"
-                + (packageNameInfo.packageName == null ? "undefined"
-                : packageNameInfo.packageName + "|" + packageNameInfo.intentId)
+                + iconIdentifier
                 + ".webp");
         return appicon.toString();
         // return "https://appassets.androidplatform.net/assets/icons/" + (packageName

@@ -8,9 +8,7 @@ import android.app.Notification;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +23,7 @@ import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.service.notification.StatusBarNotification;
+import android.util.LruCache;
 import android.util.Log;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -37,8 +36,10 @@ import androidx.webkit.WebViewClientCompat;
 
 import io.github.cherryhoax.discolauncher.IconPack.IconPack;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,9 +47,11 @@ import java.util.List;
 public class ContentServer extends WebViewClientCompat {
     private static final String APP_ASSET_SCHEME = "https";
     private static final String APP_ASSET_HOST = "appassets.androidplatform.net";
+    private static final int ICON_PACK_CACHE_SIZE = 16;
     private final DiscoWebView discoWebView;
     private final WebViewAssetLoader assetLoader;
     private final String TAG = "ContentServer";
+    private final LruCache<String, IconPack> iconPackCache = new LruCache<>(ICON_PACK_CACHE_SIZE);
 
     public ContentServer(DiscoWebView discoWebView, WebViewAssetLoader assetLoader) {
         this.discoWebView = discoWebView;
@@ -58,6 +61,38 @@ public class ContentServer extends WebViewClientCompat {
     private boolean isAppAssetUrl(Uri uri) {
         return APP_ASSET_SCHEME.equals(uri.getScheme())
                 && APP_ASSET_HOST.equals(uri.getHost());
+    }
+
+    private IconPack getCachedIconPack(String packageName) {
+        IconPack cached = iconPackCache.get(packageName);
+        if (cached != null) {
+            return cached;
+        }
+
+        IconPack iconPack = new IconPack();
+        iconPack.packageName = packageName;
+        iconPack.setContext(mainActivity);
+        iconPack.load();
+        iconPackCache.put(packageName, iconPack);
+        return iconPack;
+    }
+
+    private IconPack getSelectedIconPack(String appPackageName) {
+        String perAppIconPack = mainActivity.iconPackPerApp.get(appPackageName);
+        if (perAppIconPack != null && !perAppIconPack.isEmpty()) {
+            return getCachedIconPack(perAppIconPack);
+        }
+
+        if (!mainActivity.iconPack.isEmpty() && mainActivity.iconPackInstance != null) {
+            return mainActivity.iconPackInstance;
+        }
+        return null;
+    }
+
+    private WebResourceResponse transparentImageResponse() {
+        byte[] image = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1\" height=\"1\"/>"
+                .getBytes(StandardCharsets.UTF_8);
+        return new WebResourceResponse("image/svg+xml", "UTF-8", new ByteArrayInputStream(image));
     }
 
     /**
@@ -89,131 +124,50 @@ public class ContentServer extends WebViewClientCompat {
                 case "icons":
                     if (iconFileName.length() > 5) {
                         String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);
-                        String[] parts = iconPackageNameWithIntent.split("\\|");
-                        String iconPackageName = parts[0];
-                        Intent intent;
+                        String iconPackageName = iconPackageNameWithIntent.split("\\|")[0];
+                        InputStream inputStream = null;
+                        Bitmap dra = discoWebView.getAppIcon(discoWebView.packageManager,
+                                iconPackageNameWithIntent);
+                        IconPack selectedIconPack = getSelectedIconPack(iconPackageName);
+                        boolean useIconPackBackground = selectedIconPack != null
+                                && selectedIconPack.hasIconForPackage(iconPackageName);
 
-                        if (parts.length > 1) {
-                            // If there's an intent ID specified, use it
-                            String intentId = parts[1];
-                            intent = discoWebView.packageManager.getLaunchIntentForPackage(iconPackageName);
-                            if (intent != null) {
-                                intent.setAction(intentId);
-                            }
-                        } else {
-                            // If no intent ID, just get the default launch intent
-                            intent = discoWebView.packageManager.getLaunchIntentForPackage(iconPackageName);
+                        // Explicit icon-pack art is served by icons-bg below, keeping the
+                        // adaptive-icon foreground transparent.
+                        if (useIconPackBackground) {
+                            return transparentImageResponse();
                         }
 
-                        if (intent != null) {
-                            ResolveInfo resolveInfo = discoWebView.packageManager.resolveActivity(intent,
-                                    PackageManager.MATCH_DEFAULT_ONLY);
-                            if (resolveInfo != null) {
-                                InputStream inputStream = null;
-                                Bitmap dra = discoWebView.getAppIcon(discoWebView.packageManager,
-                                        iconPackageNameWithIntent);
-                                
-                                // Check per-app icon pack first
-                                if (mainActivity.iconPackPerApp.containsKey(iconPackageName) && 
-                                    mainActivity.iconPackPerApp.get(iconPackageName) != null &&
-                                    !mainActivity.iconPackPerApp.get(iconPackageName).isEmpty()) {
-                                    
-                                    String perAppIconPack = mainActivity.iconPackPerApp.get(iconPackageName);
-                                    IconPack perAppIconPackInstance = new IconPack();
-                                    perAppIconPackInstance.packageName = perAppIconPack;
-                                    perAppIconPackInstance.setContext(mainActivity);
-                                    perAppIconPackInstance.load();
-                                    
-                                    if (perAppIconPackInstance.hasIconForPackage(iconPackageName)) {
-                                        dra = perAppIconPackInstance.getIconForPackage(iconPackageName, dra);
-                                    }
-                                } else if (mainActivity.iconPack != "") {
-                                    // Fall back to global icon pack
-                                    if (mainActivity.iconPackInstance.hasIconForPackage(iconPackageName)) {
-                                        dra = mainActivity.iconPackInstance.getIconForPackage(iconPackageName, dra);
-                                    }
-                                }
-                                
-                                // If an icon pack is supplying the foreground, suppress the adaptive background
-                                // so the pack's own shape shows cleanly.
-                                boolean suppressBackground = false;
-
-                                if (mainActivity.iconPackPerApp.containsKey(iconPackageName)
-                                        && mainActivity.iconPackPerApp.get(iconPackageName) != null
-                                        && !mainActivity.iconPackPerApp.get(iconPackageName).isEmpty()) {
-
-                                    String perAppIconPack = mainActivity.iconPackPerApp.get(iconPackageName);
-                                    IconPack perAppIconPackInstance = new IconPack();
-                                    perAppIconPackInstance.packageName = perAppIconPack;
-                                    perAppIconPackInstance.setContext(mainActivity);
-                                    perAppIconPackInstance.load();
-
-                                    if (perAppIconPackInstance.hasIconForPackage(iconPackageName)) {
-                                        // Only suppress when the pack can actually render the icon
-                                        Bitmap packIcon = perAppIconPackInstance.getIconForPackage(iconPackageName, dra);
-                                        suppressBackground = packIcon != null;
-                                    }
-                                } else if (!mainActivity.iconPack.isEmpty() && mainActivity.iconPackInstance != null) {
-                                    // Fall back to global icon pack
-                                    if (mainActivity.iconPackInstance.hasIconForPackage(iconPackageName)) {
-                                        Bitmap packIcon = mainActivity.iconPackInstance.getIconForPackage(iconPackageName, dra);
-                                        suppressBackground = packIcon != null;
-                                    }
-                                }
-
-                                if (suppressBackground) {
-                                    return new WebResourceResponse(null, null, null);
-                                }
-
-                                if (dra != null)
-                                    inputStream = Utils.loadBitmapAsStream(dra);
-                                if (inputStream != null) {
-                                    return new WebResourceResponse("image/webp", "UTF-8", inputStream);
-                                }
-                            } else {
-                                Log.d("ResolveInfo", "No resolve info found.");
-                            }
-                        } else {
-                            Log.d("ResolveInfo", "Intent is null. Package may not be installed.");
+                        if (dra != null) {
+                            inputStream = Utils.loadBitmapAsStream(dra);
+                        }
+                        if (inputStream != null) {
+                            return new WebResourceResponse("image/webp", "UTF-8", inputStream);
                         }
                     }
                     break;
                 case "icons-bg":
                     if (iconFileName.length() > 5) {
                         String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);
-                        String[] parts = iconPackageNameWithIntent.split("\\|");
-                        String iconPackageName = parts[0];
-                        Intent intent;
+                        String iconPackageName = iconPackageNameWithIntent.split("\\|")[0];
+                        InputStream inputStream = null;
+                        Bitmap dra = discoWebView.getAppIconBackground(discoWebView.packageManager,
+                                iconPackageNameWithIntent);
+                        IconPack selectedIconPack = getSelectedIconPack(iconPackageName);
 
-                        if (parts.length > 1) {
-                            // If there's an intent ID specified, use it
-                            String intentId = parts[1];
-                            intent = discoWebView.packageManager.getLaunchIntentForPackage(iconPackageName);
-                            if (intent != null) {
-                                intent.setAction(intentId);
+                        if (selectedIconPack != null
+                                && selectedIconPack.hasIconForPackage(iconPackageName)) {
+                            Bitmap packIcon = selectedIconPack.getIconForPackage(iconPackageName, dra);
+                            if (packIcon != null) {
+                                dra = packIcon;
                             }
-                        } else {
-                            // If no intent ID, just get the default launch intent
-                            intent = discoWebView.packageManager.getLaunchIntentForPackage(iconPackageName);
                         }
-                        if (intent != null) {
-                            ResolveInfo resolveInfo = discoWebView.packageManager.resolveActivity(intent,
-                                    PackageManager.MATCH_DEFAULT_ONLY);
-                            if (resolveInfo != null) {
-                                InputStream inputStream = null;
-                                Bitmap dra = discoWebView.getAppIconBackground(discoWebView.packageManager,
-                                        iconPackageNameWithIntent);
-                                
-                                if (dra != null)
-                                    inputStream = Utils.loadBitmapAsStream(dra);
-                                if (inputStream != null) {
-                                    return new WebResourceResponse("image/webp", "UTF-8", inputStream);
-                                }
-                            } else {
-                                Log.d("ResolveInfo", "No resolve info found.");
-                            }
-                        } else {
-                            Log.d("ResolveInfo", "Intent is null. Package may not be installed.");
+
+                        if (dra != null) {
+                            inputStream = Utils.loadBitmapAsStream(dra);
+                        }
+                        if (inputStream != null) {
+                            return new WebResourceResponse("image/webp", "UTF-8", inputStream);
                         }
                     }
                     break;
