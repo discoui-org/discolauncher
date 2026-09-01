@@ -75,16 +75,14 @@ function wHomeTile(
 
   requestAnimationFrame(() => {
     const appPreference = DiscoBoard.backendMethods.getAppPreferences(packageName)
-    var colorContrastDetectorOutput
     colorContrastDetector.getAverageColor(iconbg).then((color) => {
       if (appPreference.textColor == "auto") {
         homeTile.querySelector("p.disco-home-tile-title").style.color = colorContrastDetector.getTextColor(color);
 
       }
-      const isPlainWhite = color.r >= 250 && color.g >= 250 && color.b >= 250 && color.a >= 250
-      if (isPlainWhite) {
-        homeTile.querySelector("div.disco-home-inner-tile").style.boxShadow = `0px 0px 0px 1px rgba(170,170,170, 0.3)`
-      }
+      const innerTile = homeTile.querySelector("div.disco-home-inner-tile")
+      if (color.hasLightEdges) innerTile.classList.add("has-light-edges")
+      if (color.hasDarkEdges) innerTile.classList.add("has-dark-edges")
     });
     if (appPreference.textColor != "auto") {
       homeTile.querySelector("p.disco-home-tile-title").style.color = appPreference.textColor == "dark" ? "#000000" : "#FFFFFF";

@@ -260,9 +260,6 @@ document.querySelector("#page-readme button.right-btn").addEventListener("flowCl
     if (DiscoBoard.backendMethods.setupNeeded()) {
         localStorage.setItem("lastVersion", Disco.getAppVersion())
     }
-    if (!localStorage["homeConfiguration"]) {
-
-    }
     goToPage(7);
     setTimeout(() => {
         if (DiscoBoard.backendMethods.setupNeeded()) {
@@ -273,48 +270,50 @@ document.querySelector("#page-readme button.right-btn").addEventListener("flowCl
             }, { title: "Cancel", style: "default", action: () => { } }])
         } else {
             goToPage(7)
-            try {
-                const defaultApps = JSON.parse(Disco.getDefaultApps())
-                const searchApps = {
-                    "phoneApp": [0, 0, 2, 2],
-                    "messageApp": [2, 0, 1, 1],
-                    "browserApp": [3, 0, 1, 1],
-                    "mailApp": [2, 1, 1, 1],
-                    "storeApp": [3, 1, 1, 1],
-                    "contactsApp": [0, 2, 2, 2],
-                    "musicApp": [2, 2, 2, 2],
-                    "galleryApp": [0, 4, 4, 2]
-                }
-                var homeConfiguration = []
-                Object.keys(searchApps).forEach(element => {
-                    try {
-                        const appdetail = DiscoBoard.backendMethods.getAppDetails(defaultApps[element])
-                        const app = searchApps[element]
-                        if (appdetail.label == "Unknown") throw new Error("App not found for ", element);
-
-                        homeConfiguration.push({
-                            "p": appdetail.packageName,
-                            "t": appdetail.label,
-                            "ii": false,
-                            "i": appdetail.icon.foreground,
-                            "ib": appdetail.icon.background,
-                            "s": [
-                                "s",
-                                "m",
-                                "w"
-                            ],
-                            "w": app[2],
-                            "h": app[3],
-                            "x": app[0],
-                            "y": app[1]
-                        })
-
-                    } catch (error) {
-
+            if (!localStorage["homeConfiguration"]) {
+                try {
+                    const defaultApps = JSON.parse(Disco.getDefaultApps())
+                    const searchApps = {
+                        "phoneApp": [0, 0, 2, 2],
+                        "messageApp": [2, 0, 1, 1],
+                        "browserApp": [3, 0, 1, 1],
+                        "mailApp": [2, 1, 1, 1],
+                        "storeApp": [3, 1, 1, 1],
+                        "contactsApp": [0, 2, 2, 2],
+                        "musicApp": [2, 2, 2, 2],
+                        "galleryApp": [0, 4, 4, 2]
                     }
-                });
-                localStorage["homeConfiguration"] = JSON.stringify(homeConfiguration)
-            } catch (error) {
+                    var homeConfiguration = []
+                    Object.keys(searchApps).forEach(element => {
+                        try {
+                            const appdetail = DiscoBoard.backendMethods.getAppDetails(defaultApps[element])
+                            const app = searchApps[element]
+                            if (appdetail.label == "Unknown") throw new Error("App not found for ", element);
+
+                            homeConfiguration.push({
+                                "p": appdetail.packageName,
+                                "t": appdetail.label,
+                                "ii": false,
+                                "i": appdetail.icon.foreground,
+                                "ib": appdetail.icon.background,
+                                "s": [
+                                    "s",
+                                    "m",
+                                    "w"
+                                ],
+                                "w": app[2],
+                                "h": app[3],
+                                "x": app[0],
+                                "y": app[1]
+                            })
+
+                        } catch (error) {
+
+                        }
+                    });
+                    localStorage["homeConfiguration"] = JSON.stringify(homeConfiguration)
+                } catch (error) {
+                }
             }
             setTimeout(() => {
                 location.href = new URL("./index.html?firstload", location).href
