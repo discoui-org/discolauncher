@@ -471,9 +471,7 @@ class tileController {
     }
 
     onNativeWidgetPointerDown(event) {
-        // Snapshot images intentionally have pointer-events:none so tile
-        // transitions do not treat them as interactive DOM. Listen on their
-        // persistent container instead and use the image only for geometry.
+        // Listen on the persistent container and use the image only for geometry.
         if (!event.currentTarget.querySelector('.native-widget-snapshot')) return;
         this.nativeWidgetPointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
     }
@@ -484,7 +482,7 @@ class tileController {
         this.nativeWidgetPointerStart = null;
         // A long press switches the home grid into edit mode before the finger
         // is released. That release must not also activate the Android widget.
-        if (window.isHomeTileEditEnabled?.()) return;
+        if (window.homeTileEditSwitch?.isActive()) return;
         if (!image || !start || start.id !== event.pointerId
                 || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 12) return;
 
@@ -630,6 +628,7 @@ class tileController {
                         'tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix',
                         'native-widget-tile'
                     );
+                    delete inactiveTile.dataset.tapTarget;
                     const inactiveContainer = inactiveTile.querySelector('div.live-tile-container');
                     if (inactiveContainer) inactiveContainer.innerHTML = '';
                     const inactiveIcon = inactiveTile.querySelector('img.disco-home-tile-imageicon');
@@ -666,6 +665,7 @@ class tileController {
             tile.classList.remove('tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix');
             tile.classList.add(`tile-type-${result.type}`);
             tile.classList.toggle('native-widget-tile', result.isNativeWidget === true);
+            tile.dataset.tapTarget = result.isNativeWidget === true ? 'native-widget' : 'application';
             this.configureNativeWidgetTap(liveTileContainer, result.isNativeWidget === true);
             liveTileContainer.setAttribute("current-page", 0);
             liveTileContainer.style.setProperty('--current-page', 0);

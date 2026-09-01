@@ -82,6 +82,7 @@ function hashStringToNumber(str, max) {
   }
 }
 const homeTileEditSwitch = {
+  isActive: () => homeTileEditEnabled,
   on: (immediate = false, callback = () => { }) => {
     clearTimeout(window.homeTileEditTimeout)
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
@@ -188,7 +189,10 @@ const shakeDistanceModifier = {
 };
 
 window.homeTileEditSwitch = homeTileEditSwitch;
-window.isHomeTileEditEnabled = () => homeTileEditEnabled;
+
+function resolveHomeTileTarget(target) {
+  return target.closest?.("div.disco-home-tile") || target;
+}
 
 $("#app-page-icon").on("flowClick", function () {
   window.scrollers.main_home_scroller.scrollTo(-window.innerWidth, 0, 750);
@@ -204,15 +208,12 @@ const resizeObserver = new ResizeObserver((entries) => {
 resizeObserver.observe(document.querySelector("div.tile-list-inner-container"));
 
 $(window).on("flowClick", function (e) {
-  const nativeWidgetTile = e.target.closest?.("div.disco-home-tile.native-widget-tile");
-  const clickedTile = nativeWidgetTile || e.target;
+  const clickedTile = resolveHomeTileTarget(e.target);
   if (
     clickedTile.classList.contains("disco-home-tile") &&
     !clickedTile.classList.contains("disco-letter-tile")
   ) {
-    // Android widget tiles own tap handling through the native widget host.
-    // Never turn the same tap into a launch of the provider application.
-    if (clickedTile.classList.contains("native-widget-tile")) return;
+    if (clickedTile.dataset.tapTarget === "native-widget") return;
     if ($("div.tile-list-page").hasClass("home-menu-back")) {
       $("div.disco-home-tile").removeClass("home-menu-selected");
       clickedTile.classList.add("home-menu-selected");
@@ -242,8 +243,7 @@ $(window).on("pointerdown", function (e) {
     clearTimeout(window.homeTileEditTimeout)
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
   }
-  const nativeWidgetTile = e.target.closest?.("div.disco-home-tile.native-widget-tile");
-  const targetTile = nativeWidgetTile || e.target;
+  const targetTile = resolveHomeTileTarget(e.target);
   if (targetTile.classList.contains("disco-home-tile") && !homeTileEditEnabled) {
     targetTile.canClick = true;
     targetTile.homeTileMenuState = false;

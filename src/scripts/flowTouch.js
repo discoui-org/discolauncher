@@ -101,7 +101,10 @@ window.addEventListener("pointerup", (e) => {
     if (!!pointerDownElements[e.pointerId]) {
         const el = getElementFromPointerId(e.pointerId)
         const hypotenuse = Math.sqrt(Math.pow(el.lastPointerPosition[0] - e.pageX, 2) + Math.pow(el.lastPointerPosition[1] - e.pageY, 2))
-        if (hypotenuse <= clickDetectorConfig.tapDistanceThreshold) {
+        // Controls may consume pointerup (for example, a native widget
+        // snapshot). Keep Flow Touch cleanup, but do not synthesize the
+        // launcher-level flowClick for an already handled interaction.
+        if (!e.defaultPrevented && hypotenuse <= clickDetectorConfig.tapDistanceThreshold) {
             const event = new CustomEvent("flowClick", {
                 bubbles: true,
                 cancelable: true,

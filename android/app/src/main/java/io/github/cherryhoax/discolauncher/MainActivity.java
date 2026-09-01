@@ -168,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
             });
             // Keep the splash screen visible until the app is ready
             splashScreen.setKeepOnScreenCondition(() -> !isAppReady);
+        } else {
+            // GeckoView does not use the compat splash screen callback below, so
+            // switch away from Theme.SplashScreen before AppCompat is created.
+            setTheme(R.style.Theme_DiscoLauncher);
         }
 
         super.onCreate(savedInstanceState);

@@ -89,6 +89,10 @@ public class WebInterface {
         this.nativeWidgetManager = new NativeWidgetManager(mainActivity);
     }
 
+    void destroy() {
+        nativeWidgetManager.destroy();
+    }
+
     public float getDevicePixelRatio() {
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
         return displayMetrics.density;
