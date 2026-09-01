@@ -5,7 +5,7 @@ const $ = jquery
 
 // Configuration for touch/click detection thresholds
 const clickDetectorConfig = {
-    tapDistanceThreshold: 5,
+    tapDistanceThreshold: 8,
     touchUpDistanceThreshold: 200
 }
 
@@ -99,7 +99,11 @@ window.addEventListener("pointerup", (e) => {
         const el = getElementFromPointerId(e.pointerId)
         const hypotenuse = Math.sqrt(Math.pow(el.lastPointerPosition[0] - e.pageX, 2) + Math.pow(el.lastPointerPosition[1] - e.pageY, 2))
         if (hypotenuse <= clickDetectorConfig.tapDistanceThreshold) {
-            const event = new CustomEvent("flowClick", { pageX: e.pageX, pageY: e.pageY, target: el });
+            const event = new CustomEvent("flowClick", {
+                bubbles: true,
+                cancelable: true,
+                detail: { pageX: e.pageX, pageY: e.pageY }
+            });
             if (window["Disco"]) if (el.hasAttribute("haptic") || window.getComputedStyle(el).getPropertyValue("--flow-haptic") == "true") Disco.triggerHapticFeedback("KEYBOARD_RELEASE")
             el.dispatchEvent(event);
             (window.allMetroDropDowns || []).forEach(e => {

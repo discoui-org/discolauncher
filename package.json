@@ -31,7 +31,6 @@
   "dependencies": {
     "@jaames/iro": "^5.5.2",
     "@vitalets/google-translate-api": "^9.2.0",
-    "better-scroll": "^2.5.1",
     "bezier-easing": "^2.1.0",
     "bootstrap": "^5.3.3",
     "clusterize.js": "^1.0.0",

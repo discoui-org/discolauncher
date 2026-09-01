@@ -15,6 +15,19 @@ const DiscoElements = {
   wAppBar,
   wAppBarItem
 };
+
+function sizedAppIconURL(url, size) {
+  const value = String(url || "");
+  // Only Android's intercepted icon endpoints understand this parameter.
+  // Icon-pack SVGs, data URLs and mock assets keep their original URL.
+  if (!value.startsWith("https://appassets.androidplatform.net/assets/icons")) return value;
+  const iconURL = new URL(value);
+  // `size` is the CSS size. WebView renders it in device pixels, so requesting
+  // only 52 source pixels on a 3x screen caused visible upscaling/aliasing.
+  const rasterSize = Math.min(512, Math.ceil(size * (window.devicePixelRatio || 1)));
+  iconURL.searchParams.set("size", String(rasterSize));
+  return iconURL.toString();
+}
 function wHomeTile(
   // imageIcon = false,
   icon = "",
@@ -40,7 +53,7 @@ function wHomeTile(
     <div class="disco-element disco-home-inner-tile">
     ${//imageIcon ?
     `
-            <img loading="lazy" class="disco-element disco-home-tile-imageicon" src="">
+            <img loading="lazy" decoding="async" width="114" height="114" class="disco-element disco-home-tile-imageicon" src="">
         `
     /*: `
           <p class="disco-element disco-home-tile-icon"></p>
@@ -52,10 +65,10 @@ function wHomeTile(
   //if (!imageIcon)
   //homeTile.querySelector("p.disco-home-tile-icon").innerText = icon;
   //else 
-  homeTile.querySelector("img.disco-home-tile-imageicon").src = icon;
+  homeTile.querySelector("img.disco-home-tile-imageicon").src = sizedAppIconURL(icon, 114);
   homeTile.querySelector("p.disco-home-tile-title").innerText = title;
   if (iconbg) {
-    homeTile.querySelector(".disco-home-inner-tile").style.backgroundImage = `url('${iconbg}')`;
+    homeTile.querySelector(".disco-home-inner-tile").style.backgroundImage = `url('${sizedAppIconURL(iconbg, 114)}')`;
     if (iconbg.includes("data:image/svg+xml")) homeTile.querySelector(".disco-home-inner-tile").classList.add("svg-background");
 
   }
@@ -103,7 +116,7 @@ function wAppTile(
   appTile.innerHTML = `
     ${!letterTile ?
       `
-            <div class="disco-element disco-app-tile-icon"><img loading="lazy" class="disco-element disco-app-tile-imageicon" src=""></div>
+            <div class="disco-element disco-app-tile-icon"><img loading="lazy" decoding="async" width="52" height="52" class="disco-element disco-app-tile-imageicon" src=""></div>
         `
       : `
           <p class="disco-element disco-app-tile-icon"></p>
@@ -119,8 +132,8 @@ function wAppTile(
   appTile.setAttribute("title", title);
   appTile.setAttribute("packageName", packageName);
   appTile.querySelector("p.disco-app-tile-title").innerText = title;
-  if (!letterTile) appTile.querySelector("img.disco-app-tile-imageicon").src = icon; else appTile.querySelector("p.disco-app-tile-icon").innerText = icon;
-  if (iconbg && iconbg != "none") appTile.querySelector(".disco-app-tile-imageicon").style.background = "url('" + iconbg + "')";
+  if (!letterTile) appTile.querySelector("img.disco-app-tile-imageicon").src = sizedAppIconURL(icon, 52); else appTile.querySelector("p.disco-app-tile-icon").innerText = icon;
+  if (iconbg && iconbg != "none") appTile.querySelector(".disco-app-tile-imageicon").style.background = "url('" + sizedAppIconURL(iconbg, 52) + "')";
   else appTile.querySelector("p.disco-app-tile-icon").innerText = icon;
 
   return appTile;

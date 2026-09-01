@@ -43,6 +43,24 @@ public class Utils {
     }
 
     public static InputStream loadBitmapAsStream(Bitmap bitmap) {
+        return loadBitmapAsStream(bitmap, 0);
+    }
+
+    /**
+     * Encodes an icon at the requested maximum edge length. Keeping the resize
+     * here means WebView never has to decode a full launcher-icon bitmap for a
+     * much smaller CSS image.
+     */
+    public static InputStream loadBitmapAsStream(Bitmap bitmap, int maxSize) {
+        if (maxSize > 0 && (bitmap.getWidth() > maxSize || bitmap.getHeight() > maxSize)) {
+            float ratio = Math.min((float) maxSize / bitmap.getWidth(), (float) maxSize / bitmap.getHeight());
+            bitmap = Bitmap.createScaledBitmap(
+                    bitmap,
+                    Math.max(1, Math.round(bitmap.getWidth() * ratio)),
+                    Math.max(1, Math.round(bitmap.getHeight() * ratio)),
+                    true
+            );
+        }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         // Compress the bitmap (you can change the format and quality)
         bitmap.compress(Bitmap.CompressFormat.WEBP, 100, byteArrayOutputStream);

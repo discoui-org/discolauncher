@@ -58,6 +58,15 @@ public class ContentServer extends WebViewClientCompat {
         this.assetLoader = assetLoader;
     }
 
+    private int getRequestedIconSize(Uri requestUri) {
+        try {
+            int size = Integer.parseInt(requestUri.getQueryParameter("size"));
+            return Math.max(16, Math.min(size, 512));
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
     private boolean isAppAssetUrl(Uri uri) {
         return APP_ASSET_SCHEME.equals(uri.getScheme())
                 && APP_ASSET_HOST.equals(uri.getHost());
@@ -115,6 +124,7 @@ public class ContentServer extends WebViewClientCompat {
         }
 
         String path = requestUri.getPath(); // Get the path part of the URL
+        int requestedIconSize = getRequestedIconSize(requestUri);
         // Split the path into segments
         String[] segments = path.split("/");
         if (segments.length == 4) {
@@ -139,7 +149,7 @@ public class ContentServer extends WebViewClientCompat {
                         }
 
                         if (dra != null) {
-                            inputStream = Utils.loadBitmapAsStream(dra);
+                            inputStream = Utils.loadBitmapAsStream(dra, requestedIconSize);
                         }
                         if (inputStream != null) {
                             return new WebResourceResponse("image/webp", "UTF-8", inputStream);
@@ -164,7 +174,7 @@ public class ContentServer extends WebViewClientCompat {
                         }
 
                         if (dra != null) {
-                            inputStream = Utils.loadBitmapAsStream(dra);
+                            inputStream = Utils.loadBitmapAsStream(dra, requestedIconSize);
                         }
                         if (inputStream != null) {
                             return new WebResourceResponse("image/webp", "UTF-8", inputStream);

@@ -202,7 +202,7 @@ const resizeObserver = new ResizeObserver((entries) => {
 });
 resizeObserver.observe(document.querySelector("div.tile-list-inner-container"));
 
-$(window).on("click", function (e) {
+$(window).on("flowClick", function (e) {
   if (
     e.target.classList.contains("disco-home-tile") &&
     !e.target.classList.contains("disco-letter-tile")
@@ -278,7 +278,8 @@ $(window).on("pointerdown", function (e) {
 });
 $(
   "#main-home-slider > div > div.slide-page, #main-home-slider > div > div.slide-page > div.inner-page, #main-home-slider > div > div.slide-page > div.inner-page > div.tile-list-container, div.tile-list-inner-container"
-).on("flowClick", () => {
+).on("flowClick", (e) => {
+  if (e.target.closest("div.disco-home-tile")) return;
   if (homeTileEditEnabled) homeTileEditSwitch.off();
 });
 $(window).on("pointerup", function (e) {

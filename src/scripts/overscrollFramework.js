@@ -1,254 +1,406 @@
-var nativeScroll = () => (localStorage.nativeScroll == "true" || true) && false
-nativeScroll = () => false
-import BScroll from "better-scroll";
-import { merge } from "lodash";
-import jQuery from "jquery";
-function applyOverscroll(bs) {
-  (bs.options.outOfBoundaryDampingFactor = 1), bs.refresh();
-  const content = bs.content,
-    wrapper = bs.wrapper;
-  function overscrollBounce(transformStyle, x, y) {
-    const max = [bs.maxScrollX, bs.maxScrollY],
-      maxBounce = 125,
-      scale = 58 / 62;
-    var newScale = [1, 1];
-    x > 125
-      ? transformStyle.push(`translateX(${125 - x}px)`)
-      : x < max[0] - 125 &&
-      transformStyle.push(`translateX(${max - x + 125}px)`),
-      y > 125
-        ? transformStyle.push(`translateY(${125 - y}px)`)
-        : y < max[1] - 125 &&
-        transformStyle.push(`translateY(${max - y + 125}px)`),
-      (x = Math.min(125, Math.max(max[0] - 125, x))),
-      (y = Math.min(125, Math.max(max[1] - 125, y))),
-      x > 0
-        ? (newScale[0] = 1 - (x * (1 - 58 / 62)) / 125)
-        : x < max[0] &&
-        (newScale[0] = 1 - ((max[0] - x) * (1 - 58 / 62)) / 125),
-      y > 0
-        ? (newScale[1] = 1 - (y * (1 - 58 / 62)) / 125)
-        : y < max[1] &&
-        (newScale[1] = 1 - ((max[1] - y) * (1 - 58 / 62)) / 125),
-      x > 0
-        ? content.style.setProperty("-webkit-transform-origin-x", "0%")
-        : x < max[0] &&
-        content.style.setProperty("-webkit-transform-origin-x", "100%"),
-      y > 0
-        ? content.style.setProperty("-webkit-transform-origin-y", "0%")
-        : y < max[1] &&
-        content.style.setProperty("-webkit-transform-origin-y", "100%"),
-      1 != newScale[0] && transformStyle.push(`scaleX(${newScale[0]})`),
-      1 != newScale[1] && transformStyle.push(`scaleY(${newScale[1]})`);
+/* Small, dependency-free replacement for BetterScroll. */
+class HookEmitter {
+  #listeners = new Map();
+  on(event, callback) {
+    this.#listeners.set(event, [...(this.#listeners.get(event) || []), callback]);
   }
-  bs.on("scrollEnd", () => {
-    content.style.removeProperty("-webkit-transform-origin-y"),
-      content.style.removeProperty("-webkit-transform-origin-x");
-  }),
-    bs.scroller.translater.hooks.on(
-      "beforeTranslate",
-      (transformStyle, point) => {
-        overscrollBounce(transformStyle, point.x, point.y);
+  emit(event, ...args) {
+    (this.#listeners.get(event) || []).forEach((callback) => callback(...args));
+  }
+}
+
+const resolveElement = (selector) => typeof selector === "string" ? document.querySelector(selector) : selector;
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const now = () => performance.now();
+const DRAG_START_DISTANCE = 8;
+
+class DiscoScroller {
+  constructor(selector, options = {}, { slide = false } = {}) {
+    this.wrapper = resolveElement(selector);
+    if (!this.wrapper) throw new Error(`Scroller target not found: ${selector}`);
+    this.content = this.wrapper.firstElementChild;
+    if (!this.content) throw new Error("A scroller wrapper needs one content element.");
+
+    this.options = { scrollX: false, scrollY: true, bounce: true, bounceTime: 300, momentum: true, ...options };
+    this.isSlide = slide;
+    this.enabled = true;
+    this.x = this.y = this.minScrollX = this.minScrollY = this.maxScrollX = this.maxScrollY = 0;
+    this.events = new HookEmitter();
+    this.translaterHooks = new HookEmitter();
+    this.animaterHooks = new HookEmitter();
+    this.scrollerHooks = new HookEmitter();
+    this.scroller = {
+      translater: { hooks: this.translaterHooks },
+      animater: { hooks: this.animaterHooks },
+      hooks: this.scrollerHooks,
+    };
+    this.animationFrame = null;
+    this.positionFrame = null;
+    this.pendingPosition = null;
+    this.pointer = null;
+    this.loopClones = false;
+    this.pageCount = 0;
+
+    this.wrapper.style.overflow = "hidden";
+    // Native scrolling would compete with our transform-based overscroll.
+    this.wrapper.style.touchAction = "none";
+    this.content.style.willChange = "transform";
+    this.content.classList.add("flow-scrollable");
+    this.content.DiscoScroll = this;
+    this.wrapper.DiscoScroll = this;
+    if (this.options.scrollbar) this.createScrollbar();
+    if (this.isSlide) this.setupSlide();
+    this.bindEvents();
+    this.refresh();
+    const startX = Number.isFinite(this.options.startX) ? this.options.startX : this.isSlide && this.loopClones ? -this.wrapper.clientWidth : 0;
+    this.setPosition(startX, Number.isFinite(this.options.startY) ? this.options.startY : 0, false);
+    requestAnimationFrame(() => this.refresh());
+  }
+
+  setupSlide() {
+    this.options.scrollX = true;
+    this.options.scrollY = false;
+    this.options.bounce = false;
+    this.options.momentum = false;
+    this.pageCount = this.content.children.length;
+    if (this.options.slide?.loop && this.pageCount > 1) {
+      const first = this.content.firstElementChild.cloneNode(true);
+      const last = this.content.lastElementChild.cloneNode(true);
+      first.dataset.discoScrollClone = last.dataset.discoScrollClone = "true";
+      this.content.insertBefore(last, this.content.firstElementChild);
+      this.content.append(first);
+      this.loopClones = true;
+    }
+  }
+
+  bindEvents() {
+    this.wrapper.addEventListener("pointerdown", (event) => this.onPointerDown(event));
+    window.addEventListener("pointermove", (event) => this.onPointerMove(event));
+    window.addEventListener("pointerup", (event) => this.onPointerUp(event));
+    window.addEventListener("pointercancel", (event) => this.onPointerUp(event));
+    this.wrapper.addEventListener("wheel", (event) => this.onWheel(event), { passive: false });
+    window.addEventListener("resize", () => this.refresh());
+  }
+
+  on(event, callback) { this.events.on(event, callback); return this; }
+  emit(event, ...args) { this.events.emit(event, ...args); }
+
+  refresh() {
+    const width = this.wrapper.clientWidth;
+    const height = this.wrapper.clientHeight;
+    if (this.isSlide) {
+      [...this.content.children].forEach((page) => {
+        page.style.flex = `0 0 ${width}px`;
+        page.style.width = `${width}px`;
+      });
+      this.content.style.display = "flex";
+      this.content.style.width = `${this.content.children.length * width}px`;
+    }
+    // A slider's travel is defined by its pages, never by scrollWidth. Child
+    // UI (the app-list search/input padding in particular) can overflow its
+    // page and used to incorrectly add a horizontal "buffer" after page two.
+    this.maxScrollX = this.isSlide
+      ? -Math.max(0, this.content.children.length - 1) * width
+      : this.options.scrollX ? Math.min(0, width - Math.max(this.content.scrollWidth, this.content.offsetWidth)) : 0;
+    this.maxScrollY = this.options.scrollY ? Math.min(0, height - Math.max(this.content.scrollHeight, this.content.offsetHeight)) : 0;
+    if (this.isSlide) {
+      const page = this.getCurrentPage().pageX;
+      this.setPosition(-(page + (this.loopClones ? 1 : 0)) * width, 0, false);
+    } else {
+      this.setPosition(clamp(this.x, this.maxScrollX, 0), clamp(this.y, this.maxScrollY, 0), false);
+    }
+    this.updateScrollbar();
+    return this;
+  }
+
+  createScrollbar() {
+    if (getComputedStyle(this.wrapper).position === "static") this.wrapper.style.position = "relative";
+    this.scrollbar = document.createElement("div");
+    this.scrollbar.className = "bscroll-indicator";
+    Object.assign(this.scrollbar.style, {
+      position: "absolute", right: "3px", top: "2px", width: "3px", minHeight: "18px",
+      borderRadius: "999px", opacity: "0", pointerEvents: "none", transition: "opacity 160ms",
+    });
+    this.wrapper.append(this.scrollbar);
+  }
+
+  updateScrollbar() {
+    if (!this.scrollbar) return;
+    const scrollable = -this.maxScrollY;
+    if (!scrollable) {
+      this.scrollbar.style.opacity = "0";
+      return;
+    }
+    const height = this.wrapper.clientHeight;
+    const thumbHeight = Math.max(18, height * height / (height + scrollable));
+    const progress = clamp(-this.y / scrollable, 0, 1);
+    this.scrollbar.style.height = `${thumbHeight}px`;
+    this.scrollbar.style.transform = `translateY(${progress * (height - thumbHeight)}px)`;
+    this.scrollbar.style.opacity = "1";
+    clearTimeout(this.scrollbarHideTimeout);
+    this.scrollbarHideTimeout = setTimeout(() => { this.scrollbar.style.opacity = "0"; }, 500);
+  }
+
+  enable() { this.enabled = true; this.wrapper.classList.remove("flow-scroll-disabled"); }
+  disable() { this.enabled = false; this.wrapper.classList.add("flow-scroll-disabled"); this.cancelAnimation(); }
+  cancelScroll() { this.disable(); window.addEventListener("pointerup", () => this.enable(), { once: true }); }
+  destroy() { this.cancelAnimation(); delete this.content.DiscoScroll; delete this.wrapper.DiscoScroll; }
+
+  getCurrentPage() {
+    const width = this.wrapper.clientWidth || 1;
+    let pageX = Math.round(-this.x / width);
+    if (this.loopClones) pageX -= 1;
+    return { pageX: clamp(pageX, 0, Math.max(0, this.pageCount - 1)), pageY: 0 };
+  }
+
+  goToPage(pageX, pageY = 0, time = this.options.slide?.speed ?? 400) {
+    const page = clamp(pageX, 0, Math.max(0, this.pageCount - 1));
+    return this.scrollTo(-(page + (this.loopClones ? 1 : 0)) * this.wrapper.clientWidth, 0, time);
+  }
+
+  snapToNearestPage(time = this.options.slide?.speed ?? 400) {
+    return this.goToPage(this.getCurrentPage().pageX, 0, time);
+  }
+
+  scrollTo(x = this.x, y = this.y, time = 0) {
+    this.cancelAnimation();
+    const targetX = this.options.scrollX ? clamp(x, this.maxScrollX, 0) : 0;
+    const targetY = this.options.scrollY ? clamp(y, this.maxScrollY, 0) : 0;
+    return this.animateTo(targetX, targetY, time);
+  }
+
+  animateTo(targetX, targetY, time = 0, onComplete = null) {
+    this.cancelAnimation();
+    if (!time) {
+      this.setPosition(targetX, targetY);
+      if (onComplete) onComplete();
+      else {
+        this.finishSlideLoop();
+        this.emit("scrollEnd", this.point());
       }
-    );
-}
-function cancelScroll(scroller) {
-  jQuery(window).one("pointerup", () => {
-    requestAnimationFrame(() => {
-      scroller.enable()
-    })
-  })
-  scroller.disable()
-}
-function DiscoScroll(selector, options = {}) {
-  var scroller
-  if (nativeScroll()) {
-    const el = document.querySelector(selector)
-    nativeScrollStyles(el)
-    scroller = {
-      on: (event, callback) => {
-        //jQuery(selector).on(event, callback)
-      },
-      scroller: {
-        translater: {
-          hooks: {
-            on: (event, callback) => {
-              //jQuery(selector).on(event, callback)
-            }
-          }
-        },
-        animater: {
-          hooks: {
-            on: (event, callback) => {
-              //jQuery(selector).on(event, callback)
-            }
-          }
-        },
-        hooks: {
-          on: (event, callback) => {
-            //jQuery(selector).on(event, callback)
-          }
-        }
-      },
-      enable: () => {
-        //jQuery(selector).enable()
-      },
-      scrollTo: (x, y, time, easing) => {
-
-      },
-      getCurrentPage: () => {
-        return { pageX: 0, pageY: 0 }
-      },
-      refresh: () => { },
-      cancelScroll: () => { }
+      return this;
     }
-  } else {
-    scroller = new BScroll(selector, Object.assign({
-      disableMouse: false,
-      disableTouch: false,
-      HWCompositing: false,
-      bounceTime: 300,
-      swipeBounceTime: 200,
-      outOfBoundaryDampingFactor: 1,
-      useTransition: false
-    }, options))
-    applyOverscroll(scroller)
-    setTimeout(() => {
-      scroller.refresh()
-    }, 500);
-    scroller.cancelScroll = () => { cancelScroll(scroller) }
-    scroller.content.style.setProperty("will-change", "transform")
-    scroller.content.classList.add("flow-scrollable")
-    scroller.content.DiscoScroll = scroller
-    scroller.wrapper.DiscoScroll = scroller
-  }
-
-  return scroller
-}
-function nativeScrollStyles(el, destroy = false) {
-  el.classList.add("flow-native-scroll", "flow-scroll")
-  /*const wrapper = el
-  const content = el.children[0]
-  wrapper.style.overflow = "scroll hidden"
-  content.style.width = "max-content"
-  function updateStyles() {
-    Array.from(content.children).forEach((child, index) => {
-      child.style.width = `${wrapper.offsetWidth}px`
-    })
-  }*/
-  //updateStyles()
-  //window.addEventListener("resize", updateStyles)
-}
-function nativeSlideStyles(el, destroy = false) {
-  el.classList.add("flow-native-scroll", "flow-slide")
-  const wrapper = el
-  const content = el.children[0]
-  function updateStyles() {
-    Array.from(content.children).forEach((child, index) => {
-      child.style.width = `${wrapper.offsetWidth}px`
-    })
-  }
-  updateStyles()
-  window.addEventListener("resize", updateStyles)
-}
-function DiscoSlide(selector, options = {}) {
-  var scroller
-  if (nativeScroll()) {
-    const el = document.querySelector(selector)
-    nativeSlideStyles(el)
-    scroller = {
-      wrapper: el,
-      content: el.children[0],
-      on: (event, callback) => {
-        console.log("on", event, callback)
-        if (event == "scrollStart") { el.addEventListener("scroll", callback) }
-        if (event == "slideWillChange") {
-          el.addEventListener("scrollend", (event) => {
-            console.log()
-            callback({ x: -el.scrollLeft, y: 0, pageX: Math.round(el.scrollLeft / el.offsetWidth), pageY: 0 })
-          });
-
+    const from = this.point();
+    const startedAt = now();
+    this.animaterHooks.emit("time", time);
+    const tick = () => {
+      const progress = clamp((now() - startedAt) / time, 0, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      this.setPosition(from.x + (targetX - from.x) * eased, from.y + (targetY - from.y) * eased);
+      if (progress < 1) this.animationFrame = requestAnimationFrame(tick);
+      else {
+        this.animationFrame = null;
+        if (onComplete) onComplete();
+        else {
+          this.finishSlideLoop();
+          this.emit("scrollEnd", this.point());
         }
-      },
-      scroller: {
-        translater: {
-          hooks: {
-            on: (event, callback) => {
-              //console.log("scroller.translater.hooks.on", event, callback)
-              if (event == "translate") { el.addEventListener("scroll", callback) }
-            }
-          }
-        },
-        hooks: {
-          on: (event, callback) => {
-            console.log("scroller.hooks.on", event, callback)
-            if (event == "scrollStart") { el.addEventListener("scroll", callback) }
-          }
-        }
-      },
-      enable: () => {
-        //jQuery(selector).enable()
-        el.classList.remove("flow-scroll-disabled")
-      },
-      disable: () => {
-        el.classList.add("flow-scroll-disabled")
-      },
-      scrollTo: (x, y, time, easing) => {
-        el.scrollTo({ left: x, top: y, behavior: "smooth" })
-      },
-      goToPage: (x, y, time, easing) => {
-        scroller.scrollTo(x * el.offsetWidth, 0, time, easing)
-      },
-      getCurrentPage: () => {
-        console.log("getCurrentPage")
-        return { pageX: Math.round(el.scrollLeft / el.offsetWidth), pageY: 0 }
-      },
-      refresh: () => { }
-    }
-  } else {
-    const finalOptions = merge({}, {
-      click: true,
-      tap: true,
-      bounce: false,
-      disableMouse: false,
-      disableTouch: false,
-      HWCompositing: false,
-      scrollX: true,
-      scrollY: false,
-      momentum: false,
-      slide: {
-        threshold: 100,
-        loop: false,
-        interval: false,
-        autoplay: false,
-        easing: "cubic-bezier(0.075, 0.82, 0.165, 1)",
-        speed: 750,
       }
-    }, options)
-    function create() {
-      scroller = new BScroll(selector, finalOptions)
-    }
-    create()
-    scroller.cancelScroll = () => { cancelScroll(scroller) }
+    };
+    this.animationFrame = requestAnimationFrame(tick);
+    return this;
   }
-  return scroller
+
+  onPointerDown(event) {
+    if (!this.enabled || event.button !== 0) return;
+    this.cancelAnimation();
+    this.pointer = {
+      id: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startScrollX: this.x,
+      startScrollY: this.y,
+      startedAt: now(),
+      lastMoveAt: now(),
+      lastMoveX: event.clientX,
+      lastMoveY: event.clientY,
+      velocityX: 0,
+      velocityY: 0,
+      moved: false,
+      axis: null,
+      scrollStarted: false,
+    };
+    this.emit("beforeScrollStart", this.point());
+  }
+
+  onPointerMove(event) {
+    if (!this.pointer || event.pointerId !== this.pointer.id || !this.enabled) return;
+    const dx = event.clientX - this.pointer.startX;
+    const dy = event.clientY - this.pointer.startY;
+    const movedAt = now();
+    const elapsed = Math.max(1, movedAt - this.pointer.lastMoveAt);
+    // A weighted recent velocity is much more representative of a flick than
+    // total gesture distance divided by its whole duration.
+    this.pointer.velocityX = this.pointer.velocityX * 0.25 + ((event.clientX - this.pointer.lastMoveX) / elapsed) * 0.75;
+    this.pointer.velocityY = this.pointer.velocityY * 0.25 + ((event.clientY - this.pointer.lastMoveY) / elapsed) * 0.75;
+    this.pointer.lastMoveAt = movedAt;
+    this.pointer.lastMoveX = event.clientX;
+    this.pointer.lastMoveY = event.clientY;
+    if (Math.hypot(dx, dy) > DRAG_START_DISTANCE) {
+      this.pointer.moved = true;
+      // Nested scrollers all receive the same pointer events. Locking to the
+      // initial dominant axis prevents a vertical list gesture from moving the
+      // horizontal home/app slider (and vice versa).
+      this.pointer.axis ||= Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+    }
+    if (!this.ownsPointerAxis()) return;
+    if (!this.pointer.scrollStarted) {
+      this.pointer.scrollStarted = true;
+      this.emit("scrollStart", this.point());
+      this.scrollerHooks.emit("scrollStart", this.point());
+    }
+    const x = this.options.scrollX ? this.dampen(this.pointer.startScrollX + dx, this.maxScrollX) : 0;
+    const y = this.options.scrollY ? this.dampen(this.pointer.startScrollY + dy, this.maxScrollY) : 0;
+    if (this.pointer.moved) event.preventDefault();
+    this.queuePosition(x, y);
+  }
+
+  onPointerUp(event) {
+    if (!this.pointer || event.pointerId !== this.pointer.id) return;
+    const pointer = this.pointer;
+    this.pointer = null;
+    this.flushPosition();
+    const velocity = this.options.scrollX ? pointer.velocityX : pointer.velocityY;
+    const ownsAxis = this.ownsPointerAxis(pointer);
+    const wasFlick = ownsAxis && pointer.moved && Math.abs(velocity) > 0.45;
+    if (wasFlick) this.emit("flick", this.point());
+    this.emit("touchEnd", this.point());
+    if (!ownsAxis) {
+      if (this.isSlide && pointer.moved) this.snapToNearestPage();
+      return;
+    }
+    if (this.isSlide) {
+      const page = this.getCurrentPage().pageX + (wasFlick ? velocity < 0 ? 1 : -1 : 0);
+      this.goToPage(page);
+      return;
+    }
+    const outOfBounds = this.x > 0 || this.x < this.maxScrollX || this.y > 0 || this.y < this.maxScrollY;
+    const momentumDistance = this.options.momentum && pointer.moved ? this.momentumDistance(velocity) : 0;
+    const projectedX = this.x + (this.options.scrollX ? momentumDistance : 0);
+    const projectedY = this.y + (this.options.scrollY ? momentumDistance : 0);
+    const targetX = clamp(projectedX, this.maxScrollX, 0);
+    const targetY = clamp(projectedY, this.maxScrollY, 0);
+    const duration = outOfBounds
+      ? this.options.bounceTime
+      : Math.abs(momentumDistance) > 12 ? clamp(Math.abs(velocity) / 0.003, 140, 650) : 0;
+    const hitsBoundary = !outOfBounds && this.options.bounce !== false && (projectedX !== targetX || projectedY !== targetY);
+    if (hitsBoundary) {
+      const overscrollX = this.momentumOverscroll(projectedX, this.maxScrollX);
+      const overscrollY = this.momentumOverscroll(projectedY, this.maxScrollY);
+      const projectedDistance = Math.max(Math.abs(projectedX - this.x), Math.abs(projectedY - this.y), 1);
+      const boundaryDistance = Math.max(Math.abs(targetX - this.x), Math.abs(targetY - this.y));
+      const boundaryDuration = clamp(duration * boundaryDistance / projectedDistance, 40, duration);
+      // Keep the compression as a brief impact instead of spreading it over
+      // the complete momentum animation. This makes the edge feel solid.
+      return this.animateTo(targetX, targetY, boundaryDuration, () => {
+        this.animateTo(overscrollX, overscrollY, 60, () => {
+          this.scrollTo(targetX, targetY, this.options.bounceTime);
+        });
+      });
+    }
+    this.scrollTo(targetX, targetY, duration);
+  }
+
+  onWheel(event) {
+    if (!this.enabled) return;
+    const useX = this.options.scrollX && !this.options.scrollY;
+    const delta = useX ? event.deltaX || event.deltaY : event.deltaY;
+    if (!delta) return;
+    event.preventDefault();
+    this.cancelAnimation();
+    this.emit("scrollStart", this.point());
+    this.scrollerHooks.emit("scrollStart", this.point());
+    this.setPosition(useX ? clamp(this.x - delta, this.maxScrollX, 0) : this.x, useX ? this.y : clamp(this.y - delta, this.maxScrollY, 0));
+    clearTimeout(this.wheelEndTimeout);
+    this.wheelEndTimeout = setTimeout(() => this.emit("scrollEnd", this.point()), 80);
+  }
+
+  dampen(value, min) {
+    if (this.options.bounce === false) return clamp(value, min, 0);
+    if (value > 0) return value * 0.42;
+    if (value < min) return min + (value - min) * 0.42;
+    return value;
+  }
+
+  momentumDistance(velocity) {
+    const speed = Math.min(Math.abs(velocity), 3.2);
+    if (speed < 0.12) return 0;
+    // d = v² / 2a, capped so an accidental fast sample cannot launch a list.
+    return Math.sign(velocity) * Math.min(900, speed * speed / (2 * 0.003));
+  }
+
+  momentumOverscroll(projected, min) {
+    if (projected > 0) return Math.min(125, projected * 0.18 + 8);
+    if (projected < min) return min - Math.min(125, (min - projected) * 0.18 + 8);
+    return projected;
+  }
+
+  ownsPointerAxis(pointer = this.pointer) {
+    if (!pointer?.axis) return false;
+    return (pointer.axis === "x" && this.options.scrollX) || (pointer.axis === "y" && this.options.scrollY);
+  }
+
+  point() { return { x: this.x, y: this.y }; }
+
+  setPosition(x, y, emit = true) {
+    this.x = x;
+    this.y = y;
+    const point = this.point();
+    this.translaterHooks.emit("beforeTranslate", point, point);
+    const scale = this.overscrollScale();
+    this.content.style.transformOrigin = scale.origin;
+    this.content.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale.x}, ${scale.y})`;
+    this.updateScrollbar();
+    this.translaterHooks.emit("translate", point);
+    if (emit) this.emit("scroll", point);
+  }
+
+  queuePosition(x, y) {
+    this.pendingPosition = { x, y };
+    if (this.positionFrame) return;
+    this.positionFrame = requestAnimationFrame(() => this.flushPosition());
+  }
+
+  flushPosition() {
+    if (this.positionFrame) cancelAnimationFrame(this.positionFrame);
+    this.positionFrame = null;
+    if (!this.pendingPosition) return;
+    const { x, y } = this.pendingPosition;
+    this.pendingPosition = null;
+    this.setPosition(x, y);
+  }
+
+  overscrollScale() {
+    const distanceX = this.x > 0 ? this.x : this.x < this.maxScrollX ? this.maxScrollX - this.x : 0;
+    const distanceY = this.y > 0 ? this.y : this.y < this.maxScrollY ? this.maxScrollY - this.y : 0;
+    const factor = (distance) => 1 - Math.min(125, distance) * (1 - 58 / 62) / 125;
+    const originX = this.x > 0 ? "0%" : this.x < this.maxScrollX ? "100%" : "50%";
+    const originY = this.y > 0 ? "0%" : this.y < this.maxScrollY ? "100%" : "50%";
+    return { x: factor(distanceX), y: factor(distanceY), origin: `${originX} ${originY}` };
+  }
+
+  finishSlideLoop() {
+    if (!this.isSlide) return;
+    if (this.loopClones) {
+      const width = this.wrapper.clientWidth;
+      const rawPage = Math.round(-this.x / width);
+      if (rawPage === 0) this.setPosition(-this.pageCount * width, 0, false);
+      if (rawPage === this.pageCount + 1) this.setPosition(-width, 0, false);
+    }
+    this.emit("slideWillChange", { x: this.x, y: this.y, ...this.getCurrentPage() });
+  }
+
+  cancelAnimation() {
+    if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
+    this.animationFrame = null;
+  }
 }
+
+function DiscoScroll(selector, options = {}) { return new DiscoScroller(selector, options); }
+function DiscoSlide(selector, options = {}) { return new DiscoScroller(selector, options, { slide: true }); }
+
+// Compatibility export for internal apps which import it directly.
+function applyOverscroll(scroller) { return scroller; }
+
 export { DiscoScroll, DiscoSlide, applyOverscroll };
 export default applyOverscroll;
-/*
-Don't forget to add these to BScroll options
-    {
-        ...
-        bounceTime:300,
-        swipeBounceTime:200,
-        outOfBoundaryDampingFactor: 1
-    }
-
-Example usage:
-    const scroller = new BScroll("#element",{
-        bounceTime:300,
-        swipeBounceTime:200,
-        outOfBoundaryDampingFactor: 1
-    })
-    applyOverscroll(scroller)
-*/

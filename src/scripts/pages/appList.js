@@ -8,6 +8,40 @@ const appListContainer = $("div.app-list-container")
 const appListSearch = $("input.app-list-search")
 const letterSelector = $("div.letter-selector")
 const stickyLetterTile = $("#sticky-letter")
+const appListElement = document.querySelector("div.app-list")
+
+let letterTileLayout = null
+let stickyLetterFrame = null
+let pendingStickyScroll = 0
+let stickyLetterState = {}
+
+function invalidateLetterTileLayout() {
+    letterTileLayout = null
+    stickyLetterState = {}
+}
+
+new MutationObserver(invalidateLetterTileLayout).observe(appListContainer[0], {
+    childList: true,
+    subtree: true
+})
+window.addEventListener("resize", invalidateLetterTileLayout)
+
+function getLetterTileLayout() {
+    if (!letterTileLayout) {
+        letterTileLayout = Array.from(appListContainer[0].querySelectorAll("div.disco-element.disco-app-tile.disco-letter-tile"))
+            .map((element) => ({ element, top: element.offsetTop }))
+    }
+    return letterTileLayout
+}
+
+function scheduleStickyLetter(scroll) {
+    pendingStickyScroll = scroll
+    if (stickyLetterFrame) return
+    stickyLetterFrame = requestAnimationFrame(() => {
+        stickyLetterFrame = null
+        stickyLetter(pendingStickyScroll)
+    })
+}
 
 var isSearchModeOn = false
 $("div.disco-element.disco-app-tile.disco-letter-tile")
@@ -86,8 +120,9 @@ const searchModeSwitch = {
         }, 250 * animationDurationScale);
         setTimeout(() => { scrollers.app_page_scroller.refresh() }, 500 * animationDurationScale);
         // history.pushState("searchmodeon", document.title, location.href);
-        appListPage.removeClass("no-search-result")
-        $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").removeClass("search-hidden")
+    appListPage.removeClass("no-search-result")
+    $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").removeClass("search-hidden")
+    invalidateLetterTileLayout()
         scrollers.app_page_scroller.scrollTo(0, 0, 0, "linear")
         $("div.app-search-search-store").css("visibility", "hidden")
     },
@@ -188,7 +223,7 @@ $(window).on("finishedLoading", () => {
         scrollers.app_page_scroller.refresh()
     })
     window.scrollers.app_page_scroller.scroller.translater.hooks.on('translate', (point) => {
-        stickyLetter(-point.y)
+        scheduleStickyLetter(-point.y)
     })
     $("div.letter-selector-letter").on("flowClick", function (e) {
         if (e.target.classList.contains("disabled")) return
@@ -230,6 +265,7 @@ appListSearch.on("input", _.debounce(function (e) {
     } else {
         appListPage.removeClass("no-search-result")
     }
+    invalidateLetterTileLayout()
     scrollers.app_page_scroller.refresh()
 
 }, 150))
@@ -241,7 +277,7 @@ $("div.app-search-search-store").on("flowClick", () => {
 
 
 
-$(window).on("click", function (e) {
+$(window).on("flowClick", function (e) {
     if (e.target.classList.contains("disco-letter-tile")) {
         setTimeout(letterSelectorSwitch.on, 0);
     } else if (e.target.classList.contains("disco-app-tile") && !e.target.classList.contains("disco-letter-tile")) {
@@ -397,28 +433,37 @@ function getTranslateY(element) {
     return 0;
 }
 function stickyLetter(scroll) {
-    if (document.querySelector("div.inner-page.app-list-page").classList.contains("app-menu-back") || document.querySelector("div.inner-page.app-list-page").classList.contains("app-menu-back-intro")) return;
+    if (appListPage[0].classList.contains("app-menu-back") || appListPage[0].classList.contains("app-menu-back-intro")) return;
     scroll = Math.max(Math.min(scroll, -window.scrollers.app_page_scroller.maxScrollY), -window.scrollers.app_page_scroller.minScrollY)
-    clearTimeout(window.stickyLetterTimeout)
     var stickyEl
     var overthrowingEl
     const wInsets = windowInsets()
-    const allLetterTiles = $("div.app-list-container > div.disco-element.disco-app-tile.disco-letter-tile")
-    Array.from(allLetterTiles).reverse().forEach((element, index) => {
-        const scrollTop = element.offsetTop - scroll - wInsets.top
-        if (scrollTop < 0 && !stickyEl) stickyEl = element; else if (0 <= scrollTop && scrollTop < 64 && !overthrowingEl) overthrowingEl = element;
+    getLetterTileLayout().slice().reverse().forEach(({ element, top }) => {
+        const scrollTop = top - scroll - wInsets.top
+        if (scrollTop < 0 && !stickyEl) stickyEl = { element, top }; else if (0 <= scrollTop && scrollTop < 64 && !overthrowingEl) overthrowingEl = { element, top };
     })
     if (stickyEl) {
-        stickyLetterTile.css({ visibility: "visible", top: `calc(${overthrowingEl ? overthrowingEl.offsetTop - scroll - wInsets.top - 64 : 0}px + var(--window-inset-top))`, "--transform": overthrowingEl ? overthrowingEl.offsetTop - scroll - wInsets.top - 64 + "px" : "0px" })
-        stickyLetterTile.children("p.disco-app-tile-icon").text(stickyEl.getAttribute("icon"))
-        if (scroll >= 21) document.querySelector("div.app-list").classList.add("hide-back"); else document.querySelector("div.app-list").classList.remove("hide-back");
-        document.querySelector("div.app-list").style.clipPath = `inset(calc(0px + var(--window-inset-top) + 64px + ${overthrowingEl ? overthrowingEl.offsetTop - scroll - wInsets.top - 64 : 0}px) 0 0 0)`
+        const offset = overthrowingEl ? overthrowingEl.top - scroll - wInsets.top - 64 : 0
+        const icon = stickyEl.element.getAttribute("icon")
+        if (!stickyLetterState.visible) stickyLetterTile.css({ visibility: "visible" })
+        if (stickyLetterState.icon !== icon) stickyLetterTile.children("p.disco-app-tile-icon").text(icon)
+        // The expensive clip-path update is only necessary while the next
+        // letter header is physically pushing the sticky one away.
+        if (stickyLetterState.offset !== offset) {
+            stickyLetterTile.css({ top: `calc(${offset}px + var(--window-inset-top))`, "--transform": `${offset}px` })
+            appListElement.style.clipPath = `inset(calc(var(--window-inset-top) + 64px + ${offset}px) 0 0 0)`
+        }
+        const hideBack = scroll >= 21
+        if (stickyLetterState.hideBack !== hideBack) appListElement.classList.toggle("hide-back", hideBack)
+        stickyLetterState = { visible: true, icon, offset, hideBack }
     } else {
-        stickyLetterTile.css({ visibility: "hidden" })
-        document.querySelector("div.app-list").classList.remove("hide-back")
+        if (stickyLetterState.visible) {
+            stickyLetterTile.css({ visibility: "hidden" })
+            appListElement.classList.remove("hide-back")
+            appListElement.style.removeProperty("clip-path")
+        }
+        stickyLetterState = { visible: false }
     }
-    window.stickyLetterTimeout = setTimeout(() => {
-    }, 10);
 }
 
 const appSearchNoResult = document.querySelector("div.app-search-no-result")

@@ -34,7 +34,6 @@ window.styleManagerInstance = styleManagerInstance
 window.normalizeDiacritics = (input = "") => {
     return normalize(input)
 }
-import BScroll from "better-scroll";
 import i18n from "./scripts/localeManager.js";
 DiscoBoard.backendMethods.setUIScale(1, true)
 
