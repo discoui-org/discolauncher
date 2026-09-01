@@ -430,7 +430,7 @@ class LocaleManager {
         }
       }
 
-      el.innerHTML = text;
+      el.textContent = text;
       el.removeAttribute('data-i18n-init');
       return;
     }
@@ -444,11 +444,11 @@ class LocaleManager {
           translation = this.toLowerCase(translation);
           break;
         case 'uc':
-          text = this.toUpperCase(translation);
+          translation = this.toUpperCase(translation);
           break;
       }
     }
-    el.innerHTML = translation
+    el.textContent = translation
   }
 
   async setLocale(locale, progressCallback = null) {
@@ -718,4 +718,3 @@ window.localeStore = localeStore
 window.i18n = i18n
 export default i18n;
 export { LocaleStore, LocaleManager, i18n, localization, greetings };
-

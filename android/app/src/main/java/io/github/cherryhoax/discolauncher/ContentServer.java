@@ -44,6 +44,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ContentServer extends WebViewClientCompat {
+    private static final String APP_ASSET_SCHEME = "https";
+    private static final String APP_ASSET_HOST = "appassets.androidplatform.net";
     private final DiscoWebView discoWebView;
     private final WebViewAssetLoader assetLoader;
     private final String TAG = "ContentServer";
@@ -51,6 +53,21 @@ public class ContentServer extends WebViewClientCompat {
     public ContentServer(DiscoWebView discoWebView, WebViewAssetLoader assetLoader) {
         this.discoWebView = discoWebView;
         this.assetLoader = assetLoader;
+    }
+
+    private boolean isAppAssetUrl(Uri uri) {
+        return APP_ASSET_SCHEME.equals(uri.getScheme())
+                && APP_ASSET_HOST.equals(uri.getHost());
+    }
+
+    /**
+     * The WebView exposes privileged Android APIs through JavascriptInterface.
+     * Do not let a navigation replace the bundled app with remote content that
+     * would inherit that bridge.
+     */
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        return !isAppAssetUrl(request.getUrl());
     }
 
     @Override

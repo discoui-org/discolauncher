@@ -11,6 +11,41 @@ const stickyLetterTile = $("#sticky-letter")
 
 var isSearchModeOn = false
 $("div.disco-element.disco-app-tile.disco-letter-tile")
+
+function renderSearchHighlight(titleElement, title, start, length) {
+    const fragment = document.createDocumentFragment()
+    const match = document.createElement("span")
+
+    match.className = "disco-app-tile-title-search-tip"
+    match.textContent = title.slice(start, start + length)
+    fragment.append(
+        document.createTextNode(title.slice(0, start)),
+        match,
+        document.createTextNode(title.slice(start + length))
+    )
+
+    titleElement.replaceChildren(fragment)
+}
+
+function renderNoResultMessage(container) {
+    const queryPlaceholder = "__DISCO_SEARCH_QUERY__"
+    const message = i18n.t("common.search.no_results", { query: queryPlaceholder })
+    const fragment = document.createDocumentFragment()
+    const parts = message.split(queryPlaceholder)
+
+    parts.forEach((part, index) => {
+        fragment.append(document.createTextNode(part))
+        if (index < parts.length - 1) {
+            const query = document.createElement("span")
+            query.style.color = "var(--accent-color)"
+            query.textContent = "SEARCH"
+            fragment.append(query)
+        }
+    })
+
+    container.replaceChildren(fragment)
+}
+
 function searchResultClick(e) {
     if (!e.target.canClick || e.target.appMenuState) return;
 
@@ -174,7 +209,12 @@ appListSearch.on("input", _.debounce(function (e) {
                 $(element).removeClass("search-hidden")
                 const ogtitle = element.getAttribute("title")
                 const indexoftitle = app_title.indexOf(search)
-                element.querySelector("p.disco-app-tile-title").innerHTML = `${ogtitle.slice(0, indexoftitle)}<span class="disco-app-tile-title-search-tip">${ogtitle.slice(indexoftitle, indexoftitle + search.length)}</span>${ogtitle.slice(indexoftitle + search.length)}`
+                renderSearchHighlight(
+                    element.querySelector("p.disco-app-tile-title"),
+                    ogtitle,
+                    indexoftitle,
+                    search.length
+                )
 
             } else {
                 $(element).addClass("search-hidden")
@@ -384,9 +424,7 @@ function stickyLetter(scroll) {
 const appSearchNoResult = document.querySelector("div.app-search-no-result")
 async function updateLocaleInfo() {
     appListSearch.attr("placeholder", i18n.toLowerCase(i18n.t("common.search.title")))
-    appSearchNoResult.innerHTML = i18n.t("common.search.no_results", {
-        query: `<span style="color: var(--accent-color);">SEARCH</span>`
-    })
+    renderNoResultMessage(appSearchNoResult)
 }
 updateLocaleInfo()
 window.addEventListener("localeChanged", async () => {
