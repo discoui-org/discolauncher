@@ -7,6 +7,31 @@ import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 public class NotificationListener extends NotificationListenerService {
+    public static volatile NotificationListener instance;
+
+    @Override
+    public void onListenerConnected() {
+        super.onListenerConnected();
+        instance = this;
+        MainActivity mainActivity = MainActivity.getInstance();
+        if (mainActivity != null && mainActivity.notificationDelegate != null) {
+            mainActivity.notificationDelegate.replaceNotifications(getActiveNotifications());
+            mainActivity.notificationDelegate.dispatchNotificationsChanged();
+        }
+    }
+
+    @Override
+    public void onListenerDisconnected() {
+        instance = null;
+        super.onListenerDisconnected();
+    }
+
+    @Override
+    public void onDestroy() {
+        instance = null;
+        super.onDestroy();
+    }
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.d("NotificationListener", "Notification received: " + sbn.getPackageName());

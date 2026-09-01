@@ -294,6 +294,9 @@ public class ContentServer extends WebViewClientCompat {
 
                             if (metadata != null) {
                                 Bitmap albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
+                                if (albumArt == null) {
+                                    albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
+                                }
                                 if (albumArt != null) {
                                     InputStream inputStream = Utils.loadBitmapAsStream(albumArt);
                                     return new WebResourceResponse("image/webp", "UTF-8", inputStream);

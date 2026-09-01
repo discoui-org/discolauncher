@@ -23,6 +23,7 @@ public class WebEvents {
         systemThemeChange,
         notificationPosted,
         notificationRemoved,
+        notificationsChanged,
         debugLog
     }
 

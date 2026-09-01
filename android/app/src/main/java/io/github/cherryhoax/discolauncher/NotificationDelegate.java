@@ -1,11 +1,7 @@
 package io.github.cherryhoax.discolauncher;
 
 import static io.github.cherryhoax.discolauncher.MainActivity.TAG;
-import static io.github.cherryhoax.discolauncher.UriEncode.encodeURIComponent;
-
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadata;
 import android.media.session.MediaController;
@@ -17,30 +13,42 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NotificationDelegate {
     MainActivity mainActivity;
 
     public NotificationDelegate(MainActivity zmainActivity) {
         this.mainActivity = zmainActivity;
-        NotificationManager notificationManager = (NotificationManager) zmainActivity.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManager != null) {
-            notifications = new ArrayList<>(List.of(notificationManager.getActiveNotifications()));
-        } else {
-            notifications = new ArrayList<>();
+        if (NotificationListener.instance != null) {
+            replaceNotifications(NotificationListener.instance.getActiveNotifications());
         }
     }
 
     public JSONObject statusBarNotificationToJSON(StatusBarNotification sbn) {
         JSONObject json = new JSONObject();
         try {
-            json.put("title", sbn.getNotification().extras.getString("android.title"));
-            json.put("description", sbn.getNotification().extras.getString("android.text"));
-            json.put("longDescription", sbn.getNotification().extras.getString("android.bigText"));
+            Notification notification = sbn.getNotification();
+            String title = getFirstNotificationText(notification,
+                    Notification.EXTRA_TITLE,
+                    Notification.EXTRA_TITLE_BIG,
+                    Notification.EXTRA_CONVERSATION_TITLE);
+            String description = getFirstNotificationText(notification,
+                    Notification.EXTRA_TEXT,
+                    Notification.EXTRA_SUB_TEXT);
+            String longDescription = getFirstNotificationText(notification,
+                    Notification.EXTRA_BIG_TEXT,
+                    Notification.EXTRA_TEXT);
+
+            json.put("title", title);
+            json.put("description", description);
+            json.put("longDescription", longDescription);
+            json.put("appLabel", getApplicationLabel(sbn.getPackageName()));
             json.put("image", "https://appassets.androidplatform.net/assets/notification-image/" + sbn.getId() + ".webp");
             JSONObject song = new JSONObject();
-            MediaSession.Token token = sbn.getNotification().extras.getParcelable(Notification.EXTRA_MEDIA_SESSION);
+            MediaSession.Token token = notification.extras.getParcelable(Notification.EXTRA_MEDIA_SESSION);
             if (token != null) {
                 MediaController mediaController = new MediaController(mainActivity, token);
                 MediaMetadata metadata = mediaController.getMetadata();
@@ -49,22 +57,29 @@ public class NotificationDelegate {
                 if (metadata != null) {
                     String artist = metadata.getString(MediaMetadata.METADATA_KEY_ARTIST);
                     String album = metadata.getString(MediaMetadata.METADATA_KEY_ALBUM);
-                    String title = metadata.getString(MediaMetadata.METADATA_KEY_TITLE);
-                    String albumArtUri = metadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI);
+                    String mediaTitle = metadata.getString(MediaMetadata.METADATA_KEY_TITLE);
+                    Bitmap albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
+                    if (albumArt == null) {
+                        albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
+                    }
+                    String albumArtUri = "";
                     Log.d(TAG, "ORIGINAL CONTENT URI: " + metadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI));
-                    albumArtUri = "https://appassets.androidplatform.net/assets/album-art/" + sbn.getId() + ".webp";
+                    if (albumArt != null) {
+                        albumArtUri = "https://appassets.androidplatform.net/assets/album-art/" + sbn.getId() + ".webp";
+                    }
                     long duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION);
                     song.put("artist", artist);
-                    song.put("songName", title);
+                    song.put("songName", mediaTitle);
                     song.put("albumName", album);
                     song.put("albumCover", albumArtUri);
                     song.put("songDuration", duration);
-                    song.put("currentPlayback", playbackState.getPosition());
+                    song.put("currentPlayback", playbackState == null ? 0 : playbackState.getPosition());
                 }
 
                 if (playbackState != null) {
                     int state = playbackState.getState();
-                    // Check if state == PlaybackState.STATE_PLAYING, etc.
+                    song.put("playbackState", state);
+                    song.put("isPlaying", state == PlaybackState.STATE_PLAYING);
                 }
             }
 
@@ -77,33 +92,76 @@ public class NotificationDelegate {
             json.put("groupKey", sbn.getGroupKey());
             json.put("isOngoing", sbn.isOngoing());
             json.put("isClearable", sbn.isClearable());
-            json.put("notification", sbn.getNotification());
+            json.put("isGroupSummary", (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0);
+            json.put("notification", notification);
         } catch (Exception e) {
             Log.e("NotificationDelegate", "Error converting StatusBarNotification to JSON: " + e.getMessage());
         }
         return json;
     }
 
-    public List<StatusBarNotification> notifications = new ArrayList<>();
+    private String getFirstNotificationText(Notification notification, String... keys) {
+        for (String key : keys) {
+            CharSequence value = notification.extras.getCharSequence(key);
+            if (value != null && value.length() > 0) {
+                return value.toString();
+            }
+        }
+        return "";
+    }
+
+    private String getApplicationLabel(String packageName) {
+        try {
+            return mainActivity.getPackageManager()
+                    .getApplicationLabel(mainActivity.getPackageManager().getApplicationInfo(packageName, 0))
+                    .toString();
+        } catch (Exception error) {
+            return packageName;
+        }
+    }
+
+    public final List<StatusBarNotification> notifications = new CopyOnWriteArrayList<>();
+
+    public void replaceNotifications(StatusBarNotification[] activeNotifications) {
+        notifications.clear();
+        if (activeNotifications != null) {
+            notifications.addAll(Arrays.asList(activeNotifications));
+        }
+    }
 
     public void onNotificationPosted(StatusBarNotification sbn) {
         for (int i = 0; i < notifications.size(); i++) {
-            if (notifications.get(i).getId() == sbn.getId()) {
+            if (notifications.get(i).getKey().equals(sbn.getKey())) {
                 notifications.set(i, sbn);
-                mainActivity.webEvents.dispatchEvent(WebEvents.events.notificationPosted, statusBarNotificationToJSON(sbn));
+                dispatchNotificationEvent(WebEvents.events.notificationPosted, sbn);
                 return;
             }
         }
         notifications.add(sbn);
-        mainActivity.webEvents.dispatchEvent(WebEvents.events.notificationPosted, statusBarNotificationToJSON(sbn));
+        dispatchNotificationEvent(WebEvents.events.notificationPosted, sbn);
     }
 
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        notifications.remove(sbn);
+        notifications.removeIf(notification -> notification.getKey().equals(sbn.getKey()));
+        dispatchNotificationEvent(WebEvents.events.notificationRemoved, sbn);
+    }
+
+    private void dispatchNotificationEvent(WebEvents.events event, StatusBarNotification sbn) {
+        if (mainActivity.webEvents != null) {
+            mainActivity.runOnUiThread(() ->
+                    mainActivity.webEvents.dispatchEvent(event, statusBarNotificationToJSON(sbn)));
+        }
+    }
+
+    public void dispatchNotificationsChanged() {
+        if (mainActivity.webEvents != null) {
+            mainActivity.runOnUiThread(() ->
+                    mainActivity.webEvents.dispatchEvent(WebEvents.events.notificationsChanged));
+        }
     }
 
     public List<StatusBarNotification> getAllNotifications() {
-        return notifications;
+        return new ArrayList<>(notifications);
     }
 
     public String getAllNotificationsJSON() {

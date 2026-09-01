@@ -330,20 +330,20 @@ const boardMethods = {
       alarms: undefined,
       people: undefined,
       photos: undefined,
+      notifications: undefined,
       weather: undefined,
       example: undefined
     },
-    defaults: () => {
-      const iconpackdbentries = Object.keys(iconPackDB)
-      const installedApps = allappsarchive.map(e => e.packageName).filter(e => iconpackdbentries.includes(e) || e == "test.example")
-      return Object.fromEntries(installedApps.filter(e =>
-        e == "test.example" ? true : (["alarms", "people", "photos", "weather"].includes(iconPackDB[e].icon))
-      ).map(
-        e => [e, e == "test.example" ? boardMethods.liveTiles.init.example : boardMethods.liveTiles.init[iconPackDB[e].icon]]
-      )
-      )
+    defaults: () => Object.assign({}, window.defaultLiveTiles || {}),
+    get: () => {
+      let savedLiveTiles = {}
+      try {
+        savedLiveTiles = JSON.parse(localStorage.getItem("liveTiles") || "{}")
+      } catch (error) {
+        console.warn("Invalid saved live tile configuration", error)
+      }
+      return Object.assign({}, boardMethods.liveTiles.defaults(), savedLiveTiles)
     },
-    get: () => Object.assign(localStorage.getItem("liveTiles") || {}, boardMethods.liveTiles.defaults()),
     //setTileProvider: (provider) => {}
     getProviders: () => window.liveTileProviders || [],
     refresh: () => {
@@ -389,7 +389,7 @@ const boardMethods = {
       Object.entries(window.liveTiles).forEach(liveTileBundle => {
         const packageName = liveTileBundle[0]
         const liveTile = liveTileBundle[1]
-        if (liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.photos) {
+        if (liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.notifications) {
           liveTile.worker.postMessage({
             action: "notifications-data",
             data: { timestamp: Date.now(), notifications: JSON.parse(Disco.getAllNotifications()) }
@@ -1102,13 +1102,16 @@ const backendMethods = {
   defaultLiveTiles: {
     refresh: () => {
       window.defaultLiveTiles = {}
-      Object.values(DiscoBoard.boardMethods.liveTiles.init).reverse().forEach(liveTileID => {
-        const match = boardMethods.liveTiles.getProviders().find(item => item.id === liveTileID);
-        if (match && match.metadata && match.metadata.provide) {
-          match.metadata.provide.forEach(packageName => {
-            window.defaultLiveTiles[packageName] = liveTileID
-          })
-        }
+      const defaultProviders = Object.values(DiscoBoard.boardMethods.liveTiles.init)
+        .map(liveTileID => boardMethods.liveTiles.getProviders().find(item => item.id === liveTileID))
+        .filter(provider => provider?.metadata?.provide)
+        // Broad providers are applied first; specific providers then override them.
+        .sort((a, b) => b.metadata.provide.length - a.metadata.provide.length)
+
+      defaultProviders.forEach(provider => {
+        provider.metadata.provide.forEach(packageName => {
+          window.defaultLiveTiles[packageName] = provider.id
+        })
       })
     }
   },

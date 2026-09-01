@@ -111,9 +111,13 @@ class TileFeed {
             animationType: AnimationType.FLIP,
             showAppTitle: true,
             duration: 5000 + Math.random() * 500,
-            noticationCount: null
+            notificationCount: null
         };
         Object.assign(this, defaults, options);
+        // Keep third-party providers using the old misspelled property working.
+        if (this.notificationCount == null && this.noticationCount != null) {
+            this.notificationCount = this.noticationCount;
+        }
 
         if (!Object.values(TileType).includes(this.type)) {
             throw new Error(`Invalid tile type. Must be one of: ${Object.values(TileType).join(', ')}`);

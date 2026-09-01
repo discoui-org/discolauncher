@@ -450,6 +450,8 @@ setTimeout(() => {
             albumCover: "https://picsum.photos/200",
             albumName: "Random Album",
             artist: "Random Artist",
+            isPlaying: true,
+            playbackState: 3,
             currentPlayback: 5000,
             songDuration: 10000,
             songName: "Random Song"

@@ -359,6 +359,31 @@ startUpSequence([
 
 window.liveTileManager = liveTileManager
 
+function refreshNotificationLiveTiles() {
+    const providerId = DiscoBoard.boardMethods.liveTiles.init.notifications
+    if (!providerId) return
+
+    let notifications = []
+    try {
+        notifications = JSON.parse(Disco.getAllNotifications())
+    } catch (error) {
+        console.error("Could not read notifications for live tiles", error)
+    }
+
+    Object.values(window.liveTiles || {}).forEach(liveTile => {
+        if (liveTile.uid === providerId) {
+            liveTile.worker.postMessage({
+                action: "notifications-data",
+                data: { timestamp: Date.now(), notifications }
+            })
+        }
+    })
+}
+
+window.addEventListener("notificationPosted", refreshNotificationLiveTiles)
+window.addEventListener("notificationRemoved", refreshNotificationLiveTiles)
+window.addEventListener("notificationsChanged", refreshNotificationLiveTiles)
+
 
 await i18n.init()
 i18n.translateDOM()

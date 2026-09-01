@@ -67,7 +67,7 @@ function main_registerLiveTileWorker(packageName, uid) {
 
         worker.postMessage({
             action: "init",
-            data: { timestamp: Date.now() }
+            data: { timestamp: Date.now(), packageName }
         });
 
         // Initialize tiles after registering the worker
@@ -97,13 +97,7 @@ function onWorkerMessage(event) {
 
     switch (message.action) {
         case 'requestRedraw':
-            setTimeout(() => {
-                const now = Date.now();
-                if (now - controller.lastDrawTime >= 20000) { // 20 seconds in milliseconds
-                    controller.lastDrawTime = now;
-                    controller.draw();
-                }
-            }, 1000);
+            controller.requestDraw();
             break;
         case 'requestGoToPage':
             controller.goToPage(message.data);
@@ -127,6 +121,7 @@ function main_unregisterLiveTileWorker(packageName) {
     if (window.liveTiles && packageName in window.liveTiles) {
         uninitializeLiveTile(packageName);
         const worker = window.liveTiles[packageName].worker;
+        window.liveTiles[packageName].controller.destroy();
         if (worker && typeof worker.terminate === 'function') {
             worker.terminate();
         }
@@ -171,7 +166,7 @@ async function getLiveTileMetadata(workerScript) {
                     case 'type':
                         if (value == "all") {
                             allappsarchive.forEach(e => {
-                                addProvide(e)
+                                addProvide(e.packageName)
                             })
                         } else {
                             const typeToPackageNames = (Object.entries(window.iconPackDB).filter(e => e[1].icon == value)).map(e => e[0])
@@ -265,6 +260,7 @@ class tileController {
         this.animationType = AnimationType.SLIDE;
         this.worker = worker || window.liveTiles[packageName]["worker"];
         this.lastDrawTime = 0;
+        this.redrawTimer = null;
     }
     getDOMTile() {
         let tile = document.querySelector(`div.disco-home-tile.live-tile[packagename="${this.packageName}"]`);
@@ -274,6 +270,26 @@ class tileController {
             if (!tile) throw new Error(`Tile for package ${this.packageName} not found`);
         }
         return tile;
+    }
+
+    requestDraw() {
+        clearTimeout(this.redrawTimer);
+        const minimumInterval = 1000;
+        const delay = Math.max(0, minimumInterval - (Date.now() - this.lastDrawTime));
+        this.redrawTimer = setTimeout(async () => {
+            this.redrawTimer = null;
+            this.lastDrawTime = Date.now();
+            try {
+                await this.draw();
+            } catch (error) {
+                console.error(`Could not redraw live tile for ${this.packageName}`, error);
+            }
+        }, delay);
+    }
+
+    destroy() {
+        clearTimeout(this.redrawTimer);
+        this.redrawTimer = null;
     }
 
     async draw() {
@@ -289,9 +305,14 @@ class tileController {
 
             const tile = this.getDOMTile();
             const liveTileContainer = tile.querySelector('div.live-tile-container');
+            tile.querySelectorAll('.disco-home-inner-tile > .live-tile-notification-count')
+                .forEach(badge => badge.remove());
             const result = response.result;
             this.tileType = result.type;
             this.animationType = result.animationType;
+            const notificationCount = Math.max(0, Number(result.notificationCount) || 0);
+            const hasNotificationSummary = result.type === TileType.NOTIFICATION && notificationCount > 0;
+            tile.classList.toggle('has-notification-count', hasNotificationSummary);
             // Update tile attributes and classes
             liveTileContainer.setAttribute("max-page",
                 result.type == TileType.STATIC ? 1 :
@@ -300,18 +321,25 @@ class tileController {
                             result.tiles.length + 1
             );
             liveTileContainer.style.setProperty('--animation-duration', Math.ceil(result.duration) + "ms");
-            liveTileContainer.classList.remove('tile-type-static', 'tile-type-carousel', 'tile-type-notification');
+            liveTileContainer.classList.remove('tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix');
             liveTileContainer.classList.add(`tile-type-${result.type}`);
-            tile.classList.remove('tile-type-static', 'tile-type-carousel', 'tile-type-notification');
+            tile.classList.remove('tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix');
             tile.classList.add(`tile-type-${result.type}`);
-            liveTileContainer.setAttribute("current-page", Number(liveTileContainer.getAttribute("current-page")) || 0);
+            liveTileContainer.setAttribute("current-page", 0);
+            liveTileContainer.style.setProperty('--current-page', 0);
+            const iconElement = tile.querySelector('img.disco-home-tile-imageicon');
+            if (iconElement) {
+                iconElement.style.visibility = 'visible';
+                iconElement.classList.remove('hide-direction-0', 'hide-direction-1', 'show-direction-0', 'show-direction-1');
+            }
             liveTileContainer.setAttribute("show-app-title", result.showAppTitle ? "true" : "false");
             tile.classList.remove("hide-app-title");
             if (!result.showAppTitle) tile.classList.add("hide-app-title");
 
             // Build and sanitize content
+            const pageIndexOffset = result.type === TileType.NOTIFICATION ? 1 : 0;
             const content = result.tiles.map((tile, index) => {
-                return `<div class="live-tile-page" style="--page-index: ${index}">${tile.background ?
+                return `<div class="live-tile-page" style="--page-index: ${index + pageIndexOffset}">${tile.background ?
                     `<div style="background: ${tile.background}" class="live-tile-background${tile.contentHTML ? ' bg-shade' : ''}"></div>` : ''
                     }${tile.contentHTML}</div > `;
             }).join('');
@@ -397,10 +425,13 @@ class tileController {
 
             } else {
                 liveTileContainer.innerHTML = sanitized;
+                if (result.type === TileType.NOTIFICATION) {
+                    liveTileContainer.prepend(this.createNotificationSummaryPage(tile, notificationCount));
+                }
             }
 
-            // Set first page visible for carousel type
-            if (result.type === TileType.CAROUSEL) {
+            // Carousel and notification feeds both have an explicit first page.
+            if (result.type === TileType.CAROUSEL || result.type === TileType.NOTIFICATION) {
                 const firstPage = liveTileContainer.querySelector('.live-tile-page');
                 if (firstPage) {
                     firstPage.style.visibility = 'visible';
@@ -411,6 +442,41 @@ class tileController {
             console.error('Error in draw():', error);
             throw error;
         }
+    }
+    createNotificationSummaryPage(tile, notificationCount) {
+        const page = document.createElement('div');
+        page.className = 'live-tile-page live-tile-notification-summary-page';
+        page.style.setProperty('--page-index', 0);
+
+        const summary = document.createElement('div');
+        summary.className = 'live-tile-notification-summary';
+        if (notificationCount > 0) summary.classList.add('has-count');
+
+        const icon = document.createElement('div');
+        icon.className = 'live-tile-notification-summary-icon';
+        const innerTile = tile.querySelector('.disco-home-inner-tile');
+        if (innerTile?.style.backgroundImage) {
+            icon.style.backgroundImage = innerTile.style.backgroundImage;
+        }
+
+        const sourceIcon = tile.querySelector('img.disco-home-tile-imageicon');
+        if (sourceIcon?.src) {
+            const foreground = document.createElement('img');
+            foreground.src = sourceIcon.src;
+            foreground.alt = '';
+            icon.appendChild(foreground);
+        }
+        summary.appendChild(icon);
+
+        if (notificationCount > 0) {
+            const badge = document.createElement('span');
+            badge.className = 'live-tile-notification-count';
+            badge.textContent = notificationCount > 99 ? '99+' : String(notificationCount);
+            summary.appendChild(badge);
+        }
+
+        page.appendChild(summary);
+        return page;
     }
     sendMessageToWorker(message, timeout = 10000) {
         message.id = generateUniqueId();
@@ -460,7 +526,7 @@ class tileController {
             page.classList.remove('show-direction-0', 'show-direction-1', 'hide-direction-0', 'hide-direction-1');
             const liveTileBackground = page.querySelector('div.live-tile-background')
             if (liveTileBackground) liveTileBackground.classList.remove('show-direction-0', 'show-direction-1', 'hide-direction-0', 'hide-direction-1');
-            const pageIndex = this.tileType === TileType.NOTIFICATION ? index + 1 : index;
+            const pageIndex = index;
             if (pageIndex === nextPage || pageIndex === currentPage) {
                 page.style.visibility = "visible"
                 page.classList.add(`${pageIndex === nextPage ? 'show' : 'hide'}-direction-${direction}`);
@@ -469,23 +535,6 @@ class tileController {
                 page.style.visibility = "hidden"
             }
         });
-
-        const iconElement = tile.querySelector('img.disco-home-tile-imageicon');
-        iconElement.classList.add('hide-dsfgasdirection-0');
-        iconElement.classList.remove('hide-direction-0', 'hide-direction-1', 'show-direction-0', 'show-direction-1');
-        // Handle notification tile icon visibility
-        if (this.tileType == TileType.NOTIFICATION && iconElement) {
-            if (nextPage == 0 || currentPage == 0) {
-                iconElement.style.visibility = 'visible';
-                if (nextPage == 0) {
-                    iconElement.classList.add(`show-direction-${direction}`);
-                } else {
-                    iconElement.classList.add(`hide-direction-${direction}`);
-                }
-            } else {
-                iconElement.style.visibility = 'hidden';
-            }
-        }
 
         return true;
     }
