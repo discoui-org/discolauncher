@@ -319,6 +319,7 @@ startUpSequence([
         const baseURL = new URL("./", location).href
         DiscoBoard.boardMethods.liveTiles.init = {
             alarms: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/alarms.js", baseURL).href),
+            calendar: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/calendar.js", baseURL).href),
             people: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/people.js", baseURL).href),
             photos: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/photos.js", baseURL).href),
             notifications: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/notifications.js", baseURL).href),

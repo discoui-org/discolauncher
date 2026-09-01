@@ -891,6 +891,35 @@ div.disco-home-tile {
                         text-align: left;
                     }
 
+                    div.live-tile-calendar {
+                        position: absolute;
+                        right: 12px;
+                        bottom: 12px;
+                        display: flex;
+                        align-items: baseline;
+                        justify-content: flex-end;
+                        gap: 0;
+                        color: white;
+                        text-align: right;
+                    }
+
+                    p.live-tile-calendar-weekday,
+                    p.live-tile-calendar-date {
+                        margin: 0;
+                        line-height: .85;
+                    }
+
+                    p.live-tile-calendar-weekday {
+                        font-size: 22px;
+                        font-weight: 600;
+                    }
+
+                    p.live-tile-calendar-date {
+                        font-size: 62px;
+                        font-weight: 600;
+                        letter-spacing: -4px;
+                    }
+
                     div.live-tile-notification-content {
                         top: 10px;
                         bottom: auto;

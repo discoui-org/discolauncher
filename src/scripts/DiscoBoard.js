@@ -328,6 +328,7 @@ const boardMethods = {
   liveTiles: {
     init: {
       alarms: undefined,
+      calendar: undefined,
       people: undefined,
       photos: undefined,
       notifications: undefined,
