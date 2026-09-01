@@ -207,6 +207,70 @@ public class DiscoWebView extends WebView {
         return transparentBitmap;
     }
 
+    /**
+     * Returns an adaptive icon's monochrome layer when available, otherwise its foreground.
+     * Non-adaptive icons deliberately return null instead of a full legacy application icon.
+     */
+    public Bitmap getAdaptiveAppIconForeground(PackageManager mPackageManager,
+                                                String packageNameWithIntent) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return null;
+        }
+
+        String packageName = packageNameWithIntent;
+        String intentId = null;
+        if (packageNameWithIntent.contains("|")) {
+            String[] parts = packageNameWithIntent.split("\\|");
+            packageName = parts[0];
+            if (parts.length > 1) {
+                intentId = parts[1];
+            }
+        }
+
+        Drawable drawable = null;
+        try {
+            if (intentId != null) {
+                ResolveInfo resolveInfo = getResolveInfo(mPackageManager, packageName, intentId);
+                if (resolveInfo != null) {
+                    drawable = resolveInfo.loadIcon(mPackageManager);
+                }
+            }
+            if (drawable == null) {
+                drawable = mPackageManager.getApplicationIcon(packageName);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.d("discolauncher", "getAdaptiveAppIconForeground: invalid " + packageName);
+            return null;
+        }
+
+        if (!(drawable instanceof AdaptiveIconDrawable)) {
+            return null;
+        }
+
+        AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) drawable;
+        Drawable iconLayer = adaptiveIcon.getForeground();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && adaptiveIcon.getMonochrome() != null) {
+            // Monochrome resources are masks; tinting makes them legible on cover art.
+            iconLayer = adaptiveIcon.getMonochrome().mutate();
+            iconLayer.setTint(Color.WHITE);
+        }
+        if (iconLayer == null) {
+            return null;
+        }
+
+        double zoom = 1.5;
+        Bitmap bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        int width = (int) (canvas.getWidth() * zoom);
+        int height = (int) (canvas.getHeight() * zoom);
+        int offsetX = (canvas.getWidth() - width) / 2;
+        int offsetY = (canvas.getHeight() - height) / 2;
+        iconLayer.setBounds(offsetX, offsetY, offsetX + width, offsetY + height);
+        iconLayer.draw(canvas);
+        return bitmap;
+    }
+
     public DiscoWebView(Context context) {
         super(context);
         m_context = context;

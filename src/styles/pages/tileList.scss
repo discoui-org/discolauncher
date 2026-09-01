@@ -217,6 +217,13 @@ div.tile-list-page {
 
         .disco-home-inner-tile {
             background: var(--metro-transparent-2);
+
+            // Adaptive icon backgrounds cover the entire inner tile. Keep
+            // their image, but remove the accent-color fallback so wallpaper
+            // remains visible through transparent parts of the icon asset.
+            div.disco-home-tile-icon-background {
+                background-color: transparent !important;
+            }
         }
     }
 
@@ -835,6 +842,29 @@ div.disco-home-tile {
                         animation: live-tile-matrix-tile-flip var(--live-tile-page-flip-duration) forwards;
                     }
 
+                    &.media-track-transition-in {
+                        z-index: 0;
+                        background: transparent;
+                        animation: live-tile-media-track-fade-in .32s ease-out both;
+                    }
+
+                    &.media-track-transition-out {
+                        z-index: 1;
+                        background: transparent;
+                        pointer-events: none;
+                        animation: live-tile-media-track-fade-out .32s ease-out both;
+                    }
+
+                    @keyframes live-tile-media-track-fade-in {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+
+                    @keyframes live-tile-media-track-fade-out {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+
                     div.live-tile-background {
                         position: absolute;
                         // Cover fractional-pixel gaps exposed while a page is
@@ -946,6 +976,16 @@ div.disco-home-tile {
                         max-height: 90px;
                         object-fit: contain;
                         transform: translateX(-50%);
+                    }
+
+                    img.live-tile-media-adaptive-icon {
+                        position: absolute;
+                        top: 10px;
+                        left: 10px;
+                        z-index: 2;
+                        width: 32px;
+                        height: 32px;
+                        object-fit: contain;
                     }
 
                     p.live-tile-media-title,

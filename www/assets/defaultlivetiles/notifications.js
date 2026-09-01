@@ -15,6 +15,9 @@ let packageName = null;
 let notifications = [];
 let rotationTimer = null;
 let canRotate = false;
+let bufferedMedia = null;
+let mediaGraceTimer = null;
+const MEDIA_GRACE_PERIOD_MS = 3000;
 
 function escapeHTML(value) {
     return String(value ?? '')
@@ -38,6 +41,48 @@ function isMediaNotification(notification) {
     return notification.song && Object.keys(notification.song).length > 0;
 }
 
+function getMediaKey(notification) {
+    const song = notification.song || {};
+    return [
+        notification.id,
+        song.songName,
+        song.artist,
+        song.albumName,
+        song.albumCover
+    ].map(value => String(value ?? '')).join('|');
+}
+
+function getAppNotifications() {
+    return notifications
+        .filter(notification => notification.packageName === packageName && !notification.isGroupSummary)
+        .sort((a, b) => Number(b.postTime || 0) - Number(a.postTime || 0));
+}
+
+function getActiveMedia() {
+    return getAppNotifications().find(notification =>
+        isMediaNotification(notification) && notification.song.isPlaying === true
+    );
+}
+
+function getBufferedMedia() {
+    const activeMedia = getActiveMedia();
+    if (activeMedia) {
+        bufferedMedia = activeMedia;
+        clearTimeout(mediaGraceTimer);
+        mediaGraceTimer = null;
+        return activeMedia;
+    }
+
+    if (bufferedMedia && mediaGraceTimer === null) {
+        mediaGraceTimer = setTimeout(() => {
+            bufferedMedia = null;
+            mediaGraceTimer = null;
+            liveTileHelper.requestRedraw();
+        }, MEDIA_GRACE_PERIOD_MS);
+    }
+    return bufferedMedia;
+}
+
 function scheduleRotation(initial = false) {
     clearTimeout(rotationTimer);
     rotationTimer = null;
@@ -57,9 +102,11 @@ function createMediaTile(tileFeed, notification) {
     const artist = escapeHTML(song.artist || song.albumName || '');
     const albumCover = safeBackgroundURL(song.albumCover);
     const fallbackIcon = `https://appassets.androidplatform.net/assets/icons/${encodeURIComponent(packageName)}.webp`;
+    const adaptiveForegroundIcon = `https://appassets.androidplatform.net/assets/adaptive-icon-foreground/${encodeURIComponent(packageName)}.webp`;
 
     return tileFeed.Tile(
-        `<div class="live-tile-media-content">
+        `<img class="live-tile-media-adaptive-icon" src="${adaptiveForegroundIcon}" alt="">
+        <div class="live-tile-media-content">
             ${albumCover ? '' : `<img class="live-tile-media-fallback-icon" src="${fallbackIcon}" alt="">`}
             <p class="live-tile-media-title">${songName}</p>
             <p class="live-tile-media-artist">${artist}</p>
@@ -81,12 +128,10 @@ function createNotificationTile(tileFeed, notification) {
 }
 
 function draw() {
-    const appNotifications = notifications
-        .filter(notification => notification.packageName === packageName && !notification.isGroupSummary)
-        .sort((a, b) => Number(b.postTime || 0) - Number(a.postTime || 0));
-    const activeMedia = appNotifications.find(notification =>
-        isMediaNotification(notification) && notification.song.isPlaying === true
-    );
+    const appNotifications = getAppNotifications();
+    // Players commonly clear the current media session before posting the next
+    // track. Keep the previous tile alive briefly so its cover does not blink out.
+    const activeMedia = getBufferedMedia();
     const regularNotifications = appNotifications.filter(notification => !isMediaNotification(notification));
     // A notification tile has a summary page before its notification pages.
     // Media-only feeds contain one page, so they do not need rotation.
@@ -98,6 +143,7 @@ function draw() {
         animationType: activeMedia ? liveTileHelper.AnimationType.SLIDE : liveTileHelper.AnimationType.FLIP,
         showAppTitle: !activeMedia,
         notificationCount: regularNotifications.length,
+        mediaKey: activeMedia ? getMediaKey(activeMedia) : null,
         duration: 7000
     });
 
@@ -118,5 +164,6 @@ liveTileHelper.eventListener.on('init', data => {
 
 liveTileHelper.eventListener.on('notificationsdata', data => {
     notifications = Array.isArray(data.notifications) ? data.notifications : [];
+    if (packageName) getBufferedMedia();
     liveTileHelper.requestRedraw();
 });

@@ -49,6 +49,7 @@ public class ContentServer extends WebViewClientCompat {
     private static final String APP_ASSET_HOST = "appassets.androidplatform.net";
     private static final int ICON_PACK_CACHE_SIZE = 16;
     private static final int ICON_BYTES_CACHE_SIZE = 4 * 1024 * 1024;
+    private static final int ALBUM_ART_MAX_SIZE = 512;
     private final DiscoWebView discoWebView;
     private final WebViewAssetLoader assetLoader;
     private final String TAG = "ContentServer";
@@ -138,6 +139,41 @@ public class ContentServer extends WebViewClientCompat {
         return new WebResourceResponse("image/webp", "UTF-8", new ByteArrayInputStream(bytes));
     }
 
+    @Nullable
+    private Bitmap getMediaArtwork(MediaMetadata metadata) {
+        Bitmap artwork = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
+        if (artwork == null) artwork = metadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
+        if (artwork == null) artwork = metadata.getBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON);
+        return artwork;
+    }
+
+    @Nullable
+    private Bitmap getMediaArtworkFromUri(MediaMetadata metadata) {
+        String[] artworkUris = {
+                metadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI),
+                metadata.getString(MediaMetadata.METADATA_KEY_ART_URI),
+                metadata.getString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI)
+        };
+
+        for (String artworkUri : artworkUris) {
+            if (artworkUri == null || artworkUri.isEmpty()) continue;
+            try {
+                Uri uri = Uri.parse(artworkUri);
+                // Media sessions normally expose local artwork through a content URI. Do not
+                // proxy arbitrary file or network URLs through the privileged WebView client.
+                if (!"content".equals(uri.getScheme())) continue;
+                try (InputStream inputStream = discoWebView.getContext().getContentResolver()
+                        .openInputStream(uri)) {
+                    Bitmap artwork = BitmapFactory.decodeStream(inputStream);
+                    if (artwork != null) return artwork;
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Could not load media artwork URI", e);
+            }
+        }
+        return null;
+    }
+
     /**
      * The WebView exposes privileged Android APIs through JavascriptInterface.
      * Do not let a navigation replace the bundled app with remote content that
@@ -209,6 +245,22 @@ public class ContentServer extends WebViewClientCompat {
                         if (dra != null) return cacheIconResponse(cacheKey, dra, requestedIconSize);
                     }
                     break;
+                case "adaptive-icon-foreground":
+                    if (iconFileName.length() > 5) {
+                        String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);
+                        String iconPackageName = iconPackageNameWithIntent.split("\\|")[0];
+                        String cacheKey = iconCacheKey(key, iconPackageName, iconPackageNameWithIntent,
+                                requestedIconSize);
+                        WebResourceResponse cachedResponse = cachedIconResponse(cacheKey);
+                        if (cachedResponse != null) return cachedResponse;
+
+                        Bitmap foreground = discoWebView.getAdaptiveAppIconForeground(
+                                discoWebView.packageManager, iconPackageNameWithIntent);
+                        if (foreground != null) {
+                            return cacheIconResponse(cacheKey, foreground, requestedIconSize);
+                        }
+                    }
+                    return transparentImageResponse();
 
                 case "contact-icon":
                     if (iconFileName.length() > 5) {
@@ -302,15 +354,13 @@ public class ContentServer extends WebViewClientCompat {
                         if (token != null) {
                             MediaController mediaController = new MediaController(mainActivity, token);
                             MediaMetadata metadata = mediaController.getMetadata();
-                            PlaybackState playbackState = mediaController.getPlaybackState();
 
                             if (metadata != null) {
-                                Bitmap albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
-                                if (albumArt == null) {
-                                    albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
-                                }
+                                Bitmap albumArt = getMediaArtwork(metadata);
+                                if (albumArt == null) albumArt = getMediaArtworkFromUri(metadata);
                                 if (albumArt != null) {
-                                    InputStream inputStream = Utils.loadBitmapAsStream(albumArt);
+                                    InputStream inputStream = Utils.loadBitmapAsStream(albumArt,
+                                            ALBUM_ART_MAX_SIZE);
                                     return new WebResourceResponse("image/webp", "UTF-8", inputStream);
                                 }
                             }

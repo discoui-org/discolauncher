@@ -274,6 +274,9 @@ class tileController {
         this.matrixTimer = null;
         this.flipTimer = null;
         this.flipCleanupTimer = null;
+        this.mediaTransitionTimer = null;
+        this.mediaKey = null;
+        this.drawGeneration = 0;
     }
     getDOMTile() {
         let tile = document.querySelector(`div.disco-home-tile.live-tile[packagename="${this.packageName}"]`);
@@ -283,6 +286,53 @@ class tileController {
             if (!tile) throw new Error(`Tile for package ${this.packageName} not found`);
         }
         return tile;
+    }
+
+    preloadTileBackground(background, timeoutMs = 5000) {
+        const match = String(background || '').trim()
+            .match(/^url\((?:'([^']*)'|"([^"]*)"|([^)]*))\)$/);
+        const imageUrl = match?.[1] || match?.[2] || match?.[3];
+        if (!imageUrl) return Promise.resolve(false);
+
+        return new Promise(resolve => {
+            const image = new Image();
+            const timeout = setTimeout(() => finish(false), timeoutMs);
+            let complete = false;
+            const finish = loaded => {
+                if (complete) return;
+                complete = true;
+                clearTimeout(timeout);
+                image.onload = null;
+                image.onerror = null;
+                resolve(loaded);
+            };
+            image.onload = () => finish(true);
+            image.onerror = () => finish(false);
+            image.src = imageUrl;
+        });
+    }
+
+    getMediaTransitionSnapshot() {
+        clearTimeout(this.mediaTransitionTimer);
+        this.mediaTransitionTimer = null;
+
+        const container = document.querySelector(
+            `div.disco-home-tile[packagename="${this.packageName}"] div.live-tile-container`
+        );
+        if (!container) return null;
+
+        container.querySelectorAll('.media-track-transition-out').forEach(page => page.remove());
+        const currentPage = container.querySelector('.live-tile-page');
+        if (!currentPage) return null;
+
+        const snapshot = currentPage.cloneNode(true);
+        snapshot.classList.remove(
+            'show-direction-0', 'show-direction-1',
+            'hide-direction-0', 'hide-direction-1',
+            'media-track-transition-in', 'media-track-transition-out'
+        );
+        snapshot.style.visibility = 'visible';
+        return snapshot;
     }
 
     requestDraw() {
@@ -305,16 +355,20 @@ class tileController {
         clearTimeout(this.matrixTimer);
         clearTimeout(this.flipTimer);
         clearTimeout(this.flipCleanupTimer);
+        clearTimeout(this.mediaTransitionTimer);
         document.querySelector(`div.disco-home-tile[packagename="${this.packageName}"] div.disco-home-inner-tile`)
             ?.classList.remove('flip-active');
         this.redrawTimer = null;
         this.matrixTimer = null;
         this.flipTimer = null;
         this.flipCleanupTimer = null;
+        this.mediaTransitionTimer = null;
+        this.drawGeneration += 1;
     }
 
     async draw() {
         try {
+            const drawGeneration = ++this.drawGeneration;
             clearTimeout(this.matrixTimer);
             this.matrixTimer = null;
             const response = await this.sendMessageToWorker({
@@ -329,6 +383,21 @@ class tileController {
             const result = response.result;
             const liveTileBundle = window.liveTiles?.[this.packageName];
             const isActive = result.active !== false;
+            const mediaKey = result.mediaKey || null;
+            const shouldAnimateMediaChange = result.type === TileType.CAROUSEL
+                && this.mediaKey !== null
+                && mediaKey !== null
+                && this.mediaKey !== mediaKey;
+            const previousMediaPage = shouldAnimateMediaChange
+                ? this.getMediaTransitionSnapshot()
+                : null;
+            if (shouldAnimateMediaChange) {
+                await this.preloadTileBackground(result.tiles[0]?.background);
+            }
+            // A newer notification can arrive while an artwork request is in flight.
+            // In that case only the latest track is allowed to replace the current tile.
+            if (drawGeneration !== this.drawGeneration) return response;
+            this.mediaKey = mediaKey;
             if (liveTileBundle) liveTileBundle.active = isActive;
 
             if (!isActive) {
@@ -486,6 +555,15 @@ class tileController {
                             pageTitle.className = 'live-tile-app-title';
                             pageTitle.textContent = appTitle;
                             page.appendChild(pageTitle);
+
+                            const notificationTitle = page.querySelector(
+                                'p.live-tile-notification-title'
+                            );
+                            if (notificationTitle
+                                    && notificationTitle.textContent.trim().toLocaleLowerCase()
+                                    === appTitle.trim().toLocaleLowerCase()) {
+                                notificationTitle.style.display = 'none';
+                            }
                         });
                     }
                 }
@@ -496,6 +574,16 @@ class tileController {
                 const firstPage = liveTileContainer.querySelector('.live-tile-page');
                 if (firstPage) {
                     firstPage.style.visibility = 'visible';
+                    if (previousMediaPage) {
+                        firstPage.classList.add('media-track-transition-in');
+                        previousMediaPage.classList.add('media-track-transition-out');
+                        liveTileContainer.append(previousMediaPage);
+                        this.mediaTransitionTimer = setTimeout(() => {
+                            previousMediaPage.remove();
+                            firstPage.classList.remove('media-track-transition-in');
+                            this.mediaTransitionTimer = null;
+                        }, 320);
+                    }
                 }
             }
             return response;

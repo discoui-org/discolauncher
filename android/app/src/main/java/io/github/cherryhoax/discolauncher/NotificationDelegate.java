@@ -27,6 +27,38 @@ public class NotificationDelegate {
         }
     }
 
+    private Bitmap getMediaArtwork(MediaMetadata metadata) {
+        Bitmap artwork = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
+        if (artwork == null) artwork = metadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
+        if (artwork == null) artwork = metadata.getBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON);
+        return artwork;
+    }
+
+    private boolean hasContentArtworkUri(MediaMetadata metadata) {
+        String[] artworkUris = {
+                metadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI),
+                metadata.getString(MediaMetadata.METADATA_KEY_ART_URI),
+                metadata.getString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI)
+        };
+        for (String artworkUri : artworkUris) {
+            if (artworkUri != null && "content".equals(android.net.Uri.parse(artworkUri).getScheme())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getArtworkVersion(MediaMetadata metadata) {
+        String versionSource = String.valueOf(metadata.getString(MediaMetadata.METADATA_KEY_MEDIA_ID))
+                + "|" + String.valueOf(metadata.getString(MediaMetadata.METADATA_KEY_TITLE))
+                + "|" + String.valueOf(metadata.getString(MediaMetadata.METADATA_KEY_ARTIST))
+                + "|" + String.valueOf(metadata.getString(MediaMetadata.METADATA_KEY_ALBUM))
+                + "|" + String.valueOf(metadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI))
+                + "|" + String.valueOf(metadata.getString(MediaMetadata.METADATA_KEY_ART_URI))
+                + "|" + String.valueOf(metadata.getString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI));
+        return Integer.toHexString(versionSource.hashCode());
+    }
+
     public JSONObject statusBarNotificationToJSON(StatusBarNotification sbn) {
         JSONObject json = new JSONObject();
         try {
@@ -58,14 +90,11 @@ public class NotificationDelegate {
                     String artist = metadata.getString(MediaMetadata.METADATA_KEY_ARTIST);
                     String album = metadata.getString(MediaMetadata.METADATA_KEY_ALBUM);
                     String mediaTitle = metadata.getString(MediaMetadata.METADATA_KEY_TITLE);
-                    Bitmap albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
-                    if (albumArt == null) {
-                        albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
-                    }
+                    Bitmap albumArt = getMediaArtwork(metadata);
                     String albumArtUri = "";
-                    Log.d(TAG, "ORIGINAL CONTENT URI: " + metadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI));
-                    if (albumArt != null) {
-                        albumArtUri = "https://appassets.androidplatform.net/assets/album-art/" + sbn.getId() + ".webp";
+                    if (albumArt != null || hasContentArtworkUri(metadata)) {
+                        albumArtUri = "https://appassets.androidplatform.net/assets/album-art/"
+                                + sbn.getId() + ".webp?v=" + getArtworkVersion(metadata);
                     }
                     long duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION);
                     song.put("artist", artist);
