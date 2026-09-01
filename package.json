@@ -3,19 +3,20 @@
   "version": "0.7.0-beta",
   "main": "index.js",
   "scripts": {
-    "build-watch": "npx concurrently \"npm run build-watch:webpack\" \"npm run build-watch:scss\" \"npm run build-watch:internal-apps\" \"npm run build-watch:android\"",
-    "build-watch:webpack": "npx webpack --watch",
+    "build-watch": "npx concurrently \"npm run build-watch:vite\" \"npm run build-watch:scss\" \"npm run build-watch:internal-apps\" \"npm run build-watch:android\"",
+    "build-watch:vite": "npm run clean:vite && npx concurrently \"vite build --watch --mode development\" \"vite build --watch --mode development --config vite.worker.config.mjs\"",
     "build-watch:scss": "npx sass --no-source-map --watch src/styles.scss www/dist/styles.css",
     "build-watch:android": "npx concurrently \"npm run build:android-assets\" \"chokidar 'www/**/*' -c 'npm run build:android-assets'\"",
-    "build-watch:internal-apps": "npx concurrently \"node ./scripts/build-internal-apps.js\" \"chokidar 'src/apps/**/*' -c 'npm run build:internal-apps'\"",
-    "build-watch:web": "npx concurrently \"npm run build-watch:webpack\" \"npm run build-watch:scss\" \"npm run build-watch:internal-apps\"",
-    "build": "npm run build:webpack && npm run build:scss && npm run build:internal-apps && npm run build:android-assets",
-    "build:webpack": "npx webpack",
+    "build-watch:internal-apps": "npx concurrently \"node ./scripts/build-internal-apps.mjs\" \"chokidar 'src/apps/**/*' -c 'npm run build:internal-apps'\"",
+    "build-watch:web": "npx concurrently \"npm run build-watch:vite\" \"npm run build-watch:scss\" \"npm run build-watch:internal-apps\"",
+    "build": "npm run build:vite && npm run build:scss && npm run build:internal-apps && npm run build:android-assets",
+    "clean:vite": "rimraf 'www/dist/*.js' 'www/dist/*.js.map' www/dist/chunks www/dist/assets",
+    "build:vite": "npm run clean:vite && vite build --mode development && vite build --mode development --config vite.worker.config.mjs",
     "build:scss": "npx sass --no-source-map src/styles.scss www/dist/styles.css",
     "build:android-assets": "node ./scripts/build-android.js",
-    "build:internal-apps": "node ./scripts/build-internal-apps.js",
-    "build:production": "npx webpack --env production && npx sass --no-source-map --style=compressed src/styles.scss www/dist/styles.css && node ./scripts/build-internal-apps.js --production && npm run build:android-assets && echo Compilation completed.",
-    "build:debug": "npx webpack && npx sass --no-source-map src/styles.scss www/dist/styles.css && node ./scripts/build-internal-apps.js && npm run build:android-assets && echo Compilation completed.",
+    "build:internal-apps": "node ./scripts/build-internal-apps.mjs",
+    "build:production": "npm run clean:vite && vite build --mode production && vite build --mode production --config vite.worker.config.mjs && npx sass --no-source-map --style=compressed src/styles.scss www/dist/styles.css && node ./scripts/build-internal-apps.mjs --production && npm run build:android-assets && echo Compilation completed.",
+    "build:debug": "npm run build && echo Compilation completed.",
     "build:android": "cd android && ./gradlew assembleRelease && cd ..",
     "build:android:nightly:webview": "npm run build:production && cd android && ./gradlew assembleNightlyRelease -Pandroid.injected.signing.store.file=app/keystore.jks -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD -Pandroid.injected.signing.key.alias=discocherry -Pandroid.injected.signing.key.password=$KEY_PASSWORD -Pandroid.injected.flavor=nightly && cd ..",
     "build:android:nightly:geckoview": "npm run build:production && cd android && ./gradlew assembleNightlyGeckoViewRelease -Pandroid.injected.signing.store.file=app/keystore.jks -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD -Pandroid.injected.signing.key.alias=discocherry -Pandroid.injected.signing.key.password=$KEY_PASSWORD && cd ..",
@@ -28,6 +29,9 @@
   "author": "cherryhoax",
   "license": "MIT",
   "description": "A groovy personalized home screen experience for Android",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "dependencies": {
     "@jaames/iro": "^5.5.2",
     "@vitalets/google-translate-api": "^9.2.0",
@@ -51,7 +55,6 @@
     "chokidar-cli": "^3.0.0",
     "concurrently": "^9.0.1",
     "rimraf": "^6.0.1",
-    "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4"
+    "vite": "^8.2.2"
   }
 }

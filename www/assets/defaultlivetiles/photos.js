@@ -39,14 +39,16 @@ function draw(args) {
 
 // Replace the minute scheduler with a 10-second rotation using requestGoToNextPage
 var page = 0
+var rotationTimer = null
 function scheduleRotation() {
-    setInterval(() => {
+    clearInterval(rotationTimer);
+    rotationTimer = setInterval(() => {
         liveTileHelper.requestGoToNextPage();
         page++;
         if (page == 10) {
             liveTileHelper.requestRedraw()
         }
-    }, 10000 + Math.random() * 5000); // 5 to 10 seconds
+    }, 10000 + Math.random() * 5000); // 10 to 15 seconds
 }
 
 // Start the rotation

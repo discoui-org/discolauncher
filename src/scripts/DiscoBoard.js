@@ -348,6 +348,7 @@ const boardMethods = {
     getProviders: () => window.liveTileProviders || [],
     refresh: () => {
       const initializeLiveTiles = boardMethods.liveTiles.get()
+      const newlyRegisteredPackages = new Set()
       const homeTiles = document.querySelector("#main-home-slider div.tile-list-inner-container").querySelectorAll("div.disco-home-tile")
       homeTiles.forEach(i => {
         const packageName = i.getAttribute("packagename")
@@ -357,6 +358,7 @@ const boardMethods = {
         };
         if (initializeLiveTiles[packageName]) {
           liveTileManager.registerLiveTileWorker(packageName, initializeLiveTiles[packageName])
+          newlyRegisteredPackages.add(packageName)
         }
         delete initializeLiveTiles[packageName]
       })
@@ -367,7 +369,8 @@ const boardMethods = {
       Object.entries(window.liveTiles).forEach(liveTileBundle => {
         const packageName = liveTileBundle[0]
         const liveTile = liveTileBundle[1]
-        if (liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.people) {
+        if (newlyRegisteredPackages.has(packageName)
+          && liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.people) {
           liveTile.worker.postMessage({
             action: "contacts-data",
             data: { timestamp: Date.now(), contacts: window.contactsCache }
@@ -378,7 +381,8 @@ const boardMethods = {
       Object.entries(window.liveTiles).forEach(liveTileBundle => {
         const packageName = liveTileBundle[0]
         const liveTile = liveTileBundle[1]
-        if (liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.photos) {
+        if (newlyRegisteredPackages.has(packageName)
+          && liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.photos) {
           liveTile.worker.postMessage({
             action: "photos-data",
             data: { timestamp: Date.now(), photos: window.photosCache }
@@ -389,7 +393,8 @@ const boardMethods = {
       Object.entries(window.liveTiles).forEach(liveTileBundle => {
         const packageName = liveTileBundle[0]
         const liveTile = liveTileBundle[1]
-        if (liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.notifications) {
+        if (newlyRegisteredPackages.has(packageName)
+          && liveTile.uid == DiscoBoard.boardMethods.liveTiles.init.notifications) {
           liveTile.worker.postMessage({
             action: "notifications-data",
             data: { timestamp: Date.now(), notifications: JSON.parse(Disco.getAllNotifications()) }
@@ -397,6 +402,7 @@ const boardMethods = {
 
         }
       })
+      liveTileManager.initializeLiveTiles()
     }
     //getAppProvider:
   },

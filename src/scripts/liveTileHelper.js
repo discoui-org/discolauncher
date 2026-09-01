@@ -111,7 +111,8 @@ class TileFeed {
             animationType: AnimationType.FLIP,
             showAppTitle: true,
             duration: 5000 + Math.random() * 500,
-            notificationCount: null
+            notificationCount: null,
+            active: true
         };
         Object.assign(this, defaults, options);
         // Keep third-party providers using the old misspelled property working.
@@ -149,7 +150,7 @@ class TileFeed {
         return JSON.stringify(this);
     }
 }
-global.liveTileHelper = {
+globalThis.liveTileHelper = {
     requestRedraw, requestGoToPage, requestGoToNextPage, requestGoToPreviousPage, eventListener, TileFeed, Tile, TileType, AnimationType
 }
 export {

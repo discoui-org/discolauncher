@@ -16,7 +16,6 @@ window.$ = jQuery
 import appTransition from "./scripts/appTransition.js";
 import "./scripts/flowTouch.js";
 import { DiscoScroll, DiscoSlide } from "./scripts/overscrollFramework.js";
-import { boardMethods } from "./scripts/DiscoBoard";
 import imageStore from "./scripts/imageStore.js";
 import detectDeviceType from "./scripts/detectDeviceType";
 import DiscoBoard from "./scripts/DiscoBoard";
@@ -358,9 +357,21 @@ startUpSequence([
 
 window.liveTileManager = liveTileManager
 
-function refreshNotificationLiveTiles() {
+function refreshNotificationLiveTiles(event) {
     const providerId = DiscoBoard.boardMethods.liveTiles.init.notifications
     if (!providerId) return
+
+    let changedPackage = null
+    if (event?.type !== "notificationsChanged") {
+        try {
+            const detail = typeof event?.detail === "string"
+                ? JSON.parse(event.detail)
+                : event?.detail
+            changedPackage = detail?.packageName || null
+        } catch (error) {
+            console.warn("Could not identify changed notification package", error)
+        }
+    }
 
     let notifications = []
     try {
@@ -369,8 +380,9 @@ function refreshNotificationLiveTiles() {
         console.error("Could not read notifications for live tiles", error)
     }
 
-    Object.values(window.liveTiles || {}).forEach(liveTile => {
-        if (liveTile.uid === providerId) {
+    Object.entries(window.liveTiles || {}).forEach(([packageName, liveTile]) => {
+        if (liveTile.uid === providerId
+            && (!changedPackage || packageName === changedPackage)) {
             liveTile.worker.postMessage({
                 action: "notifications-data",
                 data: { timestamp: Date.now(), notifications }

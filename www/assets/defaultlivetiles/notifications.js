@@ -4,6 +4,7 @@
  * @author string cherryhoax
  * @description string Displays per-app notifications and prioritizes actively playing media.
  * @permission NOTIFICATIONS
+ * @activation string dynamic
  * @minVersion number 55
  * @targetVersion number 55
  */
@@ -13,6 +14,7 @@ importScripts('./../../dist/liveTileHelper.js');
 let packageName = null;
 let notifications = [];
 let rotationTimer = null;
+let canRotate = false;
 
 function escapeHTML(value) {
     return String(value ?? '')
@@ -34,6 +36,19 @@ function safeBackgroundURL(value) {
 
 function isMediaNotification(notification) {
     return notification.song && Object.keys(notification.song).length > 0;
+}
+
+function scheduleRotation(initial = false) {
+    clearTimeout(rotationTimer);
+    rotationTimer = null;
+    if (!canRotate) return;
+
+    rotationTimer = setTimeout(() => {
+        rotationTimer = null;
+        if (!canRotate) return;
+        liveTileHelper.requestGoToNextPage();
+        scheduleRotation();
+    }, 7000 + (initial ? Math.random() * 2000 : 0));
 }
 
 function createMediaTile(tileFeed, notification) {
@@ -73,7 +88,12 @@ function draw() {
         isMediaNotification(notification) && notification.song.isPlaying === true
     );
     const regularNotifications = appNotifications.filter(notification => !isMediaNotification(notification));
+    // A notification tile has a summary page before its notification pages.
+    // Media-only feeds contain one page, so they do not need rotation.
+    canRotate = regularNotifications.length > 0;
+    scheduleRotation(true);
     const tileFeed = new liveTileHelper.TileFeed({
+        active: Boolean(activeMedia || regularNotifications.length),
         type: activeMedia ? liveTileHelper.TileType.CAROUSEL : liveTileHelper.TileType.NOTIFICATION,
         animationType: liveTileHelper.AnimationType.SLIDE,
         showAppTitle: !activeMedia,
@@ -94,10 +114,6 @@ liveTileHelper.eventListener.on('draw', draw);
 
 liveTileHelper.eventListener.on('init', data => {
     packageName = data.packageName;
-    clearInterval(rotationTimer);
-    rotationTimer = setInterval(() => {
-        liveTileHelper.requestGoToNextPage();
-    }, 7000);
 });
 
 liveTileHelper.eventListener.on('notificationsdata', data => {

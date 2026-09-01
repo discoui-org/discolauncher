@@ -63,7 +63,12 @@ function main_registerLiveTileWorker(packageName, uid) {
         };
 
         // Register new worker
-        window.liveTiles[packageName] = { controller: new tileController(packageName, worker), worker: worker, uid: uid };
+        window.liveTiles[packageName] = {
+            controller: new tileController(packageName, worker),
+            worker,
+            uid,
+            active: provider.metadata?.activation !== 'dynamic'
+        };
 
         worker.postMessage({
             action: "init",
@@ -93,20 +98,25 @@ function onWorkerMessage(event) {
         console.error("Could not find package for worker");
         return;
     }
-    const [packageName, { controller }] = packageEntry;
+    const [packageName, liveTile] = packageEntry;
+    const { controller } = liveTile;
+    const canNavigate = () => liveTile.active !== false
+        && Boolean(document.querySelector(
+            `div.disco-home-tile.live-tile[packagename="${packageName}"]`
+        ));
 
     switch (message.action) {
         case 'requestRedraw':
             controller.requestDraw();
             break;
         case 'requestGoToPage':
-            controller.goToPage(message.data);
+            if (canNavigate()) controller.goToPage(message.data);
             break;
         case 'requestGoToNextPage':
-            controller.goToNextPage();
+            if (canNavigate()) controller.goToNextPage();
             break;
         case 'requestGoToPreviousPage':
-            controller.goToPreviousPage();
+            if (canNavigate()) controller.goToPreviousPage();
             break;
         case 'test':
             break;
@@ -261,6 +271,7 @@ class tileController {
         this.worker = worker || window.liveTiles[packageName]["worker"];
         this.lastDrawTime = 0;
         this.redrawTimer = null;
+        this.matrixTimer = null;
     }
     getDOMTile() {
         let tile = document.querySelector(`div.disco-home-tile.live-tile[packagename="${this.packageName}"]`);
@@ -289,11 +300,15 @@ class tileController {
 
     destroy() {
         clearTimeout(this.redrawTimer);
+        clearTimeout(this.matrixTimer);
         this.redrawTimer = null;
+        this.matrixTimer = null;
     }
 
     async draw() {
         try {
+            clearTimeout(this.matrixTimer);
+            this.matrixTimer = null;
             const response = await this.sendMessageToWorker({
                 action: "draw",
                 data: { message: "Drawing from tile controller" },
@@ -303,11 +318,36 @@ class tileController {
                 throw new Error('Invalid response format: missing result');
             }
 
+            const result = response.result;
+            const liveTileBundle = window.liveTiles?.[this.packageName];
+            const isActive = result.active !== false;
+            if (liveTileBundle) liveTileBundle.active = isActive;
+
+            if (!isActive) {
+                const inactiveTile = document.querySelector(`div.disco-home-tile[packagename="${this.packageName}"]`);
+                if (inactiveTile) {
+                    inactiveTile.classList.remove(
+                        'live-tile', 'has-notification-count', 'hide-app-title',
+                        'tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix'
+                    );
+                    const inactiveContainer = inactiveTile.querySelector('div.live-tile-container');
+                    if (inactiveContainer) inactiveContainer.innerHTML = '';
+                    const inactiveIcon = inactiveTile.querySelector('img.disco-home-tile-imageicon');
+                    if (inactiveIcon) {
+                        inactiveIcon.style.visibility = 'visible';
+                        inactiveIcon.classList.remove(
+                            'hide-direction-0', 'hide-direction-1', 'show-direction-0', 'show-direction-1'
+                        );
+                    }
+                }
+                return response;
+            }
+
+            initializeLiveTiles();
             const tile = this.getDOMTile();
             const liveTileContainer = tile.querySelector('div.live-tile-container');
             tile.querySelectorAll('.disco-home-inner-tile > .live-tile-notification-count')
                 .forEach(badge => badge.remove());
-            const result = response.result;
             this.tileType = result.type;
             this.animationType = result.animationType;
             const notificationCount = Math.max(0, Number(result.notificationCount) || 0);
@@ -377,7 +417,7 @@ class tileController {
                     matrixTile.style.backgroundColor = generateRandomAccent();
                 });
 
-                function drawNextFlip() {
+                const drawNextFlip = () => {
                     sizes.forEach((size) => {
                         const allMatrixTiles = size.querySelectorAll("div.live-tile-matrix-row")
                         const randomTile = allMatrixTiles[Math.floor(Math.random() * allMatrixTiles.length)]
@@ -417,7 +457,7 @@ class tileController {
                         }
                     })
                     const duration = Math.random() * 2900 + 100
-                    setTimeout(() => {
+                    this.matrixTimer = setTimeout(() => {
                         drawNextFlip()
                     }, duration);
                 }
@@ -454,14 +494,20 @@ class tileController {
 
         const icon = document.createElement('div');
         icon.className = 'live-tile-notification-summary-icon';
-        const innerTile = tile.querySelector('.disco-home-inner-tile');
-        if (innerTile?.style.backgroundImage) {
-            icon.style.backgroundImage = innerTile.style.backgroundImage;
+
+        const backgroundSource = tile.getAttribute('icon-bg');
+        if (backgroundSource && backgroundSource !== 'none') {
+            const background = document.createElement('img');
+            background.className = 'live-tile-notification-summary-icon-background';
+            background.src = backgroundSource;
+            background.alt = '';
+            icon.appendChild(background);
         }
 
         const sourceIcon = tile.querySelector('img.disco-home-tile-imageicon');
         if (sourceIcon?.src) {
             const foreground = document.createElement('img');
+            foreground.className = 'live-tile-notification-summary-icon-foreground';
             foreground.src = sourceIcon.src;
             foreground.alt = '';
             icon.appendChild(foreground);
@@ -653,7 +699,7 @@ function initializeLiveTiles() {
     const tiles = document.querySelectorAll('div.disco-home-tile:not(.live-tile)');
     tiles.forEach(tile => {
         const packageName = tile.getAttribute('packagename');
-        if (packageName && window.liveTiles[packageName]) {
+        if (packageName && window.liveTiles[packageName]?.active !== false) {
             const innerTile = tile.querySelector('div.disco-home-inner-tile');
             if (innerTile && !innerTile.querySelector('div.live-tile-container')) {
                 const liveTileContainer = document.createElement('div');

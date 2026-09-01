@@ -869,37 +869,35 @@ div.disco-home-tile {
                     div.live-tile-notification-summary {
                         position: absolute;
                         inset: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0;
 
                         div.live-tile-notification-summary-icon {
-                            position: absolute;
-                            left: 22.5%;
-                            top: 22.5%;
-                            width: 55%;
+                            position: relative;
+                            flex: 0 0 auto;
                             height: 55%;
-                            background-position: center;
-                            background-repeat: no-repeat;
-                            background-size: 100% 100%;
+                            width: auto;
+                            aspect-ratio: 1 / 1;
 
                             img {
+                                position: absolute;
+                                inset: 0;
                                 width: 100%;
                                 height: 100%;
                                 object-fit: fill;
                             }
                         }
 
-                        &.has-count div.live-tile-notification-summary-icon {
-                            left: 10%;
-                        }
-
                         span.live-tile-notification-count {
-                            position: absolute;
-                            left: 70%;
-                            top: 50%;
+                            position: relative;
+                            flex: 0 0 auto;
                             color: white;
                             font-size: 42px;
                             font-weight: 500;
                             line-height: 1;
-                            transform: translateY(-50%);
+                            margin-left: -8px;
                         }
                     }
 

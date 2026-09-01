@@ -1,6 +1,6 @@
 # Disco Launcher
 
-Disco Launcher is a metro-styled Android launcher application with a web-based UI built using Node.js, webpack, and SASS. The project includes both a hybrid web interface and an Android application that packages the web assets for mobile deployment.
+Disco Launcher is a metro-styled Android launcher application with a web-based UI built using Node.js, Vite, and Sass. The project includes both a hybrid web interface and an Android application that packages the web assets for mobile deployment.
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
@@ -8,21 +8,21 @@ Always reference these instructions first and fallback to search or bash command
 
 Bootstrap, build, and test the repository:
 - `npm install` -- takes 60 seconds. NEVER CANCEL. Set timeout to 90+ seconds.
-- `npm run build` -- takes 30 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
-- `npm run build:production` -- takes 45-55 seconds with minification. NEVER CANCEL. Set timeout to 120+ seconds.
+- `npm run build` -- typically takes under 10 seconds. Set timeout to 60+ seconds.
+- `npm run build:production` -- typically takes under 10 seconds with minification. Set timeout to 60+ seconds.
 
 Run the web development server:
 - `npm run debug:web` -- starts live development server with auto-rebuild on port 8080. NEVER CANCEL.
 - Open `http://localhost:8080/www/` in browser for testing.
 
 Individual build commands:
-- `npm run build:webpack` -- JavaScript bundling, takes ~20 seconds
+- `npm run build:vite` -- JavaScript bundling with development source maps
 - `npm run build:scss` -- SASS compilation, takes ~5 seconds  
-- `npm run build:internal-apps` -- Internal apps compilation, takes ~10 seconds
+- `npm run build:internal-apps` -- Internal apps compilation with Vite
 - `npm run build:android-assets` -- Android asset preparation, takes ~5 seconds
 
 Production builds (for Android release):
-- `npm run build:production` -- Full production build with minification, takes 45-55 seconds. NEVER CANCEL. Set timeout to 120+ seconds.
+- `npm run build:production` -- Full production build with minification. Set timeout to 60+ seconds.
 
 ## Android Build Requirements
 
@@ -91,7 +91,7 @@ Android commands (only work with proper SDK setup):
 - **Styling**: `src/styles.scss` and files in `src/styles/`
 - **Internal Apps**: Individual folders in `src/apps/` (each has style.scss, script.js, index.html)
 - **Mock/Testing**: `src/scripts/discoMock.js` -- Web testing utilities
-- **Build Config**: `package.json`, `webpack.config.js`
+- **Build Config**: `package.json`, `vite.config.mjs`, `vite.worker.config.mjs`
 
 ### Internal Apps Structure
 Each app in `src/apps/` follows this pattern:
@@ -109,7 +109,7 @@ Each app in `src/apps/` follows this pattern:
 
 ### Creating/Modifying Internal Apps  
 1. Edit files in `src/apps/{app-name}/`
-2. JavaScript changes automatically recompile via webpack
+2. JavaScript changes automatically recompile via Vite
 3. SCSS changes automatically recompile via SASS
 4. Test by opening the specific app in the launcher
 
@@ -126,12 +126,12 @@ Each app in `src/apps/` follows this pattern:
 
 ## Critical Warnings
 
-**NEVER CANCEL BUILDS**: Build processes may take 30-90 seconds. Canceling builds mid-process can corrupt the build state.
+**NEVER CANCEL BUILDS**: Let build processes finish so generated web and Android assets stay in sync.
 
 **TIMEOUT REQUIREMENTS**:
 - `npm install`: Set 90+ second timeout
 - `npm run build`: Set 60+ second timeout  
-- `npm run build:production`: Set 120+ second timeout
+- `npm run build:production`: Set 60+ second timeout
 - `npm run debug:web`: No timeout needed (runs continuously)
 
 **TESTING REQUIREMENTS**: 
@@ -147,7 +147,7 @@ Each app in `src/apps/` follows this pattern:
 - Live tiles may not show real data in web mode (uses mock data)
 - Internal apps (Tweaks, Settings) may have limited functionality in web mode
 - Expected build warnings that can be ignored:
-  - Webpack bundle size warnings (assets exceed 244 KiB limit)
+  - Vite chunk-size warnings for the browser-based theme editor
   - SASS deprecation warnings about @import rules
   - Critical dependency warnings from sass.dart.js
   - 404 errors for locale files in web mode
@@ -162,10 +162,10 @@ npm run debug:web           # Start development server
 
 # Build commands
 npm run build               # Full development build (60s timeout)
-npm run build:production    # Production build with minification (120s timeout)
+npm run build:production    # Production build with minification (60s timeout)
 
 # Individual build steps
-npm run build:webpack       # JavaScript only
+npm run build:vite          # JavaScript only
 npm run build:scss          # Styles only
 npm run build:internal-apps # Internal apps only
 ```

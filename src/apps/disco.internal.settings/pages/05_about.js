@@ -1,5 +1,3 @@
-import { version } from "dompurify";
-
 window.Disco = window.Disco || window.parent.Disco
 document.querySelector("#resetbtn").addEventListener("flowClick", () => {
 
