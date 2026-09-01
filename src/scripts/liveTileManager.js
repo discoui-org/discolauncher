@@ -14,11 +14,26 @@ function isOnMainThread() {
 }
 if (isOnMainThread()) {
     window.liveTiles = window.liveTiles || {};
-    window.liveTileProviders = window.liveTileProviders || []
+    window.liveTileProviders = window.liveTileProviders || [];
 } else {
     window.parent.liveTiles = window.parent.liveTiles || {};
     window.parent.liveTileProviders = window.parent.liveTileProviders || []
 }
+
+// This module can load before the tile-list DOM exists, so register the
+// native event immediately and decide whether this is the launcher at event
+// time. Otherwise the first provider update is lost and the worker stays pending.
+window.addEventListener("nativeWidgetSnapshot", event => {
+    if (!isOnMainThread()) return;
+    const snapshot = event.detail;
+    if (!snapshot?.providerId) return;
+    for (const liveTile of Object.values(window.liveTiles || {})) {
+        const provider = (window.liveTileProviders || []).find(item => item.id === liveTile.uid);
+        if (provider?.metadata?.nativeWidget?.id === snapshot.providerId) {
+            liveTile.worker.postMessage({ action: "native-widget-snapshot", data: snapshot });
+        }
+    }
+});
 
 function main_registerLiveTileWorker(packageName, uid) {
     const provider = liveTileProviders.find(provider => provider.id === uid);
@@ -70,10 +85,22 @@ function main_registerLiveTileWorker(packageName, uid) {
             active: provider.metadata?.activation !== 'dynamic'
         };
 
+        const nativeWidgetSize = getNativeWidgetSize(packageName);
         worker.postMessage({
             action: "init",
-            data: { timestamp: Date.now(), packageName }
+            data: { timestamp: Date.now(), packageName, provider: provider.metadata, nativeWidgetSize }
         });
+
+        // Native widget binding/rendering is asynchronous. Bootstrap the first
+        // snapshot from the main thread too, so a third-party worker cannot
+        // leave a tile waiting forever if it misses its initial request.
+        if (provider.metadata?.nativeWidget?.id) {
+            requestNativeWidgetSnapshot(worker, {
+                providerId: provider.metadata.nativeWidget.id,
+                width: nativeWidgetSize.width,
+                height: nativeWidgetSize.height
+            });
+        }
 
         // Initialize tiles after registering the worker
         initializeLiveTiles();
@@ -83,6 +110,18 @@ function main_registerLiveTileWorker(packageName, uid) {
         console.error("Worker creation error:", error);
         throw new Error(`Failed to create worker: ${error.message}`);
     }
+}
+
+function getNativeWidgetSize(packageName) {
+    const tile = document.querySelector(
+        `div.disco-home-tile[packagename="${packageName}"]`
+    );
+    const rect = tile?.getBoundingClientRect();
+    const scale = window.devicePixelRatio || 1;
+    return {
+        width: Math.max(1, Math.round((rect?.width || 800) * scale)),
+        height: Math.max(1, Math.round((rect?.height || 400) * scale))
+    };
 }
 function onWorkerMessage(event) {
     const message = event.data;
@@ -120,6 +159,9 @@ function onWorkerMessage(event) {
             break;
         case 'requestWeatherLocation':
             requestWeatherLocation(liveTile.worker);
+            break;
+        case 'requestNativeWidgetSnapshot':
+            requestNativeWidgetSnapshot(liveTile.worker, message.data);
             break;
         case 'test':
             break;
@@ -167,6 +209,24 @@ function requestWeatherLocation(worker, retryCount = 0) {
         worker.postMessage({ action: "weather-location", data: { error: "unavailable" } });
     } finally {
         weatherLocationRequestPending = false;
+    }
+}
+
+function requestNativeWidgetSnapshot(worker, data = {}) {
+    if (!window.Disco?.getNativeWidgetSnapshot || !data.providerId) {
+        worker.postMessage({ action: "native-widget-snapshot", data: { state: "unsupported" } });
+        return;
+    }
+    try {
+        const snapshot = JSON.parse(window.Disco.getNativeWidgetSnapshot(
+            data.providerId,
+            Number(data.width) || 800,
+            Number(data.height) || 400
+        ));
+        worker.postMessage({ action: "native-widget-snapshot", data: snapshot });
+    } catch (error) {
+        console.warn("Could not get native widget snapshot", error);
+        worker.postMessage({ action: "native-widget-snapshot", data: { state: "error" } });
     }
 }
 function main_unregisterLiveTileWorker(packageName) {
@@ -282,6 +342,26 @@ async function main_registerLiveTileProvider(workerScript) {
     liveTileProviders.push({ id: uid, script: workerScript, metadata: normalizedMetadata });
     return uid;
 }
+
+function main_registerNativeWidgetProvider(widget, workerScript) {
+    if (!widget?.id || !widget?.packageName) return null;
+    const uid = `native-widget:${widget.id}`;
+    if (liveTileProviders.some(provider => provider.id === uid)) return uid;
+    liveTileProviders.push({
+        id: uid,
+        script: workerScript,
+        metadata: {
+            name: widget.displayName || "Android Widget",
+            author: "Android",
+            minVersion: 1,
+            targetVersion: 1,
+            description: "Native widget snapshot",
+            provide: [widget.packageName],
+            nativeWidget: widget
+        }
+    });
+    return uid;
+}
 function main_unregisterLiveTileProvider(uid) {
     liveTileProviders = liveTileProviders.filter(provider => provider.id !== uid);
 }
@@ -291,6 +371,11 @@ function main_getLiveTileProviders(packageName) {
 const registerLiveTileProvider = function (workerScript) {
     if (isOnMainThread()) {
         return main_registerLiveTileProvider(workerScript);
+    }
+}
+const registerNativeWidgetProvider = function (widget, workerScript) {
+    if (isOnMainThread()) {
+        return main_registerNativeWidgetProvider(widget, workerScript);
     }
 }
 const unregisterLiveTileProvider = function (uid) {
@@ -326,6 +411,9 @@ class tileController {
         this.mediaTransitionTimer = null;
         this.mediaKey = null;
         this.drawGeneration = 0;
+        this.observedTile = null;
+        this.nativeWidgetSize = null;
+        this.resizeObserver = new ResizeObserver(() => this.notifyWidgetSizeChanged());
     }
     getDOMTile() {
         let tile = document.querySelector(`div.disco-home-tile.live-tile[packagename="${this.packageName}"]`);
@@ -334,7 +422,22 @@ class tileController {
             tile = document.querySelector(`div.disco-home-tile.live-tile[packagename="${this.packageName}"]`);
             if (!tile) throw new Error(`Tile for package ${this.packageName} not found`);
         }
+        if (tile !== this.observedTile) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver.observe(tile);
+            this.observedTile = tile;
+        }
         return tile;
+    }
+
+    notifyWidgetSizeChanged() {
+        const liveTile = window.liveTiles?.[this.packageName];
+        if (!liveTile?.uid?.startsWith('native-widget:')) return;
+        const size = getNativeWidgetSize(this.packageName);
+        if (this.nativeWidgetSize?.width === size.width
+                && this.nativeWidgetSize?.height === size.height) return;
+        this.nativeWidgetSize = size;
+        this.worker.postMessage({ action: 'widget-size', data: size });
     }
 
     preloadTileBackground(background, timeoutMs = 5000) {
@@ -363,6 +466,7 @@ class tileController {
 
     getMediaTransitionSnapshot() {
         clearTimeout(this.mediaTransitionTimer);
+        this.resizeObserver.disconnect();
         this.mediaTransitionTimer = null;
 
         const container = document.querySelector(
@@ -454,7 +558,8 @@ class tileController {
                 if (inactiveTile) {
                     inactiveTile.classList.remove(
                         'live-tile', 'has-notification-count', 'hide-app-title',
-                        'tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix'
+                        'tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix',
+                        'native-widget-tile'
                     );
                     const inactiveContainer = inactiveTile.querySelector('div.live-tile-container');
                     if (inactiveContainer) inactiveContainer.innerHTML = '';
@@ -491,6 +596,7 @@ class tileController {
             liveTileContainer.classList.add(`tile-type-${result.type}`);
             tile.classList.remove('tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix');
             tile.classList.add(`tile-type-${result.type}`);
+            tile.classList.toggle('native-widget-tile', result.isNativeWidget === true);
             liveTileContainer.setAttribute("current-page", 0);
             liveTileContainer.style.setProperty('--current-page', 0);
             const iconElement = tile.querySelector('img.disco-home-tile-imageicon');
@@ -925,6 +1031,7 @@ function uninitializeLiveTile(packageName) {
 }
 export {
     registerLiveTileProvider,
+    registerNativeWidgetProvider,
     unregisterLiveTileProvider,
     getLiveTileProviders,
     registerLiveTileWorker,
@@ -934,6 +1041,7 @@ export {
 }
 const liveTileManager = {
     registerLiveTileProvider,
+    registerNativeWidgetProvider,
     unregisterLiveTileProvider,
     getLiveTileProviders,
     registerLiveTileWorker,

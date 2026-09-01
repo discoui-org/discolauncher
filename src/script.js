@@ -326,6 +326,21 @@ startUpSequence([
             weather: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/weather.js", baseURL).href),
             example: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/helloworld.js", baseURL).href)
         }
+        try {
+            const widgets = JSON.parse(Disco.getNativeWidgetProviders(""))
+            const widgetScript = new URL("./assets/defaultlivetiles/nativeWidget.js", baseURL).href
+            const widgetCounts = new Map()
+            widgets.forEach(widget => {
+                const index = (widgetCounts.get(widget.packageName) || 0) + 1
+                widgetCounts.set(widget.packageName, index)
+                liveTileManager.registerNativeWidgetProvider({
+                    ...widget,
+                    displayName: `Android Widget ${index}`
+                }, widgetScript)
+            })
+        } catch (error) {
+            console.warn("Could not register native widget providers", error)
+        }
         DiscoBoard.backendMethods.defaultLiveTiles.refresh();
         window.contactsCache = JSON.parse(Disco.getContacts()).map(e => {
             e.avatarURL = Disco.getContactAvatarURL(e.id)

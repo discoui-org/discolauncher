@@ -283,6 +283,12 @@ public class MainActivity extends AppCompatActivity {
 
         activityDispatchEventAutoTimeout();
 
+        if (webView != null && webView.webInterface != null
+                && webView.webInterface.onNativeWidgetActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (requestCode != INPUT_FILE_REQUEST_CODE || mFilePathCallback == null) {
                 super.onActivityResult(requestCode, resultCode, data);

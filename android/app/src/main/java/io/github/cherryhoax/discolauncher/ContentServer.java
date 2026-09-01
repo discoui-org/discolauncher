@@ -201,6 +201,16 @@ public class ContentServer extends WebViewClientCompat {
             String key = segments[2];
             String iconFileName = segments[3];
             switch (key) {
+                case "native-widget":
+                    if (iconFileName.endsWith(".webp")) {
+                        String snapshotKey = iconFileName.substring(0, iconFileName.length() - 5);
+                        byte[] snapshot = NativeWidgetSnapshotStore.get(snapshotKey);
+                        if (snapshot != null) {
+                            return new WebResourceResponse("image/webp", null,
+                                    new ByteArrayInputStream(snapshot));
+                        }
+                    }
+                    break;
                 case "icons":
                     if (iconFileName.length() > 5) {
                         String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);

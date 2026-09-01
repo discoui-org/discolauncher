@@ -48,6 +48,12 @@ onmessage = async function (event) {
         case 'weather-location':
             eventListener.dispatch("weatherlocation", message.data);
             break;
+        case 'native-widget-snapshot':
+            eventListener.dispatch("nativewidgetsnapshot", message.data);
+            break;
+        case 'widget-size':
+            eventListener.dispatch("widgetsize", message.data);
+            break;
         default:
             console.log("Worker: Unknown action received:", message.action);
     }

@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class DiscoWebView extends WebView {
+    public WebInterface webInterface;
     private Context m_context;
     public List<ResolveInfo> retrievedApps;
     PackageManager packageManager;
@@ -437,7 +438,8 @@ public class DiscoWebView extends WebView {
         webViewSettings.setDomStorageEnabled(true);
         webViewSettings.setTextZoom(100);
         // Assets are hosted under http(s)://appassets.androidplatform.net/assets/... .
-        this.addJavascriptInterface(new WebInterface((MainActivity) mainActivity, this), "Disco");
+        this.webInterface = new WebInterface((MainActivity) mainActivity, this);
+        this.addJavascriptInterface(this.webInterface, "Disco");
         this.addJavascriptInterface(new BuildConfigInterface(m_context), "BuildConfig");
 
         this.loadUrl("https://appassets.androidplatform.net/assets/index.html");

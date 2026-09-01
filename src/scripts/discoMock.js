@@ -340,6 +340,12 @@ class DiscoMock {
     getLocation() {
         return JSON.stringify(this.locationMock)
     }
+    getNativeWidgetProviders() {
+        return "[]"
+    }
+    getNativeWidgetSnapshot() {
+        return JSON.stringify({ state: "unsupported" })
+    }
     getAllNotifications() {
         return JSON.stringify(notifications);
     }

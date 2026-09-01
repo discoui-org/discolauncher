@@ -78,6 +78,7 @@ public class WebInterface {
     private static final long WEATHER_LOCATION_TIMEOUT_MS = 90_000L;
     private final MainActivity mainActivity;
     private final DiscoWebView webView;
+    private final NativeWidgetManager nativeWidgetManager;
     private volatile Location latestWeatherLocation;
     private volatile boolean weatherLocationRequestInFlight;
     private final List<LocationListener> weatherLocationListeners = new ArrayList<>();
@@ -85,11 +86,27 @@ public class WebInterface {
     WebInterface(MainActivity mainActivity, DiscoWebView webView) {
         this.mainActivity = mainActivity;
         this.webView = webView;
+        this.nativeWidgetManager = new NativeWidgetManager(mainActivity);
     }
 
     public float getDevicePixelRatio() {
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
         return displayMetrics.density;
+    }
+
+    /** Platform-neutral bridge used by the native-widget live-tile provider. */
+    @JavascriptInterface
+    public String getNativeWidgetProviders(String packageName) {
+        return nativeWidgetManager.getProviders(packageName);
+    }
+
+    @JavascriptInterface
+    public String getNativeWidgetSnapshot(String providerId, int width, int height) {
+        return nativeWidgetManager.getSnapshot(providerId, width, height);
+    }
+
+    boolean onNativeWidgetActivityResult(int requestCode, int resultCode, Intent data) {
+        return nativeWidgetManager.onActivityResult(requestCode, resultCode, data);
     }
 
     // Show a toast from the web page.
