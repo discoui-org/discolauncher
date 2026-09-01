@@ -1528,6 +1528,14 @@ div.disco-home-tile.live-tile.native-widget-tile div.live-tile-container div.liv
     padding: 0 !important;
 }
 
+// Regular tiles deliberately ignore their child elements so the whole tile is
+// a launcher button. Native widget snapshots need their container to receive
+// taps and forward them to AppWidgetHostView instead.
+div.disco-home-tile.live-tile.native-widget-tile div.live-tile-container,
+div.disco-home-tile.live-tile.native-widget-tile div.live-tile-container * {
+    pointer-events: auto !important;
+}
+
 div.tile-list-container {
     padding-left: var(--window-inset-left);
     padding-right: var(--window-inset-right);

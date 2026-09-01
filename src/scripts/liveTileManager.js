@@ -23,17 +23,38 @@ if (isOnMainThread()) {
 // This module can load before the tile-list DOM exists, so register the
 // native event immediately and decide whether this is the launcher at event
 // time. Otherwise the first provider update is lost and the worker stays pending.
-window.addEventListener("nativeWidgetSnapshot", event => {
+window.addEventListener("nativeWidgetSnapshot", async event => {
     if (!isOnMainThread()) return;
     const snapshot = event.detail;
     if (!snapshot?.providerId) return;
     for (const liveTile of Object.values(window.liveTiles || {})) {
         const provider = (window.liveTileProviders || []).find(item => item.id === liveTile.uid);
         if (provider?.metadata?.nativeWidget?.id === snapshot.providerId) {
-            liveTile.worker.postMessage({ action: "native-widget-snapshot", data: snapshot });
+            const deliveredSnapshot = { ...snapshot };
+            const currentImage = document.querySelector(
+                `div.disco-home-tile[packagename="${liveTile.controller.packageName}"] .native-widget-snapshot`
+            );
+            if (currentImage && snapshot.url && currentImage.src !== snapshot.url) {
+                const loaded = await preloadNativeWidgetSnapshot(snapshot.url);
+                // A later provider update may have won while this image loaded.
+                if (loaded && currentImage.isConnected && currentImage.src !== snapshot.url) {
+                    currentImage.src = snapshot.url;
+                    deliveredSnapshot.rendered = true;
+                }
+            }
+            liveTile.worker.postMessage({ action: "native-widget-snapshot", data: deliveredSnapshot });
         }
     }
 });
+
+function preloadNativeWidgetSnapshot(url) {
+    return new Promise(resolve => {
+        const image = new Image();
+        image.onload = () => resolve(true);
+        image.onerror = () => resolve(false);
+        image.src = url;
+    });
+}
 
 function main_registerLiveTileWorker(packageName, uid) {
     const provider = liveTileProviders.find(provider => provider.id === uid);
@@ -118,9 +139,15 @@ function getNativeWidgetSize(packageName) {
     );
     const rect = tile?.getBoundingClientRect();
     const scale = window.devicePixelRatio || 1;
+    // Native snapshots are rendered before the inner tile's CSS zoom is
+    // applied. Request the matching source resolution so scaled widgets stay
+    // sharp instead of enlarging a lower-resolution bitmap.
+    const tileZoom = Number.parseFloat(getComputedStyle(
+        tile?.querySelector('.disco-home-inner-tile') || tile || document.documentElement
+    ).getPropertyValue('--tile-zoom')) || 1;
     return {
-        width: Math.max(1, Math.round((rect?.width || 800) * scale)),
-        height: Math.max(1, Math.round((rect?.height || 400) * scale))
+        width: Math.max(1, Math.round((rect?.width || 800) * scale / tileZoom)),
+        height: Math.max(1, Math.round((rect?.height || 400) * scale / tileZoom))
     };
 }
 function onWorkerMessage(event) {
@@ -413,6 +440,9 @@ class tileController {
         this.drawGeneration = 0;
         this.observedTile = null;
         this.nativeWidgetSize = null;
+        this.nativeWidgetPointerStart = null;
+        this.nativeWidgetPointerDown = event => this.onNativeWidgetPointerDown(event);
+        this.nativeWidgetPointerUp = event => this.onNativeWidgetPointerUp(event);
         this.resizeObserver = new ResizeObserver(() => this.notifyWidgetSizeChanged());
     }
     getDOMTile() {
@@ -438,6 +468,45 @@ class tileController {
                 && this.nativeWidgetSize?.height === size.height) return;
         this.nativeWidgetSize = size;
         this.worker.postMessage({ action: 'widget-size', data: size });
+    }
+
+    onNativeWidgetPointerDown(event) {
+        // Snapshot images intentionally have pointer-events:none so tile
+        // transitions do not treat them as interactive DOM. Listen on their
+        // persistent container instead and use the image only for geometry.
+        if (!event.currentTarget.querySelector('.native-widget-snapshot')) return;
+        this.nativeWidgetPointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    }
+
+    onNativeWidgetPointerUp(event) {
+        const image = event.currentTarget.querySelector('.native-widget-snapshot');
+        const start = this.nativeWidgetPointerStart;
+        this.nativeWidgetPointerStart = null;
+        // A long press switches the home grid into edit mode before the finger
+        // is released. That release must not also activate the Android widget.
+        if (window.isHomeTileEditEnabled?.()) return;
+        if (!image || !start || start.id !== event.pointerId
+                || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 12) return;
+
+        const liveTile = window.liveTiles?.[this.packageName];
+        const provider = (window.liveTileProviders || []).find(item => item.id === liveTile?.uid);
+        const providerId = provider?.metadata?.nativeWidget?.id;
+        const rect = image.getBoundingClientRect();
+        if (!providerId || rect.width <= 0 || rect.height <= 0 || !window.Disco?.tapNativeWidget) return;
+
+        const size = this.nativeWidgetSize || getNativeWidgetSize(this.packageName);
+        const x = (event.clientX - rect.left) * size.width / rect.width;
+        const y = (event.clientY - rect.top) * size.height / rect.height;
+        window.Disco.tapNativeWidget(providerId, x, y);
+        event.preventDefault();
+    }
+
+    configureNativeWidgetTap(liveTileContainer, enabled) {
+        liveTileContainer.removeEventListener('pointerdown', this.nativeWidgetPointerDown);
+        liveTileContainer.removeEventListener('pointerup', this.nativeWidgetPointerUp);
+        if (!enabled) return;
+        liveTileContainer.addEventListener('pointerdown', this.nativeWidgetPointerDown);
+        liveTileContainer.addEventListener('pointerup', this.nativeWidgetPointerUp);
     }
 
     preloadTileBackground(background, timeoutMs = 5000) {
@@ -597,6 +666,7 @@ class tileController {
             tile.classList.remove('tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix');
             tile.classList.add(`tile-type-${result.type}`);
             tile.classList.toggle('native-widget-tile', result.isNativeWidget === true);
+            this.configureNativeWidgetTap(liveTileContainer, result.isNativeWidget === true);
             liveTileContainer.setAttribute("current-page", 0);
             liveTileContainer.style.setProperty('--current-page', 0);
             const iconElement = tile.querySelector('img.disco-home-tile-imageicon');

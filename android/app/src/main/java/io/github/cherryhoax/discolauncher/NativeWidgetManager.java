@@ -14,7 +14,9 @@ import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -168,6 +170,24 @@ final class NativeWidgetManager {
         }
         attachWidget(widget);
         return true;
+    }
+
+    void tap(String providerId, float x, float y) {
+        if (providerId == null) return;
+        WidgetState widget;
+        synchronized (widgets) {
+            widget = widgets.get(providerId);
+        }
+        if (widget == null || widget.hostView == null) return;
+
+        activity.runOnUiThread(() -> {
+            if (widget.hostView == null) return;
+            float touchX = Math.max(0, Math.min(x, widget.width - 1));
+            float touchY = Math.max(0, Math.min(y, widget.height - 1));
+            long downTime = SystemClock.uptimeMillis();
+            dispatchTouch(widget.hostView, downTime, downTime, MotionEvent.ACTION_DOWN, touchX, touchY);
+            dispatchTouch(widget.hostView, downTime, downTime + 16L, MotionEvent.ACTION_UP, touchX, touchY);
+        });
     }
 
     void destroy() {
@@ -329,6 +349,16 @@ final class NativeWidgetManager {
         if (compressedBitmap != bitmap) compressedBitmap.recycle();
         bitmap.recycle();
         return successful ? output.toByteArray() : null;
+    }
+
+    private static void dispatchTouch(View view, long downTime, long eventTime,
+                                      int action, float x, float y) {
+        MotionEvent event = MotionEvent.obtain(downTime, eventTime, action, x, y, 0);
+        try {
+            view.dispatchTouchEvent(event);
+        } finally {
+            event.recycle();
+        }
     }
 
     private void publish(WidgetState widget, String snapshotState) {

@@ -105,6 +105,11 @@ public class WebInterface {
         return nativeWidgetManager.getSnapshot(providerId, width, height);
     }
 
+    @JavascriptInterface
+    public void tapNativeWidget(String providerId, float x, float y) {
+        nativeWidgetManager.tap(providerId, x, y);
+    }
+
     boolean onNativeWidgetActivityResult(int requestCode, int resultCode, Intent data) {
         return nativeWidgetManager.onActivityResult(requestCode, resultCode, data);
     }

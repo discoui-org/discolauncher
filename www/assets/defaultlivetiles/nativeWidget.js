@@ -50,6 +50,8 @@ liveTileHelper.eventListener.on("nativewidgetsnapshot", data => {
     // Keep the last complete image on screen while native renders a resize or
     // provider update. The next event carries a new versioned cache URL.
     if (data?.url) snapshot = data.url;
-    liveTileHelper.requestRedraw();
+    // The main thread swaps a preloaded image in place for live updates. Keep
+    // worker state synchronized without replacing the tile DOM and flashing.
+    if (!data?.rendered) liveTileHelper.requestRedraw();
 });
 liveTileHelper.eventListener.on("draw", draw);

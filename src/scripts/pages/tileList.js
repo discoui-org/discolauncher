@@ -188,6 +188,7 @@ const shakeDistanceModifier = {
 };
 
 window.homeTileEditSwitch = homeTileEditSwitch;
+window.isHomeTileEditEnabled = () => homeTileEditEnabled;
 
 $("#app-page-icon").on("flowClick", function () {
   window.scrollers.main_home_scroller.scrollTo(-window.innerWidth, 0, 750);
@@ -203,18 +204,23 @@ const resizeObserver = new ResizeObserver((entries) => {
 resizeObserver.observe(document.querySelector("div.tile-list-inner-container"));
 
 $(window).on("flowClick", function (e) {
+  const nativeWidgetTile = e.target.closest?.("div.disco-home-tile.native-widget-tile");
+  const clickedTile = nativeWidgetTile || e.target;
   if (
-    e.target.classList.contains("disco-home-tile") &&
-    !e.target.classList.contains("disco-letter-tile")
+    clickedTile.classList.contains("disco-home-tile") &&
+    !clickedTile.classList.contains("disco-letter-tile")
   ) {
+    // Android widget tiles own tap handling through the native widget host.
+    // Never turn the same tap into a launch of the provider application.
+    if (clickedTile.classList.contains("native-widget-tile")) return;
     if ($("div.tile-list-page").hasClass("home-menu-back")) {
       $("div.disco-home-tile").removeClass("home-menu-selected");
-      e.target.classList.add("home-menu-selected");
-      DiscoBoard.boardMethods.createTileMenu(e.target);
-    } else if (e.target.canClick) {
-      e.target.classList.add("app-transition-selected");
+      clickedTile.classList.add("home-menu-selected");
+      DiscoBoard.boardMethods.createTileMenu(clickedTile);
+    } else if (clickedTile.canClick) {
+      clickedTile.classList.add("app-transition-selected");
       appTransition.onPause();
-      const packageName = e.target.getAttribute("packageName")
+      const packageName = clickedTile.getAttribute("packageName")
       setTimeout(() => {
         if (!window.doubleTapOverride) Disco.launchApp(packageName);
       }, (packageName.startsWith("disco.internal") && false ? 500 : 1000) * window.animationDurationScale);
@@ -236,21 +242,23 @@ $(window).on("pointerdown", function (e) {
     clearTimeout(window.homeTileEditTimeout)
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
   }
-  if (e.target.classList.contains("disco-home-tile") && !homeTileEditEnabled) {
-    e.target.canClick = true;
-    e.target.homeTileMenuState = false;
-    e.target.appRect = e.target.getBoundingClientRect();
+  const nativeWidgetTile = e.target.closest?.("div.disco-home-tile.native-widget-tile");
+  const targetTile = nativeWidgetTile || e.target;
+  if (targetTile.classList.contains("disco-home-tile") && !homeTileEditEnabled) {
+    targetTile.canClick = true;
+    targetTile.homeTileMenuState = false;
+    targetTile.appRect = targetTile.getBoundingClientRect();
     clearTimeout(window.homeTileMenuCreationFirstTimeout);
     clearTimeout(window.homeTileMenuCreationSecondTimeout);
     $("div.disco-home-menu").remove();
     window.homeTileMenuCreationFirstTimeout = setTimeout(() => {
-      e.target.canClick = false;
+      targetTile.canClick = false;
 
       homeTileEditSwitch.on(false, () => {
-        e.target.classList.add("home-menu-selected");
-        DiscoBoard.boardMethods.createTileMenu(e.target);
+        targetTile.classList.add("home-menu-selected");
+        DiscoBoard.boardMethods.createTileMenu(targetTile);
         generateShakeAnimations();
-        e.target.homeTileMenuState = true;
+        targetTile.homeTileMenuState = true;
         const args = {
           bubbles: true,
           cancelable: true,
@@ -261,19 +269,19 @@ $(window).on("pointerdown", function (e) {
           screenX: e.screenX,
           screenY: e.screenY
         }
-        e.target.dispatchEvent(new MouseEvent('mousedown', args));
-        e.target.dispatchEvent(new TouchEvent('touchstart', args));
-        e.target.dispatchEvent(new PointerEvent('pointerdown', args));
+        targetTile.dispatchEvent(new MouseEvent('mousedown', args));
+        targetTile.dispatchEvent(new TouchEvent('touchstart', args));
+        targetTile.dispatchEvent(new PointerEvent('pointerdown', args));
       });
-      e.target.classList.add("home-menu-selected");
+      targetTile.classList.add("home-menu-selected");
     }, 500);
   } else if (
-    e.target.classList.contains("disco-home-tile") &&
+    targetTile.classList.contains("disco-home-tile") &&
     homeTileEditEnabled
   ) {
     $("div.disco-home-tile").removeClass("home-menu-selected");
-    e.target.classList.add("home-menu-selected");
-    DiscoBoard.boardMethods.createTileMenu(e.target);
+    targetTile.classList.add("home-menu-selected");
+    DiscoBoard.boardMethods.createTileMenu(targetTile);
   }
 });
 $(
