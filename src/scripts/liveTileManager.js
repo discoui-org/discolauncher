@@ -272,6 +272,8 @@ class tileController {
         this.lastDrawTime = 0;
         this.redrawTimer = null;
         this.matrixTimer = null;
+        this.flipTimer = null;
+        this.flipCleanupTimer = null;
     }
     getDOMTile() {
         let tile = document.querySelector(`div.disco-home-tile.live-tile[packagename="${this.packageName}"]`);
@@ -301,8 +303,14 @@ class tileController {
     destroy() {
         clearTimeout(this.redrawTimer);
         clearTimeout(this.matrixTimer);
+        clearTimeout(this.flipTimer);
+        clearTimeout(this.flipCleanupTimer);
+        document.querySelector(`div.disco-home-tile[packagename="${this.packageName}"] div.disco-home-inner-tile`)
+            ?.classList.remove('flip-active');
         this.redrawTimer = null;
         this.matrixTimer = null;
+        this.flipTimer = null;
+        this.flipCleanupTimer = null;
     }
 
     async draw() {
@@ -373,8 +381,10 @@ class tileController {
                 iconElement.classList.remove('hide-direction-0', 'hide-direction-1', 'show-direction-0', 'show-direction-1');
             }
             liveTileContainer.setAttribute("show-app-title", result.showAppTitle ? "true" : "false");
-            tile.classList.remove("hide-app-title");
-            if (!result.showAppTitle) tile.classList.add("hide-app-title");
+            // The visible app title is cloned into every live-tile page below,
+            // so it becomes part of the page animation instead of staying fixed
+            // above the live-tile surface.
+            tile.classList.add("hide-app-title");
 
             // Build and sanitize content
             const pageIndexOffset = result.type === TileType.NOTIFICATION ? 1 : 0;
@@ -467,6 +477,17 @@ class tileController {
                 liveTileContainer.innerHTML = sanitized;
                 if (result.type === TileType.NOTIFICATION) {
                     liveTileContainer.prepend(this.createNotificationSummaryPage(tile, notificationCount));
+                }
+                if (result.showAppTitle) {
+                    const appTitle = tile.querySelector('p.disco-home-tile-title')?.textContent;
+                    if (appTitle) {
+                        liveTileContainer.querySelectorAll('.live-tile-page').forEach(page => {
+                            const pageTitle = document.createElement('p');
+                            pageTitle.className = 'live-tile-app-title';
+                            pageTitle.textContent = appTitle;
+                            page.appendChild(pageTitle);
+                        });
+                    }
                 }
             }
 
@@ -589,10 +610,52 @@ class tileController {
     }
     _goToPage_flip(page, direction) {
         const tile = this.getDOMTile();
+        const innerTile = tile.querySelector('div.disco-home-inner-tile');
         const liveTileContainer = tile.querySelector('div.live-tile-container');
         const maxPage = parseInt(liveTileContainer.getAttribute("max-page")) || 1;
         const currentPage = parseInt(liveTileContainer.getAttribute("current-page")) || 0;
         const nextPage = Math.min(Math.max(0, page), maxPage - 1);
+
+        if (currentPage === nextPage) return false;
+
+        const pages = Array.from(liveTileContainer.querySelectorAll('.live-tile-page'));
+        const outgoingPage = pages[currentPage];
+        const incomingPage = pages[nextPage];
+        if (!outgoingPage || !incomingPage) return false;
+
+        clearTimeout(this.flipTimer);
+        clearTimeout(this.flipCleanupTimer);
+        pages.forEach((tilePage, index) => {
+            tilePage.style.visibility = index === currentPage ? 'visible' : 'hidden';
+        });
+
+        // Match the matrix tile effect: flip one surface away, replace its
+        // content while edge-on, then flip that same surface back into view.
+        pages.forEach(tilePage => tilePage.classList.remove('page-flip'));
+        innerTile?.classList.add('flip-active');
+        void liveTileContainer.offsetWidth;
+        outgoingPage.classList.add('page-flip');
+        incomingPage.classList.add('page-flip');
+        liveTileContainer.setAttribute("current-page", nextPage);
+        liveTileContainer.style.setProperty('--current-page', nextPage);
+
+        const durationValue = getComputedStyle(liveTileContainer)
+            .getPropertyValue('--live-tile-page-flip-duration').trim();
+        const duration = parseFloat(durationValue) * (durationValue.endsWith('ms') ? 1 : 1000);
+        const durationMs = Number.isFinite(duration) ? duration : 2000;
+        this.flipTimer = setTimeout(() => {
+            pages.forEach((tilePage, index) => {
+                tilePage.style.visibility = index === nextPage ? 'visible' : 'hidden';
+            });
+            this.flipTimer = null;
+        }, durationMs * 0.1);
+        this.flipCleanupTimer = setTimeout(() => {
+            pages.forEach(tilePage => tilePage.classList.remove('page-flip'));
+            innerTile?.classList.remove('flip-active');
+            this.flipCleanupTimer = null;
+        }, durationMs);
+
+        return true;
     }
     ///ESKİ
     /*

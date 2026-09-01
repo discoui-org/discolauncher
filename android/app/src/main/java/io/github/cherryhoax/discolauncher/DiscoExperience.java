@@ -89,7 +89,7 @@ public class DiscoExperience {
         // Query the MediaStore for images
         Cursor cursor = contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null,
+                new String[]{MediaStore.Images.Media._ID},
                 null,
                 null,
                 MediaStore.Images.Media.DATE_TAKEN + " DESC" // Order by date taken
@@ -100,15 +100,12 @@ public class DiscoExperience {
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext() && photoCount < 500) { // Limit to 500 photos
                 int idIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                int uriIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
 
-                if (idIndex != -1 && uriIndex != -1) {
+                if (idIndex != -1) {
                     String id = cursor.getString(idIndex); // This is the photo ID
-                    String photoUri = cursor.getString(uriIndex); // This is the photo URI
 
                     JSONObject photo = new JSONObject();
                     photo.put("id", id);
-                    photo.put("uri", photoUri);
                     photos.put(photo);
                     photoCount++; // Increment the photo counter
                 }

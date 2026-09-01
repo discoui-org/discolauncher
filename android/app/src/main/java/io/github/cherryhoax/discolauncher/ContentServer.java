@@ -267,56 +267,30 @@ public class ContentServer extends WebViewClientCompat {
                 case "photos":
                     final double sizeScale = .5;
                     if (iconFileName.length() > 5) {
-                        String photoId = iconFileName.substring(0, iconFileName.length() - 5); // Extract photo ID
-                        Uri photoUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                Long.parseLong(photoId));
+                        try {
+                            String photoId = iconFileName.substring(0, iconFileName.length() - 5);
+                            Uri photoUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    Long.parseLong(photoId));
 
-                        Cursor cursor = discoWebView.getContext().getContentResolver().query(
-                                photoUri,
-                                new String[]{MediaStore.Images.Media.DATA},
-                                null,
-                                null,
-                                null);
+                            // DATA is commonly null under scoped storage, even when this content URI
+                            // is still readable.  Decode the URI directly instead of treating a missing
+                            // legacy filesystem path as a 404.
+                            try (InputStream inputStream = discoWebView.getContext().getContentResolver()
+                                    .openInputStream(photoUri)) {
+                                if (inputStream == null) break;
 
-                        String photoPath = null;
-                        if (cursor != null) {
-                            if (cursor.moveToFirst()) {
-                                int dataIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                                if (dataIndex != -1) {
-                                    photoPath = cursor.getString(dataIndex);
+                                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                if (bitmap != null) {
+                                    int newWidth = Math.max(1, (int) (bitmap.getWidth() * sizeScale));
+                                    int newHeight = Math.max(1, (int) (bitmap.getHeight() * sizeScale));
+                                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight,
+                                            true);
+                                    InputStream webpStream = Utils.loadBitmapAsStream(resizedBitmap);
+                                    return new WebResourceResponse("image/webp", "UTF-8", webpStream);
                                 }
                             }
-                            cursor.close();
-                        }
-
-                        if (photoPath != null) {
-                            try {
-                                InputStream inputStream = discoWebView.getContext().getContentResolver()
-                                        .openInputStream(photoUri);
-                                if (inputStream != null) {
-                                    // Convert the InputStream to a Bitmap
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                    if (bitmap != null) {
-                                        // Resize the Bitmap
-                                        int width = bitmap.getWidth();
-                                        int height = bitmap.getHeight();
-                                        int newWidth = (int) (width * sizeScale); // Resize to 50%
-                                        int newHeight = (int) (height * sizeScale); // Resize to 50%
-                                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight,
-                                                true);
-
-                                        // Convert resized Bitmap to InputStream for WebResourceResponse
-                                        InputStream webpStream = Utils.loadBitmapAsStream(resizedBitmap);
-                                        return new WebResourceResponse("image/webp", "UTF-8", webpStream);
-                                    }
-                                }
-                            } catch (FileNotFoundException e) {
-                                Log.e("photos", "File not found for photo URI: " + photoUri, e);
-                            } catch (Exception e) {
-                                Log.e("photos", "Error retrieving photo: " + e.getMessage(), e);
-                            }
-                        } else {
-                            Log.d("photos", "Photo URI is null.");
+                        } catch (Exception e) {
+                            Log.e("photos", "Error retrieving photo: " + e.getMessage(), e);
                         }
                     }
                     break;
