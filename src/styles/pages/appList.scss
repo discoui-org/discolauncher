@@ -339,15 +339,6 @@ div.inner-page.app-list-page {
   }
 }
 
-// The list can contain hundreds of apps. Offscreen rows keep their geometry
-// but WebView can skip their layout and paint work until they approach view.
-@supports (content-visibility: auto) {
-  .disco-element.disco-app-tile:not(.disco-letter-tile) {
-    content-visibility: auto;
-    contain-intrinsic-block-size: 64px;
-  }
-}
-
 #sticky-letter {
 
   div.app-list-page.search-mode &,
