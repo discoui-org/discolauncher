@@ -23,9 +23,16 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.location.Location;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
@@ -69,6 +76,8 @@ public class WebInterface {
     private static final String PREFS_NAME = "DiscoLauncherPrefs";
     private final MainActivity mainActivity;
     private final DiscoWebView webView;
+    private volatile Location latestWeatherLocation;
+    private volatile boolean weatherLocationRequestInFlight;
 
     WebInterface(MainActivity mainActivity, DiscoWebView webView) {
         this.mainActivity = mainActivity;
@@ -990,6 +999,9 @@ public class WebInterface {
         } else if (Objects.equals(permission, "NOTIFICATIONS")) {
             Set<String> enabledListeners = NotificationManagerCompat.getEnabledListenerPackages(mainActivity);
             return String.valueOf(enabledListeners.contains(mainActivity.getPackageName()));
+        } else if (Objects.equals(permission, "LOCATION")) {
+            return String.valueOf(mainActivity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED);
         } else if (Objects.equals(permission, "ACCESSIBILITY")) {
 
             AccessibilityManager am = (AccessibilityManager) mainActivity.getSystemService(Context.ACCESSIBILITY_SERVICE);
@@ -1042,11 +1054,107 @@ public class WebInterface {
                 bundle.putString(key, value);
                 intent.putExtra(":settings:show_fragment_args", bundle);
                 mainActivity.startActivity(intent);
+            } else if ("LOCATION".equals(permission)) {
+                mainActivity.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 4);
             } else if ("ACCESSIBILITY".equals(permission)) {
                 Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                 mainActivity.startActivity(intent);
             }
         });
+    }
+
+    /**
+     * Returns the best available system location for JavaScript consumers.
+     * Coarse location is intentionally sufficient for the Weather live tile.
+     */
+    @JavascriptInterface
+    public String getLocation() {
+        try {
+            if (mainActivity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return new JSONObject().put("error", "permission-required").toString();
+            }
+
+            LocationManager locationManager = (LocationManager) mainActivity
+                    .getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager == null) {
+                return new JSONObject().put("error", "unavailable").toString();
+            }
+
+            Location bestLocation = null;
+            for (String provider : locationManager.getProviders(true)) {
+                Location candidate = locationManager.getLastKnownLocation(provider);
+                if (candidate == null) continue;
+                if (bestLocation == null
+                        || candidate.getAccuracy() < bestLocation.getAccuracy()
+                        || (candidate.getAccuracy() == bestLocation.getAccuracy()
+                        && candidate.getTime() > bestLocation.getTime())) {
+                    bestLocation = candidate;
+                }
+            }
+            if (bestLocation == null) bestLocation = latestWeatherLocation;
+            if (bestLocation == null) {
+                requestCurrentWeatherLocation(locationManager);
+                return new JSONObject().put("error", "pending").toString();
+            }
+
+            JSONObject location = new JSONObject();
+            location.put("latitude", bestLocation.getLatitude());
+            location.put("longitude", bestLocation.getLongitude());
+            location.put("accuracy", bestLocation.getAccuracy());
+            location.put("timestamp", bestLocation.getTime());
+            String city = getLocationCity(bestLocation);
+            if (city != null) location.put("city", city);
+            return location.toString();
+        } catch (SecurityException error) {
+            return "{\"error\":\"permission-required\"}";
+        } catch (JSONException error) {
+            Log.e(TAG, "Could not serialize location", error);
+            return "{\"error\":\"unavailable\"}";
+        }
+    }
+
+    private void requestCurrentWeatherLocation(LocationManager locationManager) {
+        synchronized (this) {
+            if (weatherLocationRequestInFlight) return;
+            weatherLocationRequestInFlight = true;
+        }
+
+        mainActivity.runOnUiThread(() -> {
+            try {
+                String provider = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                        ? LocationManager.NETWORK_PROVIDER
+                        : LocationManager.GPS_PROVIDER;
+                locationManager.requestSingleUpdate(provider, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        latestWeatherLocation = location;
+                        weatherLocationRequestInFlight = false;
+                    }
+                }, Looper.getMainLooper());
+                new Handler(Looper.getMainLooper()).postDelayed(
+                        () -> weatherLocationRequestInFlight = false, 15_000);
+            } catch (SecurityException | IllegalArgumentException error) {
+                Log.w(TAG, "Could not request current coarse location", error);
+                weatherLocationRequestInFlight = false;
+            }
+        });
+    }
+
+    private String getLocationCity(Location location) {
+        if (!Geocoder.isPresent()) return null;
+        try {
+            List<Address> addresses = new Geocoder(mainActivity, Locale.getDefault())
+                    .getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses == null || addresses.isEmpty()) return null;
+            Address address = addresses.get(0);
+            if (address.getLocality() != null) return address.getLocality();
+            if (address.getSubAdminArea() != null) return address.getSubAdminArea();
+            return address.getAdminArea();
+        } catch (IOException | IllegalArgumentException error) {
+            Log.w(TAG, "Could not reverse geocode location", error);
+            return null;
+        }
     }
 
     @JavascriptInterface

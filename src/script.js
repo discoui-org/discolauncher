@@ -323,7 +323,7 @@ startUpSequence([
             people: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/people.js", baseURL).href),
             photos: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/photos.js", baseURL).href),
             notifications: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/notifications.js", baseURL).href),
-            //weather: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/weather.js", baseURL).href),
+            weather: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/weather.js", baseURL).href),
             example: await liveTileManager.registerLiveTileProvider(new URL("./assets/defaultlivetiles/helloworld.js", baseURL).href)
         }
         DiscoBoard.backendMethods.defaultLiveTiles.refresh();

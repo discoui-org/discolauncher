@@ -80,7 +80,8 @@ function refreshAppList(params) {
               </div>
 */
             const liveTileGroup = document.querySelector("#app-preference-live-tile")
-            liveTileGroup.querySelector("div.metro-dropdown-menu").innerHTML = ""
+            const liveTileDropdown = liveTileGroup.querySelector("div.metro-dropdown-menu")
+            liveTileDropdown.innerHTML = ""
             if (window.parent.liveTileProviders) {
                 parent.liveTileProviders.forEach((provider, i) => {
                     if (provider.metadata.provide.includes(appdetail.packageName)) {
@@ -95,14 +96,31 @@ function refreshAppList(params) {
                         }
                         option.innerText = assignedName;
                         option.setAttribute("data-id", provider.id)
-                        liveTileGroup.querySelector("div.metro-dropdown-menu").append(option)
+                        liveTileDropdown.append(option)
                     }
                 })
             }
-            if (liveTileGroup.querySelector("div.metro-dropdown-menu").innerHTML == "") {
+            if (liveTileDropdown.innerHTML == "") {
                 liveTileGroup.style.display = "none"
             } else {
                 liveTileGroup.style.removeProperty("display")
+                const options = [...liveTileDropdown.querySelectorAll("div.metro-dropdown-option")]
+                const assignedProvider = parent.DiscoBoard.boardMethods.liveTiles.get()[appdetail.packageName]
+                const selectedIndex = Math.max(0, options.findIndex(option =>
+                    option.getAttribute("data-id") === assignedProvider
+                ))
+
+                liveTileDropdown.setAttribute("selected", selectedIndex)
+                liveTileDropdown.selectOption(selectedIndex)
+                if (liveTileDropdown.liveTileSelectionHandler) {
+                    liveTileDropdown.removeEventListener("selected", liveTileDropdown.liveTileSelectionHandler)
+                }
+                liveTileDropdown.liveTileSelectionHandler = (event) => {
+                    const providerId = options[event.detail.index]?.getAttribute("data-id")
+                    if (!providerId) return
+                    parent.DiscoBoard.boardMethods.liveTiles.set(appdetail.packageName, providerId)
+                }
+                liveTileDropdown.addEventListener("selected", liveTileDropdown.liveTileSelectionHandler)
             }
 
             // Setup per-app tile preferences

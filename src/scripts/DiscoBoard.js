@@ -343,22 +343,59 @@ const boardMethods = {
       } catch (error) {
         console.warn("Invalid saved live tile configuration", error)
       }
-      return Object.assign({}, boardMethods.liveTiles.defaults(), savedLiveTiles)
+      const providers = boardMethods.liveTiles.getProviders()
+      const validSavedLiveTiles = Object.fromEntries(
+        Object.entries(savedLiveTiles).filter(([packageName, providerId]) =>
+          providers.some(provider => provider.id === providerId
+            && provider.metadata?.provide?.includes(packageName))
+        )
+      )
+      // Older releases stored random provider IDs. They can never resolve
+      // after a restart, so discard them and fall back to the applicable
+      // default instead of throwing "Provider not found".
+      if (Object.keys(validSavedLiveTiles).length !== Object.keys(savedLiveTiles).length) {
+        localStorage.setItem("liveTiles", JSON.stringify(validSavedLiveTiles))
+      }
+      return Object.assign({}, boardMethods.liveTiles.defaults(), validSavedLiveTiles)
     },
     //setTileProvider: (provider) => {}
     getProviders: () => window.liveTileProviders || [],
+    set: (packageName, providerId) => {
+      const providerExists = boardMethods.liveTiles.getProviders()
+        .some(provider => provider.id === providerId && provider.metadata?.provide?.includes(packageName))
+      if (!providerExists) {
+        console.warn("Cannot assign an unavailable live tile provider", { packageName, providerId })
+        return false
+      }
+
+      let savedLiveTiles = {}
+      try {
+        savedLiveTiles = JSON.parse(localStorage.getItem("liveTiles") || "{}")
+      } catch (error) {
+        console.warn("Invalid saved live tile configuration", error)
+      }
+      savedLiveTiles[packageName] = providerId
+      localStorage.setItem("liveTiles", JSON.stringify(savedLiveTiles))
+      boardMethods.liveTiles.refresh()
+      return true
+    },
     refresh: () => {
       const initializeLiveTiles = boardMethods.liveTiles.get()
       const newlyRegisteredPackages = new Set()
       const homeTiles = document.querySelector("#main-home-slider div.tile-list-inner-container").querySelectorAll("div.disco-home-tile")
       homeTiles.forEach(i => {
         const packageName = i.getAttribute("packagename")
-        if (window.liveTiles[packageName]) {
+        const providerId = initializeLiveTiles[packageName]
+        const activeLiveTile = window.liveTiles[packageName]
+        if (activeLiveTile?.uid === providerId) {
           delete initializeLiveTiles[packageName]
           return
-        };
-        if (initializeLiveTiles[packageName]) {
-          liveTileManager.registerLiveTileWorker(packageName, initializeLiveTiles[packageName])
+        }
+        if (activeLiveTile) {
+          liveTileManager.unregisterLiveTileWorker(packageName)
+        }
+        if (providerId) {
+          liveTileManager.registerLiveTileWorker(packageName, providerId)
           newlyRegisteredPackages.add(packageName)
         }
         delete initializeLiveTiles[packageName]
@@ -1112,8 +1149,14 @@ const backendMethods = {
       const defaultProviders = Object.values(DiscoBoard.boardMethods.liveTiles.init)
         .map(liveTileID => boardMethods.liveTiles.getProviders().find(item => item.id === liveTileID))
         .filter(provider => provider?.metadata?.provide)
-        // Broad providers are applied first; specific providers then override them.
-        .sort((a, b) => b.metadata.provide.length - a.metadata.provide.length)
+        // Broad providers are applied first; specific providers then override
+        // them. This is explicit instead of inferring broadness from the
+        // number of installed apps a provider happens to match.
+        .sort((a, b) => {
+          const aPriority = a.metadata.provideType === "all" ? 0 : 1
+          const bPriority = b.metadata.provideType === "all" ? 0 : 1
+          return aPriority - bPriority || b.metadata.provide.length - a.metadata.provide.length
+        })
 
       defaultProviders.forEach(provider => {
         provider.metadata.provide.forEach(packageName => {

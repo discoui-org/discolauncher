@@ -20,6 +20,12 @@ class DiscoMock {
     constructor(mockURL) {
         this.mockURL = mockURL;
         this.#retrievedApps = [];
+        try {
+            const savedPermissions = JSON.parse(localStorage.getItem("discoMockPermissions") || "{}");
+            this.permissionMock = Object.assign({}, this.permissionMock, savedPermissions);
+        } catch (error) {
+            console.warn("Could not restore mock permissions", error);
+        }
 
         // Use async/await pattern instead of callback
         this.initializeApps();
@@ -272,7 +278,15 @@ class DiscoMock {
         "CONTACTS": "false",
         "PHOTOS": "false",
         "NOTIFICATIONS": "false",
+        "LOCATION": "false",
         "ACCESSIBILITY": "false"
+    }
+    locationMock = {
+        latitude: 41.0082,
+        longitude: 28.9784,
+        city: "Istanbul",
+        accuracy: 5000,
+        timestamp: Date.now()
     }
     checkPermission(permission) {
         switch (permission) {
@@ -285,6 +299,9 @@ class DiscoMock {
                 break;
             case "NOTIFICATIONS":
                 return this.permissionMock["NOTIFICATIONS"]
+                break;
+            case "LOCATION":
+                return this.permissionMock["LOCATION"]
                 break;
             case "ACCESSIBILITY":
                 return this.permissionMock["ACCESSIBILITY"];
@@ -306,15 +323,22 @@ class DiscoMock {
             case "NOTIFICATIONS":
                 this.permissionMock["NOTIFICATIONS"] = "true"
                 break;
+            case "LOCATION":
+                this.permissionMock["LOCATION"] = "true"
+                break;
             case "ACCESSIBILITY":
                 this.permissionMock["ACCESSIBILITY"] = "true"
                 break;
             default:
                 break;
         }
+        localStorage.setItem("discoMockPermissions", JSON.stringify(this.permissionMock));
     }
     requestScreenLock() {
         return "true"
+    }
+    getLocation() {
+        return JSON.stringify(this.locationMock)
     }
     getAllNotifications() {
         return JSON.stringify(notifications);

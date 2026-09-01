@@ -118,9 +118,52 @@ function onWorkerMessage(event) {
         case 'requestGoToPreviousPage':
             if (canNavigate()) controller.goToPreviousPage();
             break;
+        case 'requestWeatherLocation':
+            requestWeatherLocation(liveTile.worker);
+            break;
         case 'test':
             break;
         default:
+    }
+}
+
+let cachedWeatherLocation = null;
+let weatherLocationRequestPending = false;
+
+function requestWeatherLocation(worker, retryCount = 0) {
+    if (cachedWeatherLocation) {
+        worker.postMessage({ action: "weather-location", data: cachedWeatherLocation });
+        return;
+    }
+    if (weatherLocationRequestPending) return;
+
+    if (!window.Disco?.getLocation) {
+        worker.postMessage({ action: "weather-location", data: { error: "unsupported" } });
+        return;
+    }
+
+    weatherLocationRequestPending = true;
+    try {
+        const location = JSON.parse(window.Disco.getLocation());
+        if (location?.latitude == null || location?.longitude == null) {
+            if (location?.error === "pending" && retryCount < 15) {
+                setTimeout(() => requestWeatherLocation(worker, retryCount + 1), 1000);
+                return;
+            }
+            worker.postMessage({ action: "weather-location", data: { error: location?.error || "unavailable" } });
+            return;
+        }
+        cachedWeatherLocation = {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            city: location.city || null
+        };
+        worker.postMessage({ action: "weather-location", data: cachedWeatherLocation });
+    } catch (error) {
+        console.warn("Could not get the device location", error);
+        worker.postMessage({ action: "weather-location", data: { error: "unavailable" } });
+    } finally {
+        weatherLocationRequestPending = false;
     }
 }
 function main_unregisterLiveTileWorker(packageName) {
@@ -174,6 +217,7 @@ async function getLiveTileMetadata(workerScript) {
             if (key == "provide" && parts.length == 3) {
                 switch (type) {
                     case 'type':
+                        metadata.provideType = value;
                         if (value == "all") {
                             allappsarchive.forEach(e => {
                                 addProvide(e.packageName)
@@ -212,7 +256,9 @@ async function getLiveTileMetadata(workerScript) {
     return null; // Return null if no metadata found
 }
 async function main_registerLiveTileProvider(workerScript) {
-    const uid = generateUniqueId();
+    // Provider IDs are persisted in localStorage as per-app choices, so they
+    // must survive an app restart. Worker message IDs remain random below.
+    const uid = `provider:${workerScript}`;
     const metadata = await getLiveTileMetadata(workerScript);
     if (!metadata) {
         throw new Error(`Metadata not found for package: ${uid}`);

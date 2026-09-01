@@ -45,6 +45,10 @@
                 "title": "Notifications",
                 "description": "Access to notifications is needed to display your notifications live tile."
             },
+            "location": {
+                "title": "Location",
+                "description": "Location access is needed to show local weather on the Weather live tile."
+            },
             "accessibility": {
                 "title": "Accessibility",
                 "description": "Enable accessibility to lock device."

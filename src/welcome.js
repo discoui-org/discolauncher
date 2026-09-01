@@ -10,7 +10,7 @@ import { i18n, greetings } from './scripts/localeManager';
 await i18n.init();
 window.i18n = i18n;
 window.greetings = greetings
-const allPermissions = ["CONTACTS", "PHOTOS", "NOTIFICATIONS", "ACCESSIBILITY"]
+const allPermissions = ["CONTACTS", "PHOTOS", "NOTIFICATIONS", "LOCATION", "ACCESSIBILITY"]
 
 import { DiscoMock, BuildConfigMock } from "./scripts/discoMock.js";
 window.DiscoRole = "main"

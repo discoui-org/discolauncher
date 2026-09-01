@@ -45,6 +45,9 @@ onmessage = async function (event) {
         case 'notifications-data':
             eventListener.dispatch("notificationsdata", message.data);
             break;
+        case 'weather-location':
+            eventListener.dispatch("weatherlocation", message.data);
+            break;
         default:
             console.log("Worker: Unknown action received:", message.action);
     }

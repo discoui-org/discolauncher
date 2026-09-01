@@ -903,6 +903,152 @@ div.disco-home-tile {
                         text-align: right;
                     }
 
+                    div.live-tile-weather {
+                        background: var(--metro-color-cobalt);
+                    }
+
+                    div.live-tile-weather-wide,
+                    div.live-tile-weather-compact {
+                        position: absolute;
+                        inset: 0;
+                        color: white;
+                    }
+
+                    p.live-tile-weather-city,
+                    p.live-tile-weather-condition,
+                    p.live-tile-weather-status {
+                        position: absolute;
+                        left: 12px;
+                        margin: 0;
+                        line-height: 1.1;
+                    }
+
+                    p.live-tile-weather-city {
+                        top: 10px;
+                        font-size: var(--home-tile-title-font-size);
+                        font-weight: 650;
+                    }
+
+                    p.live-tile-weather-condition {
+                        top: 34px;
+                        font-size: var(--home-tile-title-font-size);
+                        font-weight: 400;
+                    }
+
+                    p.live-tile-weather-status {
+                        top: 11px;
+                        font-size: 15px;
+                        font-weight: 500;
+                    }
+
+                    span.live-tile-weather-symbol {
+                        position: absolute;
+                        left: 34%;
+                        top: 50%;
+                        font-family: sans-serif;
+                        font-size: 50px;
+                        font-weight: 300;
+                        line-height: 1;
+                        transform: translate(-50%, -50%);
+                    }
+
+                    p.live-tile-weather-temperature {
+                        position: absolute;
+                        top: 50%;
+                        left: 43%;
+                        margin: 0;
+                        font-size: 72px;
+                        font-weight: 300;
+                        letter-spacing: -4px;
+                        line-height: .8;
+                        transform: translateY(-50%);
+                    }
+
+                    p.live-tile-weather-feels {
+                        position: absolute;
+                        top: 50%;
+                        right: 15px;
+                        margin: 0;
+                        font-size: 14px;
+                        font-weight: 500;
+                        line-height: 1.25;
+                        text-align: right;
+                        transform: translateY(-50%);
+                    }
+
+                    div.live-tile-weather-wide p.live-tile-weather-range {
+                        margin: 0;
+                        font-size: 23px;
+                        font-weight: 500;
+                        line-height: 1.12;
+                    }
+
+                    div.live-tile-weather-wide-metrics {
+                        position: absolute;
+                        left: 24px;
+                        top: 57%;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        transform: translateY(-50%);
+
+                        span.live-tile-weather-symbol,
+                        p.live-tile-weather-temperature,
+                        p.live-tile-weather-feels {
+                            position: static;
+                            flex: 0 0 auto;
+                            margin: 0;
+                            transform: none;
+                        }
+
+                        span.live-tile-weather-symbol {
+                            font-size: 52px;
+                        }
+
+                        p.live-tile-weather-temperature {
+                            font-size: 76px;
+                        }
+
+                        p.live-tile-weather-feels {
+                            right: auto;
+                            font-size: 16px;
+                            line-height: 1.22;
+                            text-align: left;
+                        }
+                    }
+
+                    div.live-tile-weather-compact {
+                        p.live-tile-weather-temperature {
+                            top: auto;
+                            bottom: 50px;
+                            left: 11px;
+                            font-size: 68px;
+                            letter-spacing: -3px;
+                            transform: none;
+                        }
+
+                        p.live-tile-weather-range {
+                            position: absolute;
+                            right: 13px;
+                            bottom: 50px;
+                            margin: 0;
+                            font-size: 16px;
+                            font-weight: 500;
+                            line-height: 1.35;
+                            text-align: right;
+                        }
+                    }
+
+                    p.live-tile-weather-range span {
+                        display: block;
+                    }
+
+                    p.live-tile-weather-range span:first-child {
+                        margin-bottom: 2px;
+                        padding-bottom: 2px;
+                        border-bottom: 1px solid rgb(255, 255, 255, .65);
+                    }
+
                     p.live-tile-calendar-weekday,
                     p.live-tile-calendar-date {
                         margin: 0;
