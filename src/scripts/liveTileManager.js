@@ -496,12 +496,6 @@ class tileController {
         const currentPage = parseInt(liveTileContainer.getAttribute("current-page")) || 0;
         const nextPage = Math.min(Math.max(0, page), maxPage - 1);
     }
-    _goToPage_matrix(page, direction) {
-
-    }
-
-
-
     ///ESKİ
     /*
     _goToPage_slide(page, direction) {
@@ -586,9 +580,8 @@ class tileController {
             return this._goToPage_slide(page, direction);
         } else if (this.animationType === AnimationType.FLIP) {
             return this._goToPage_flip(page, direction);
-        } else if (this.animationType === AnimationType.MATRIX) {
-            return this._goToPage_matrix(page, direction);
         }
+        return false;
     }
     goToNextPage() {
         const tile = this.getDOMTile();

@@ -107,7 +107,7 @@ class Tile {
 class TileFeed {
     constructor(options = {}) {
         const defaults = {
-            type: TileType.PAGES,
+            type: TileType.STATIC,
             animationType: AnimationType.FLIP,
             showAppTitle: true,
             duration: 5000 + Math.random() * 500,
@@ -117,6 +117,9 @@ class TileFeed {
 
         if (!Object.values(TileType).includes(this.type)) {
             throw new Error(`Invalid tile type. Must be one of: ${Object.values(TileType).join(', ')}`);
+        }
+        if (!Object.values(AnimationType).includes(this.animationType)) {
+            throw new Error(`Invalid animation type. Must be one of: ${Object.values(AnimationType).join(', ')}`);
         }
         this.tiles = [];
     }
