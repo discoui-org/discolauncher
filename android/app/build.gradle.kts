@@ -140,6 +140,16 @@ android {
             buildConfigField("String", "WEB_ENGINE", "\"GeckoView\"")
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = providers.gradleProperty("android.injected.signing.store.file")
+                .orNull
+                ?.let(::file)
+            storePassword = providers.gradleProperty("android.injected.signing.store.password").orNull
+            keyAlias = providers.gradleProperty("android.injected.signing.key.alias").orNull
+            keyPassword = providers.gradleProperty("android.injected.signing.key.password").orNull
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -147,7 +157,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     dependenciesInfo {

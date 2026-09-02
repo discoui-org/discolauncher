@@ -4,6 +4,22 @@ on:
   schedule:
     - cron: "0 * * * *"  # runs every 1 hour
   workflow_dispatch:
+    inputs:
+      generate_release_description:
+        description: "Generate an AI-powered GitHub release description"
+        required: false
+        type: boolean
+        default: true
+      generate_whats_new:
+        description: "Generate AI-powered What's New content for onboarding"
+        required: false
+        type: boolean
+        default: true
+      include_geckoview:
+        description: "Include GeckoView APKs in the nightly release"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build-and-release:
@@ -53,8 +69,6 @@ jobs:
         if: steps.check_commits.outputs.skip_build != 'true'
         run: |
           echo "${{ secrets.KEYSTORE }}" | base64 --decode > android/app/keystore.jks
-          mkdir android/app/app
-          echo "${{ secrets.KEYSTORE }}" | base64 --decode > android/app/app/keystore.jks
       
       - name: Create local.properties
         if: steps.check_commits.outputs.skip_build != 'true'
@@ -67,14 +81,46 @@ jobs:
           CHANGELOG=$(git log ${LATEST_NIGHTLY}..HEAD --pretty=format:"<strong>%h</strong> %s{NEWLINE}" | tr '\n' '\\n')
           echo "CHANGELOG=$CHANGELOG" >> android/gradle.local.properties
 
-      - name: Build Android APKs (WebView & GeckoView)
+      - name: Generate What's New with Gemini
+        id: whats_new
+        if: ${{ steps.check_commits.outputs.skip_build != 'true' && (github.event_name != 'workflow_dispatch' || inputs.generate_whats_new) }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          LAST_NIGHTLY=$(git tag -l '*-nightly' --sort=-creatordate | head -1)
+          if [ -n "$LAST_NIGHTLY" ]; then
+            COMMITS=$(git log "${LAST_NIGHTLY}..HEAD" --oneline --no-merges)
+          else
+            COMMITS=$(git log --oneline --no-merges -20)
+          fi
+
+          PROMPT="Based on these git commits, generate a 'What's New' HTML list for a Disco Launcher nightly build. ONLY include changes that directly affect end users (new features, UI improvements, bug fixes users would notice). EXCLUDE technical changes like code refactoring, build system updates, dependency updates, or developer-only improvements. Format as HTML <li> elements with <strong> tags for feature names. If no user-facing changes are found, return an empty string. IMPORTANT: Return ONLY the HTML content without markdown code blocks. Here are the commits:\n\n${COMMITS}"
+          ESCAPED_PROMPT=$(echo "$PROMPT" | jq -Rs .)
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+            -H "x-goog-api-key: ${GEMINI_API_KEY}" \
+            -H 'Content-Type: application/json' \
+            -X POST \
+            -d "{\"contents\":[{\"parts\":[{\"text\":${ESCAPED_PROMPT}}]}]}")
+          WHATS_NEW_HTML=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text' 2>/dev/null || echo "")
+
+          if [ -n "$WHATS_NEW_HTML" ] && [ "$WHATS_NEW_HTML" != "null" ]; then
+            echo "$WHATS_NEW_HTML" > whats_new.html
+            node scripts/update-welcome.js "$WHATS_NEW_HTML"
+            echo "whats_new_generated=true" >> $GITHUB_OUTPUT
+          else
+            echo "whats_new_generated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build Android APKs
         if: steps.check_commits.outputs.skip_build != 'true'
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASS }}
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASS }}
         run: |
           npm run build:android:nightly:webview
-          npm run build:android:nightly:geckoview
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.include_geckoview }}" = "true" ]; then
+            npm run build:android:nightly:geckoview
+          fi
 
       - name: List all generated APKs for debugging
         if: steps.check_commits.outputs.skip_build != 'true'
@@ -93,10 +139,41 @@ jobs:
             cp "$apk" "DiscoLauncher_${RELEASE_TAG}_WebView_${arch}.apk"
           done
           # GeckoView APKs (split by ABI)
-          for apk in android/app/build/outputs/apk/nightlyGeckoView/release/app-nightlyGeckoView-*-release.apk; do
-            arch=$(echo $apk | sed -n 's/.*app-nightlyGeckoView-\(.*\)-release.apk/\1/p')
-            cp "$apk" "DiscoLauncher_${RELEASE_TAG}_GeckoView_${arch}.apk"
-          done
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.include_geckoview }}" = "true" ]; then
+            for apk in android/app/build/outputs/apk/nightlyGeckoView/release/app-nightlyGeckoView-*-release.apk; do
+              arch=$(echo $apk | sed -n 's/.*app-nightlyGeckoView-\(.*\)-release.apk/\1/p')
+              cp "$apk" "DiscoLauncher_${RELEASE_TAG}_GeckoView_${arch}.apk"
+            done
+          fi
+
+      - name: Generate release description with Gemini
+        id: release_description
+        if: ${{ steps.check_commits.outputs.skip_build != 'true' && (github.event_name != 'workflow_dispatch' || inputs.generate_release_description) }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          LAST_NIGHTLY=$(git tag -l '*-nightly' --sort=-creatordate | head -1)
+          if [ -n "$LAST_NIGHTLY" ]; then
+            COMMITS=$(git log "${LAST_NIGHTLY}..HEAD" --oneline --no-merges)
+          else
+            COMMITS=$(git log --oneline --no-merges -20)
+          fi
+
+          PROMPT="Based on these git commits, generate a concise GitHub release description in markdown for a Disco Launcher nightly build. Only include user-facing Added, Improved, and Fixed categories that have actual changes. Format each item as '- **feature name**: Description'. Do not include a Full Changelog link or markdown code fences. Here are the commits:\n\n${COMMITS}"
+          ESCAPED_PROMPT=$(echo "$PROMPT" | jq -Rs .)
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+            -H "x-goog-api-key: ${GEMINI_API_KEY}" \
+            -H 'Content-Type: application/json' \
+            -X POST \
+            -d "{\"contents\":[{\"parts\":[{\"text\":${ESCAPED_PROMPT}}]}]}")
+          RELEASE_NOTES=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text' 2>/dev/null || echo "")
+
+          if [ -n "$RELEASE_NOTES" ] && [ "$RELEASE_NOTES" != "null" ]; then
+            echo "$RELEASE_NOTES" > release_description.md
+            echo "release_notes_generated=true" >> $GITHUB_OUTPUT
+          else
+            echo "release_notes_generated=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Delete Previous Nightly Releases
         if: steps.check_commits.outputs.skip_build != 'true'
@@ -119,7 +196,14 @@ jobs:
           RELEASE_NAME="${COMMIT_ID}-nightly"
           ASSETS=$(ls DiscoLauncher_${RELEASE_TAG}_*.apk | xargs)
           echo "Creating release with tag $RELEASE_TAG"
-          gh release create "$RELEASE_TAG" $ASSETS \
-            --title "$RELEASE_NAME" \
-            --notes "Nightly build for $(date) $(git log ${LATEST_NIGHTLY}..HEAD --pretty=format:"**%h** %s\n" | tr '\n' '\\n')" \
-            --prerelease
+          if [ "${{ steps.release_description.outputs.release_notes_generated }}" = "true" ] && [ -f release_description.md ]; then
+            gh release create "$RELEASE_TAG" $ASSETS \
+              --title "$RELEASE_NAME" \
+              --notes-file release_description.md \
+              --prerelease
+          else
+            gh release create "$RELEASE_TAG" $ASSETS \
+              --title "$RELEASE_NAME" \
+              --notes "Nightly build for $(date -u)" \
+              --prerelease
+          fi

@@ -89,8 +89,6 @@ jobs:
       - name: Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE }}" | base64 --decode > android/app/keystore.jks
-          mkdir -p android/app/app
-          echo "${{ secrets.KEYSTORE }}" | base64 --decode > android/app/app/keystore.jks
       
       - name: Create local.properties
         env:
@@ -120,7 +118,7 @@ jobs:
           ESCAPED_PROMPT=$(echo "$PROMPT" | jq -Rs .)
           
           # Call Gemini API
-          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent" \
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
             -H "x-goog-api-key: ${{ secrets.GEMINI_API_KEY }}" \
             -H 'Content-Type: application/json' \
             -X POST \
@@ -245,7 +243,7 @@ jobs:
           ESCAPED_PROMPT=$(echo "$PROMPT" | jq -Rs .)
           
           # Call Gemini API
-          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent" \
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
             -H "x-goog-api-key: ${{ secrets.GEMINI_API_KEY }}" \
             -H 'Content-Type: application/json' \
             -X POST \
