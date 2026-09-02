@@ -114,8 +114,8 @@ jobs:
       - name: Build Android APKs
         if: steps.check_commits.outputs.skip_build != 'true'
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASS }}
-          KEY_PASSWORD: ${{ secrets.KEYSTORE_PASS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           npm run build:android:nightly:webview
           if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.include_geckoview }}" = "true" ]; then

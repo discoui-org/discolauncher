@@ -175,8 +175,8 @@ jobs:
           fi
       - name: Build Android APKs (WebView & GeckoView)
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASS }}
-          KEY_PASSWORD: ${{ secrets.KEYSTORE_PASS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           npm run build:android:release
 
