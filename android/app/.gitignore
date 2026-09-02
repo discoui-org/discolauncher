@@ -3,3 +3,4 @@
 /regular
 src/main/assets/*
 /app/keystore.jks
+/keystore.jks

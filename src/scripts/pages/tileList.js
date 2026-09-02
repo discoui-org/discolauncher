@@ -2,60 +2,24 @@ import jQuery from "jquery";
 import DiscoBoard from "../DiscoBoard";
 const $ = jQuery;
 import perlin from "../perlin";
-
-import { GridStack } from "gridstack";
-
-window.GridStack = GridStack;
+import DiscoTileGrid from "../DiscoTileGrid";
 const tileListInnerContainer = document.querySelector(
   "div.tile-list-inner-container"
 );
 Math.pow2 = (x, y) => {
   return Math.pow(Math.abs(x), y) * (x > 0 ? 1 : -1)
 }
-const grid = GridStack.init({
-  column: 4,
-  disableResize: true,
-  disableDrag: true,
-  float: false,
-  animate: false
-});
+const grid = new DiscoTileGrid(tileListInnerContainer, { column: 4 });
 var isDragging
-var lastDragEl
-function _removeDragScale(el) {
-  el.style.removeProperty("width")
-  el.style.removeProperty("height")
-}
 grid.on("dragstart", function (event, el) {
-  // el.classList.add("grid-dragging")
   scrollers.tile_page_scroller.cancelScroll()
-  lastDragEl = el
   isDragging = true
-  _removeDragScale(el)
-  /*$(el).css({
-    left: $(el).position().left + 15,
-    top: $(el).position().top + 15
-  })*/
 });
 grid.on('drag', function (event, el) {
-  console.log("bababa")
   Disco.triggerHapticFeedback("CLOCK_TICK")
-  _removeDragScale(el)
 });
 grid.on('change', function (event, items) {
 });
-window.addEventListener("pointermove", (e) => {
-  if (isDragging && false) {
-
-    requestAnimationFrame(() => {
-      $(lastDragEl).css({
-        left: $(lastDragEl).position().left + 15,
-        top: $(lastDragEl).position().top + 15
-      })
-    })
-    lastDragEl.style.removeProperty("width")
-    lastDragEl.style.removeProperty("height")
-  }
-})
 grid.on("dragstop", function (event, el) {
   setTimeout(() => {
     DiscoBoard.backendMethods.homeConfiguration.save()
@@ -201,6 +165,7 @@ $("#app-page-icon").on("flowClick", function () {
 
 const resizeObserver = new ResizeObserver((entries) => {
   for (let entry of entries) {
+    tileListGrid.render();
     DiscoBoard.backendMethods.scaleTiles();
     if (window["scrollers"]) scrollers.tile_page_scroller.refresh();
   }
@@ -259,19 +224,7 @@ $(window).on("pointerdown", function (e) {
         DiscoBoard.boardMethods.createTileMenu(targetTile);
         generateShakeAnimations();
         targetTile.homeTileMenuState = true;
-        const args = {
-          bubbles: true,
-          cancelable: true,
-          clientX: e.clientX,
-          clientY: e.clientY,
-          pageX: e.pageX,
-          pageY: e.pageY,
-          screenX: e.screenX,
-          screenY: e.screenY
-        }
-        targetTile.dispatchEvent(new MouseEvent('mousedown', args));
-        targetTile.dispatchEvent(new TouchEvent('touchstart', args));
-        targetTile.dispatchEvent(new PointerEvent('pointerdown', args));
+        tileListGrid.beginDrag(targetTile, e.originalEvent || e);
       });
       targetTile.classList.add("home-menu-selected");
     }, 500);

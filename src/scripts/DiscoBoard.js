@@ -931,8 +931,8 @@ const backendMethods = {
     },
     load: () => {
       window.cantSaveHomeConfig = true
-      document.querySelectorAll("div.tile-list-inner-container > div.disco-home-tile").forEach(e => e.remove())
       window.tileListGrid.batchUpdate(true)
+      window.tileListGrid.clear()
       const config = JSON.parse(localStorage.getItem("homeConfiguration")) || []
 
       config.forEach(tile => {
@@ -950,24 +950,13 @@ const backendMethods = {
           {
             w: tile.w,
             h: tile.h,
-            x: tile.l,
-            y: tile.t
+            x: tile.x ?? tile.l ?? 0,
+            y: tile.y ?? tile.t ?? 0
           }
         );
 
         // Apply tile preferences to home tile
         backendMethods.applyTilePreferences(homeTile, tile.p);
-
-        el.setAttribute("gs-x", tile.l)
-        el.setAttribute("gs-y", tile.t)
-        el.setAttribute("gs-w", tile.w)
-        el.setAttribute("gs-h", tile.h)
-        window.tileListGrid.moveNode(el.gridstackNode, {
-          w: tile.w,
-          h: tile.h,
-          x: tile.x,
-          y: tile.y
-        })
 
       })
       /*
