@@ -140,7 +140,7 @@ function draw() {
     const tileFeed = new liveTileHelper.TileFeed({
         active: Boolean(activeMedia || regularNotifications.length),
         type: activeMedia ? liveTileHelper.TileType.CAROUSEL : liveTileHelper.TileType.NOTIFICATION,
-        animationType: activeMedia ? liveTileHelper.AnimationType.SLIDE : liveTileHelper.AnimationType.FLIP,
+        animationType: liveTileHelper.AnimationType.SLIDE,
         showAppTitle: !activeMedia,
         notificationCount: regularNotifications.length,
         mediaKey: activeMedia ? getMediaKey(activeMedia) : null,

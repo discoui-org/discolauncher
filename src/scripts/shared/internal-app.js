@@ -5,8 +5,8 @@ import applyOverscroll from "../overscrollFramework.js";
 import fontStore from "../fontStore.js";
 import DiscoMock from "./../discoMock.js";
 import { set } from "lodash";
-// Initialize mock environment if Disco isn't available
-const DiscoMockInstance = !window.Disco
+// Platform bootstrap decides which native adapter is available.
+const DiscoMockInstance = window.DiscoPlatform?.isMock === true
 if (DiscoMockInstance) {
   //window.Disco = new DiscoMock("./../../mock/apps.json")
   window.Disco = new DiscoMock("./../../mock/apps.json")

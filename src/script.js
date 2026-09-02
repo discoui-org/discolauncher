@@ -1,4 +1,4 @@
-const DiscoMockInstance = !window.Disco
+const DiscoMockInstance = window.DiscoPlatform?.isMock === true
 window.DiscoMockInstance = DiscoMockInstance
 import { DiscoMock, BuildConfigMock } from "./scripts/discoMock.js";
 window.DiscoRole = "main"

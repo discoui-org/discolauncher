@@ -287,8 +287,9 @@ public final class GeckoBridgeServer extends NanoHTTPD {
             InputStream stream = activity.getAssets().open(assetPath);
             if (assetPath.endsWith(".html")) {
                 String document = new String(readAllBytes(stream), StandardCharsets.UTF_8);
-                String bridge = "<script src=\"/gecko-bridge.js\"></script>";
-                document = document.replace("</head>", bridge + "</head>");
+                String platformBootstrap = "<script>window.__DISCO_PLATFORM__=\"android-geckoview\";</script>"
+                        + "<script src=\"/platform-bootstrap.js\"></script>";
+                document = document.replace("</head>", platformBootstrap + "</head>");
                 stream = new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8));
             }
             return newChunkedResponse(Response.Status.OK, getMimeTypeForFile(assetPath), stream);

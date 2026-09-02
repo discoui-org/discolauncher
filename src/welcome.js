@@ -14,7 +14,7 @@ const allPermissions = ["CONTACTS", "PHOTOS", "NOTIFICATIONS", "LOCATION", "ACCE
 
 import { DiscoMock, BuildConfigMock } from "./scripts/discoMock.js";
 window.DiscoRole = "main"
-if (DiscoMockInstance) {
+if (window.DiscoPlatform?.isMock) {
     //window.Disco = new DiscoMock("./mock/apps.json")
     window.Disco = new DiscoMock("./mock/apps.json")
     await Disco.initializeApps()
