@@ -1,4 +1,4 @@
-package io.github.cherryhoax.discolauncher;
+package io.github.cherryhoax.discolauncher2;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -34,8 +34,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.github.cherryhoax.discolauncher.IconPack.IconPack;
-import io.github.cherryhoax.discolauncher.IconPack.IconPackManager;
+import io.github.cherryhoax.discolauncher2.IconPack.IconPack;
+import io.github.cherryhoax.discolauncher2.IconPack.IconPackManager;
 import io.github.cherryhoax.discolauncherservices.GravyServer;
 
 import java.util.Map;

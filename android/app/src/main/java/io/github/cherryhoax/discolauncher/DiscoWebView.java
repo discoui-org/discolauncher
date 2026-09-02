@@ -1,4 +1,4 @@
-package io.github.cherryhoax.discolauncher;
+package io.github.cherryhoax.discolauncher2;
 
 import android.app.Activity;
 import android.content.Context;
@@ -38,8 +38,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 
-import io.github.cherryhoax.discolauncher.Utils.*;
-import io.github.cherryhoax.discolauncher.MainActivity;
+import io.github.cherryhoax.discolauncher2.Utils.*;
+import io.github.cherryhoax.discolauncher2.MainActivity;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package io.github.cherryhoax.discolauncher.IconPack;
+package io.github.cherryhoax.discolauncher2.IconPack;
 
 import android.content.Context;
 import android.content.Intent;

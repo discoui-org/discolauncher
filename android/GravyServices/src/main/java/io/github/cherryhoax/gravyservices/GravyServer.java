@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GravyServer extends BroadcastReceiver {
-    public static final String ACTION_SEND = "io.github.cherryhoax.discolauncher.server";
-    public static final String ACTION_RECEIVE = "io.github.cherryhoax.discolauncher.client";
+    public static final String ACTION_SEND = "io.github.cherryhoax.discolauncher2.server";
+    public static final String ACTION_RECEIVE = "io.github.cherryhoax.discolauncher2.client";
     private Context context;
     private BroadcastReceiver responseReceiver;
     private boolean isStarted = false;

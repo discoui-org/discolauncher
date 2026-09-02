@@ -46,7 +46,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="io.github.cherryhoax.discolauncher.client" />
+                <action android:name="io.github.cherryhoax.discolauncher2.client" />
             </intent-filter>
         </receiver>
 

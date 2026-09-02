@@ -1,4 +1,4 @@
-package io.github.cherryhoax.discolauncher;
+package io.github.cherryhoax.discolauncher2;
 
 import android.content.ContentResolver;
 import android.content.Context;

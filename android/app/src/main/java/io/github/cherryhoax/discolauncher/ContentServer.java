@@ -1,8 +1,8 @@
-package io.github.cherryhoax.discolauncher;
+package io.github.cherryhoax.discolauncher2;
 
-import static io.github.cherryhoax.discolauncher.SystemEvents.mainActivity;
-import static io.github.cherryhoax.discolauncher.UriEncode.decodeURIComponent;
-import static io.github.cherryhoax.discolauncher.UriEncode.encodeURIComponent;
+import static io.github.cherryhoax.discolauncher2.SystemEvents.mainActivity;
+import static io.github.cherryhoax.discolauncher2.UriEncode.decodeURIComponent;
+import static io.github.cherryhoax.discolauncher2.UriEncode.encodeURIComponent;
 
 import android.app.Notification;
 import android.content.ContentResolver;
@@ -34,7 +34,7 @@ import androidx.annotation.Nullable;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewClientCompat;
 
-import io.github.cherryhoax.discolauncher.IconPack.IconPack;
+import io.github.cherryhoax.discolauncher2.IconPack.IconPack;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;

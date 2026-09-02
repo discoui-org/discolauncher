@@ -40,7 +40,7 @@ class DiscoMock {
                 const data = await response.json();
 
                 this.#retrievedApps = data.apps
-                    .filter(app => app.packageName !== 'io.github.cherryhoax.discolauncher' && app.packageName !== 'io.github.cherryhoax.discolauncher.nightly')
+                    .filter(app => app.packageName !== 'io.github.cherryhoax.discolauncher2' && app.packageName !== 'io.github.cherryhoax.discolauncher2.nightly')
                     .map(app => ({
                         packageName: app.packageName,
                         label: app.label,
@@ -521,7 +521,7 @@ function playHapticTick(volume = 1) {
 }
 
 window.mockDeepLink = (url) => window.dispatchEvent(new CustomEvent("deepLink", { detail: { url: url } }))
-window.mockDeepLinkExample = () => window.mockDeepLink("disco:?installStyle=" + encodeURI("https://gist.githubusercontent.com/cherryhoax/5e6b101fcd70450078f993d74f6cb610/raw/85cb730c2e9d95609cad1c1c165a2796cb4258c0/style.css"))
+window.mockDeepLinkExample = () => window.mockDeepLink("disco:?installStyle=" + encodeURI("https://gist.githubusercontent.com/cherryhoax/5e6b101fcd70450078f993d74f6cb610/raw/fea9ef85f73e615f93b868c157a9383556e384ad/style.css"))
 export default DiscoMock;
 export { BuildConfigMock, DiscoMock }
 

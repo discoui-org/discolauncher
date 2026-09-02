@@ -12,7 +12,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="io.github.cherryhoax.discolauncher.server"/>
+                <action android:name="io.github.cherryhoax.discolauncher2.server"/>
             </intent-filter>
         </receiver>
         <activity

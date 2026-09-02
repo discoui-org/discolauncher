@@ -1,6 +1,6 @@
-package io.github.cherryhoax.discolauncher;
+package io.github.cherryhoax.discolauncher2;
 
-import static io.github.cherryhoax.discolauncher.MainActivity.TAG;
+import static io.github.cherryhoax.discolauncher2.MainActivity.TAG;
 import android.app.Notification;
 import android.graphics.Bitmap;
 import android.media.MediaMetadata;

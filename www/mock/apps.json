@@ -2,7 +2,7 @@
     "apps": [
         {
             "uid": 1,
-            "packageName": "io.github.cherryhoax.discolauncher",
+            "packageName": "io.github.cherryhoax.discolauncher2",
             "label": "Disco Launcher",
             "type": 1
         },

@@ -1,7 +1,7 @@
-package io.github.cherryhoax.discolauncher;
+package io.github.cherryhoax.discolauncher2;
 
 import static android.content.Context.MODE_PRIVATE;
-import static io.github.cherryhoax.discolauncher.DefaultApps.*;
+import static io.github.cherryhoax.discolauncher2.DefaultApps.*;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.pm.ServiceInfo;
@@ -71,7 +71,7 @@ import java.util.Set;
 
 import rikka.shizuku.Shizuku;
 import rikka.shizuku.ShizukuBinderWrapper;
-import io.github.cherryhoax.discolauncher.IconPack.IconPack;
+import io.github.cherryhoax.discolauncher2.IconPack.IconPack;
 
 public class WebInterface {
     private static final String PREFS_NAME = "DiscoLauncherPrefs";
@@ -153,7 +153,7 @@ public class WebInterface {
 
         // Now process each app
         for (ResolveInfo resolveInfo : mainActivity.webView.retrievedApps) {
-            if (!resolveInfo.activityInfo.packageName.equals("io.github.cherryhoax.discolauncher") && !resolveInfo.activityInfo.packageName.equals("io.github.cherryhoax.discolauncher.nightly")) {
+            if (!resolveInfo.activityInfo.packageName.equals("io.github.cherryhoax.discolauncher2") && !resolveInfo.activityInfo.packageName.equals("io.github.cherryhoax.discolauncher2.nightly")) {
                 JSONObject appInfo = new JSONObject();
                 String packageName = resolveInfo.activityInfo.packageName;
                 String packageNameWithIntent;

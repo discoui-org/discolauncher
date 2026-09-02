@@ -24,7 +24,7 @@ val localProperties = Properties().apply {
 }
 
 android {
-    namespace = "io.github.cherryhoax.discolauncher"
+    namespace = "io.github.cherryhoax.discolauncher2"
     compileSdk = 35
 
     buildFeatures {
@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "io.github.cherryhoax.discolauncher"
+        applicationId = "io.github.cherryhoax.discolauncher2"
         minSdk = 26
         targetSdk = 35
         // VERSIONCODE START
@@ -85,7 +85,7 @@ android {
         create("regular") {
             dimension = "default"
             // Regular build uses the default application ID
-            applicationId = "io.github.cherryhoax.discolauncher"
+            applicationId = "io.github.cherryhoax.discolauncher2"
             manifestPlaceholders["appIcon"] = "@mipmap/icon_default"
             manifestPlaceholders["appRoundIcon"] = "@mipmap/icon_default_round"
             buildConfigField("String", "WEB_ENGINE", "\"WebView\"")
@@ -100,7 +100,7 @@ android {
         create("debugFlavor"){
             dimension = "default"
             // Debug build uses the default application ID
-            applicationId = "io.github.cherryhoax.discolauncher.debug"
+            applicationId = "io.github.cherryhoax.discolauncher2.debug"
             // Override app name for debug builds
             resValue("string", "app_name", "Disco Debug")
             manifestPlaceholders["appIcon"] = "@mipmap/icon_nightly"
@@ -111,7 +111,7 @@ android {
         }
         create("debugFlavorGeckoView") {
             dimension = "default"
-            applicationId = "io.github.cherryhoax.discolauncher.debug.geckoview"
+            applicationId = "io.github.cherryhoax.discolauncher2.debug.geckoview"
             //resValue("string", "app_name", "Disco Debug GeckoView")
             manifestPlaceholders["appIcon"] = "@mipmap/icon_nightly"
             manifestPlaceholders["appRoundIcon"] = "@mipmap/icon_nightly_round"
@@ -121,7 +121,7 @@ android {
         create("nightly") {
             dimension = "default"
             // Change package name for nightly builds
-            applicationId = "io.github.cherryhoax.discolauncher.nightly"
+            applicationId = "io.github.cherryhoax.discolauncher2.nightly"
             // Override app name for nightly builds
             resValue("string", "app_name", "Disco Nightly")
             manifestPlaceholders["appIcon"] = "@mipmap/icon_nightly"
@@ -132,7 +132,7 @@ android {
         }
         create("nightlyGeckoView") {
             dimension = "default"
-            applicationId = "io.github.cherryhoax.discolauncher.nightly.geckoview"
+            applicationId = "io.github.cherryhoax.discolauncher2.nightly.geckoview"
             resValue("string", "app_name", "Disco Nightly GeckoView")
             manifestPlaceholders["appIcon"] = "@mipmap/icon_nightly"
             manifestPlaceholders["appRoundIcon"] = "@mipmap/icon_nightly_round"
