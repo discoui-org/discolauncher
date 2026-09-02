@@ -46,7 +46,7 @@ jobs:
             echo "skip_build=false" >> $GITHUB_OUTPUT
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Setup Node.js
         if: steps.check_commits.outputs.skip_build != 'true'
@@ -74,7 +74,7 @@ jobs:
         if: steps.check_commits.outputs.skip_build != 'true'
         env:
           LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           echo "$LOCAL_PROPERTIES" > android/gradle.local.properties
           LATEST_NIGHTLY=$(gh release list --exclude-drafts --limit 1 | awk 'tolower($0) ~ /nightly/ {print $1}' | cut -d'-' -f1)
@@ -178,7 +178,7 @@ jobs:
       - name: Delete Previous Nightly Releases
         if: steps.check_commits.outputs.skip_build != 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           echo "Listing and deleting previous nightly releases"
           for tag in $(gh release list --exclude-drafts --limit 100 | awk 'tolower($0) ~ /nightly/ {print $1}'); do
@@ -189,7 +189,7 @@ jobs:
       - name: Create Nightly Release
         if: steps.check_commits.outputs.skip_build != 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           COMMIT_ID=$(git rev-parse --short HEAD)
           RELEASE_TAG="${COMMIT_ID}-nightly"
