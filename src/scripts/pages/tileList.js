@@ -1,5 +1,6 @@
 import $ from "../dom";
 import DiscoBoard from "../DiscoBoard";
+import DiscoElements from "../DiscoElements";
 import perlin from "../perlin";
 import DiscoTileGrid from "../DiscoTileGrid";
 const tileListInnerContainer = document.querySelector(
@@ -47,6 +48,7 @@ function hashStringToNumber(str, max) {
 const homeTileEditSwitch = {
   isActive: () => homeTileEditEnabled,
   on: (immediate = false, callback = () => { }) => {
+    closeOpenFolder({ immediate: true });
     clearTimeout(window.homeTileEditTimeout)
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
     DiscoBoard.backendMethods.navigation.push(
@@ -163,7 +165,266 @@ function isLaunchableHomeTile(tile) {
 }
 
 function isEditableHomeTile(tile) {
-  return tile.classList.contains("disco-home-tile");
+  return tile.classList.contains("disco-home-tile")
+    && !tile.classList.contains("disco-folder-open-item");
+}
+
+let openFolderState = null;
+let folderOpenVersion = 0;
+const FOLDER_OPEN_STEP = 18;
+const FOLDER_OPEN_DELAY = 60;
+const FOLDER_OPEN_DURATION = 340;
+
+function getFolderChildren(folder) {
+  if (Array.isArray(folder.folderChildren)) return folder.folderChildren;
+  try {
+    return JSON.parse(folder.dataset.folderChildren || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function layoutFolderChildren(children, columns) {
+  const occupied = new Set();
+  const placements = [];
+  const fits = (x, y, width, height) => {
+    if (x + width > columns) return false;
+    for (let row = y; row < y + height; row += 1) {
+      for (let column = x; column < x + width; column += 1) {
+        if (occupied.has(`${column}:${row}`)) return false;
+      }
+    }
+    return true;
+  };
+
+  children.forEach(child => {
+    const width = Math.max(1, Math.min(Number(child.w) || 1, columns));
+    const height = Math.max(1, Number(child.h) || 1);
+    let x = 0;
+    let y = 0;
+    let placed = false;
+
+    while (!placed) {
+      for (x = 0; x <= columns - width; x += 1) {
+        if (!fits(x, y, width, height)) continue;
+        placed = true;
+        break;
+      }
+      if (!placed) y += 1;
+    }
+
+    for (let row = y; row < y + height; row += 1) {
+      for (let column = x; column < x + width; column += 1) {
+        occupied.add(`${column}:${row}`);
+      }
+    }
+    placements.push({ child, x, y, w: width, h: height });
+  });
+
+  return placements;
+}
+
+function setFolderThumbnailOrder(folder) {
+  const matrix = folder.querySelector(":scope > .disco-folder-matrix");
+  if (!matrix) return;
+  const columns = Number.parseInt(matrix.style.getPropertyValue("--folder-grid-columns"), 10) || 2;
+  const entries = [...matrix.children]
+    .map((cell, index) => ({
+      thumbnail: cell.querySelector(":scope > .disco-folder-thumbnail"),
+      x: index % columns,
+      y: Math.floor(index / columns)
+    }))
+    .filter(entry => entry.thumbnail && !entry.thumbnail.closest("[hidden]"));
+  const maxY = Math.max(0, ...entries.map(entry => entry.y));
+
+  entries
+    .sort((first, second) =>
+      (first.x + maxY - first.y) - (second.x + maxY - second.y)
+      || second.y - first.y
+      || first.x - second.x)
+    .forEach((entry, index) => {
+      entry.thumbnail.style.setProperty("--folder-thumbnail-order", index);
+    });
+}
+
+function createFolderOpenPanel(folder) {
+  const node = folder.gridstackNode;
+  const cell = tileListGrid.el.clientWidth / tileListGrid.getColumn();
+  const children = getFolderChildren(folder);
+  const placements = layoutFolderChildren(children, tileListGrid.getColumn());
+  const rowCount = placements.reduce((max, item) => Math.max(max, item.y + item.h), 0);
+  const panel = document.createElement("div");
+  const topBar = document.createElement("div");
+  const content = document.createElement("div");
+  const bottomBar = document.createElement("div");
+
+  panel.className = "disco-folder-open-panel folder-open-preparing";
+  topBar.className = "disco-folder-open-bar disco-folder-open-bar-top";
+  content.className = "disco-folder-open-content";
+  bottomBar.className = "disco-folder-open-bar disco-folder-open-bar-bottom";
+  panel.style.top = `${(node.y + node.h) * cell}px`;
+  content.style.height = `${rowCount * cell}px`;
+  bottomBar.style.setProperty("--folder-open-order", 0);
+
+  placements.forEach(placement => {
+    const { child, x, y, w, h } = placement;
+    const tile = DiscoElements.wHomeTile(child.i, child.ib, child.t, child.p, "", child.s);
+    tile.classList.add("disco-folder-open-item");
+    tile.setAttribute("gs-x", x);
+    tile.setAttribute("gs-y", y);
+    tile.setAttribute("gs-w", w);
+    tile.setAttribute("gs-h", h);
+    tile.style.left = `${x * cell}px`;
+    tile.style.top = `${y * cell}px`;
+    tile.style.width = `${w * cell}px`;
+    tile.style.height = `${h * cell}px`;
+    content.append(tile);
+    placement.el = tile;
+  });
+
+  const maxY = Math.max(0, ...placements.map(item => item.y));
+  const orderedPlacements = [...placements]
+    .sort((first, second) =>
+      (first.x + maxY - first.y) - (second.x + maxY - second.y)
+      || second.y - first.y
+      || first.x - second.x);
+  orderedPlacements.forEach((placement, index) => {
+    placement.el.style.setProperty("--folder-open-order", index + 1);
+  });
+  const lastIconOrder = orderedPlacements.length;
+  topBar.style.setProperty("--folder-open-order", lastIconOrder + 1);
+  panel.style.setProperty("--folder-open-last-order", lastIconOrder + 1);
+  panel.append(topBar, content, bottomBar);
+  return panel;
+}
+
+function setFolderOpenTravel(panel) {
+  const travel = `${-Math.max(1, panel.offsetHeight)}px`;
+  panel.querySelectorAll(
+    ":scope > .disco-folder-open-bar, :scope > .disco-folder-open-content > .disco-folder-open-item"
+  ).forEach(element => {
+    element.style.setProperty("--folder-open-travel", travel);
+  });
+}
+
+function animateFolderOpenPanel(panel) {
+  const durationScale = Number(window.animationDurationScale) || 1;
+  const elements = panel.querySelectorAll(
+    ":scope > .disco-folder-open-bar, :scope > .disco-folder-open-content > .disco-folder-open-item"
+  );
+
+  const animations = [...elements].map(element => {
+    const travel = element.style.getPropertyValue("--folder-open-travel") || "-32px";
+    const order = Number(element.style.getPropertyValue("--folder-open-order")) || 0;
+    return element.animate(
+      [
+        { transform: `translateY(${travel})` },
+        { transform: "translateY(0px)" }
+      ],
+      {
+        duration: FOLDER_OPEN_DURATION * durationScale,
+        delay: (FOLDER_OPEN_DELAY + order * FOLDER_OPEN_STEP) * durationScale,
+        easing: "cubic-bezier(.2, 1.55, .45, 1)",
+        fill: "both"
+      }
+    );
+  });
+
+  Promise.allSettled(animations.map(animation => animation.finished)).then(() => {
+    if (!panel.isConnected || panel.classList.contains("folder-closing")) return;
+    panel.classList.add("folder-open-visible");
+    animations.forEach(animation => animation.cancel());
+  });
+  panel.classList.remove("folder-open-preparing");
+  return animations;
+}
+
+function openFolder(folder) {
+  if (!folder?.gridstackNode || homeTileEditEnabled) return;
+  if (openFolderState?.folder === folder) {
+    closeOpenFolder();
+    return;
+  }
+  if (openFolderState) closeOpenFolder({ immediate: true });
+
+  const node = folder.gridstackNode;
+  const panel = createFolderOpenPanel(folder);
+  tileListInnerContainer.append(panel);
+  setFolderOpenTravel(panel);
+  const panelHeight = panel.offsetHeight;
+  const cell = tileListGrid.el.clientWidth / tileListGrid.getColumn();
+  const folderBottomRow = node.y + node.h;
+  const shiftedTiles = tileListGrid.engine.nodes
+    .filter(candidate => candidate !== node && candidate.y >= node.y)
+    .map(candidate => ({
+      el: candidate.el,
+      offset: panelHeight + (candidate.y < folderBottomRow ? node.h * cell : 0),
+      bottom: (candidate.y + candidate.h) * cell
+    }));
+  const gridHeight = tileListGrid.engine.nodes.reduce(
+    (max, candidate) => Math.max(max, candidate.y + candidate.h),
+    0
+  ) * cell;
+  const panelBottom = (node.y + node.h) * cell + panelHeight;
+  const expandedHeight = shiftedTiles.reduce(
+    (max, candidate) => Math.max(max, candidate.bottom + candidate.offset),
+    Math.max(gridHeight, panelBottom)
+  );
+  const version = ++folderOpenVersion;
+
+  folder.classList.remove("folder-closing");
+  folder.style.setProperty("--folder-thumbnail-travel", `${folder.offsetHeight}px`);
+  setFolderThumbnailOrder(folder);
+  folder.folderOpenVersion = version;
+  openFolderState = { folder, panel, shiftedTiles, version, panelAnimations: [] };
+  tileListGrid.setExtraHeight(Math.max(0, expandedHeight - gridHeight));
+  DiscoBoard.backendMethods.navigation.push(
+    "homeFolderOpen",
+    () => { },
+    () => closeOpenFolder({ invalidateNavigation: false })
+  );
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (openFolderState?.folder !== folder) return;
+    folder.classList.add("folder-open");
+    openFolderState.panelAnimations = animateFolderOpenPanel(panel);
+    shiftedTiles.forEach(({ el, offset }) => {
+      el.style.setProperty("--folder-row-offset", `${offset}px`);
+    });
+    if (window.scrollers) scrollers.tile_page_scroller.refresh();
+  }));
+}
+
+function closeOpenFolder({ immediate = false, invalidateNavigation = true } = {}) {
+  const state = openFolderState;
+  if (!state) return;
+  openFolderState = null;
+
+  if (invalidateNavigation
+    && DiscoBoard.backendMethods.navigation.lastPush?.change === "homeFolderOpen") {
+    DiscoBoard.backendMethods.navigation.invalidate("homeFolderOpen");
+  }
+
+  state.folder.classList.add("folder-closing");
+  state.panel.classList.add("folder-closing");
+  state.panelAnimations.forEach(animation => animation.cancel());
+  state.folder.classList.remove("folder-open");
+  state.panel.classList.remove("folder-open-visible");
+  state.shiftedTiles.forEach(({ el }) => el.style.removeProperty("--folder-row-offset"));
+  tileListGrid.setExtraHeight(0);
+
+  const cleanup = () => {
+    state.panel.remove();
+    if (state.folder.folderOpenVersion !== state.version) return;
+    state.folder.classList.remove("folder-closing");
+    state.folder.style.removeProperty("--folder-thumbnail-travel");
+    state.folder.querySelectorAll(".disco-folder-thumbnail").forEach(thumbnail => {
+      thumbnail.style.removeProperty("--folder-thumbnail-order");
+    });
+    if (window.scrollers) scrollers.tile_page_scroller.refresh();
+  };
+  if (immediate) cleanup();
+  else setTimeout(cleanup, FOLDER_OPEN_DURATION + FOLDER_OPEN_STEP * 2);
 }
 
 $("#app-page-icon").on("flowClick", function () {
@@ -182,6 +443,10 @@ resizeObserver.observe(document.querySelector("div.tile-list-inner-container"));
 
 $(window).on("flowClick", function (e) {
   const clickedTile = resolveHomeTileTarget(e.target);
+  if (clickedTile.classList.contains("disco-home-folder-tile")) {
+    if (!homeTileEditEnabled && clickedTile.canClick) openFolder(clickedTile);
+    return;
+  }
   if (
     isLaunchableHomeTile(clickedTile) &&
     !clickedTile.classList.contains("disco-letter-tile")
@@ -217,6 +482,10 @@ $(window).on("pointerdown", function (e) {
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
   }
   const targetTile = resolveHomeTileTarget(e.target);
+  if (targetTile.classList.contains("disco-folder-open-item") && !homeTileEditEnabled) {
+    targetTile.canClick = true;
+    return;
+  }
   if (isEditableHomeTile(targetTile) && !homeTileEditEnabled) {
     targetTile.canClick = true;
     targetTile.homeTileMenuState = false;
@@ -248,7 +517,9 @@ $(window).on("pointerdown", function (e) {
 $(
   "#main-home-slider > div > div.slide-page, #main-home-slider > div > div.slide-page > div.inner-page, #main-home-slider > div > div.slide-page > div.inner-page > div.tile-list-container, div.tile-list-inner-container"
 ).on("flowClick", (e) => {
+  if (e.target.closest(".disco-folder-open-panel")) return;
   if (e.target.closest("div.disco-home-tile")) return;
+  closeOpenFolder();
   if (homeTileEditEnabled) homeTileEditSwitch.off();
 });
 $(window).on("pointerup", function (e) {

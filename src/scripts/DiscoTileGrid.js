@@ -23,6 +23,7 @@ class DiscoTileGrid {
     this.movable = false;
     this.batchMode = false;
     this.drag = null;
+    this.extraHeight = 0;
 
     this.el.classList.add("disco-tile-grid", `gs-${column}`);
     this.el.addEventListener("pointerdown", event => {
@@ -65,6 +66,12 @@ class DiscoTileGrid {
   enableMove(enabled) {
     this.movable = Boolean(enabled);
     this.el.classList.toggle("disco-tile-grid-editing", this.movable);
+    return this;
+  }
+
+  setExtraHeight(height = 0) {
+    this.extraHeight = Math.max(0, Number(height) || 0);
+    this.render();
     return this;
   }
 
@@ -520,7 +527,9 @@ class DiscoTileGrid {
       i: tile.getAttribute("icon"),
       ib: tile.getAttribute("icon-bg"),
       t: tile.getAttribute("title"),
-      s: tile.getAttribute("supportedsizes")?.split(",") || ["s"]
+      s: tile.getAttribute("supportedsizes")?.split(",") || ["s"],
+      w: tile.gridstackNode?.w || Number(tile.getAttribute("gs-w")) || 1,
+      h: tile.gridstackNode?.h || Number(tile.getAttribute("gs-h")) || 1
     };
   }
 
@@ -585,7 +594,8 @@ class DiscoTileGrid {
     const cell = this.el.clientWidth / this.columnCount;
     const rows = this.engine.nodes.reduce((max, node) => Math.max(max, node.y + node.h), 0);
     this.el.setAttribute("gs-current-row", String(rows));
-    this.el.style.minHeight = rows && cell ? `${rows * cell}px` : "0px";
+    const gridHeight = rows && cell ? rows * cell : 0;
+    this.el.style.minHeight = `${gridHeight + this.extraHeight}px`;
 
     this.engine.nodes.forEach(node => {
       node.el.setAttribute("gs-x", node.x);
