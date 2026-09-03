@@ -318,8 +318,9 @@ body.alternative-wallpaper {
     background-size: cover !important;
   }
 
-  div.app-list,
-  div.status-bar-mock {
+  // Keep the app list transparent over the wallpaper. The status-bar mock is
+  // deliberately excluded so its metro surface remains opaque.
+  div.app-list {
     background: transparent !important;
   }
 

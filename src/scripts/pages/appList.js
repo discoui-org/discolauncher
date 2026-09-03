@@ -15,6 +15,7 @@ class VirtualAppList {
         this.container = container
         this.entries = []
         this.visibleEntries = []
+        this.letterEntries = []
         this.rendered = new Map()
         this.spacer = document.createElement("div")
         this.spacer.setAttribute("aria-hidden", "true")
@@ -60,6 +61,7 @@ class VirtualAppList {
         const width = Math.max(1, (this.container.clientWidth - paddingLeft - paddingRight) / columns)
         let top = paddingTop
         let column = 0
+        this.letterEntries = []
 
         this.visibleEntries.forEach((entry) => {
             if (entry.type === "letter") {
@@ -67,6 +69,7 @@ class VirtualAppList {
                 entry.top = top
                 entry.left = paddingLeft
                 entry.width = width * columns
+                this.letterEntries.push(entry)
                 top += 64
                 return
             }
@@ -89,8 +92,12 @@ class VirtualAppList {
 
     render() {
         if (!this.active || !window.scrollers?.app_page_scroller) return
-        const scrollTop = -window.scrollers.app_page_scroller.y
-        const viewportBottom = scrollTop + window.scrollers.app_page_scroller.wrapper.clientHeight
+        const scroller = window.scrollers.app_page_scroller
+        // Momentum may temporarily place the transform outside the content
+        // bounds. Virtualization must keep rendering the nearest real window
+        // instead of culling every row during that overscroll frame.
+        const scrollTop = Math.max(0, Math.min(-scroller.y, -scroller.maxScrollY))
+        const viewportBottom = scrollTop + scroller.wrapper.clientHeight
         const wanted = new Set()
         this.visibleEntries.forEach((entry) => {
             if (entry.top + 64 < scrollTop - this.buffer || entry.top > viewportBottom + this.buffer) return
@@ -124,9 +131,35 @@ class VirtualAppList {
     }
 
     getLetterTiles() {
-        return this.visibleEntries
-            .filter((entry) => entry.type === "letter")
+        return this.letterEntries
             .map((entry) => ({ top: entry.top, icon: entry.icon }))
+    }
+
+    getStickyLetter(scrollTop, insetTop) {
+        const boundary = scrollTop + insetTop
+        // Use the persistent virtual letter index. Rendered nodes are only a
+        // moving viewport cache and may disappear during a momentum jump.
+        let low = 0
+        let high = this.letterEntries.length - 1
+        let currentIndex = -1
+        while (low <= high) {
+            const middle = (low + high) >> 1
+            if (this.letterEntries[middle].top < boundary) {
+                currentIndex = middle
+                low = middle + 1
+            } else {
+                high = middle - 1
+            }
+        }
+
+        if (currentIndex < 0) return null
+        const current = this.letterEntries[currentIndex]
+        const next = this.letterEntries[currentIndex + 1]
+        const distanceToNext = next ? next.top - boundary : Infinity
+        return {
+            icon: current.icon,
+            offset: distanceToNext < 64 ? distanceToNext - 64 : 0
+        }
     }
 
     scrollToLetter(icon) {
@@ -140,15 +173,18 @@ window.appListVirtualizer = new VirtualAppList(appListContainer[0])
 
 let letterTileLayout = null
 let stickyLetterFrame = null
-let pendingStickyScroll = 0
 let stickyLetterState = {}
 
 function invalidateLetterTileLayout() {
     letterTileLayout = null
-    stickyLetterState = {}
 }
 
-new MutationObserver(invalidateLetterTileLayout).observe(appListContainer[0], {
+new MutationObserver(() => {
+    // Virtual rendering adds/removes rows while scrolling. Its letter layout
+    // comes from the virtual entries, so invalidating sticky visibility here
+    // loses the DOM state without hiding the sticky element.
+    if (!window.appListVirtualizer.active) invalidateLetterTileLayout()
+}).observe(appListContainer[0], {
     childList: true,
     subtree: true
 })
@@ -163,12 +199,15 @@ function getLetterTileLayout() {
     return letterTileLayout
 }
 
-function scheduleStickyLetter(scroll) {
-    pendingStickyScroll = scroll
+function scheduleStickyLetter() {
     if (stickyLetterFrame) return
     stickyLetterFrame = requestAnimationFrame(() => {
         stickyLetterFrame = null
-        stickyLetter(pendingStickyScroll)
+        // Virtual rows and the sticky header must observe the exact same
+        // scroll position. Rendering them in separate frames could leave the
+        // header pointing at a row that had just been recycled on a fast flick.
+        window.appListVirtualizer.render()
+        stickyLetter()
     })
 }
 
@@ -353,9 +392,8 @@ $(window).on("finishedLoading", () => {
         scrollers.tile_page_scroller.refresh()
         scrollers.app_page_scroller.refresh()
     })
-    window.scrollers.app_page_scroller.scroller.translater.hooks.on('translate', (point) => {
-        window.appListVirtualizer.render()
-        scheduleStickyLetter(-point.y)
+    window.scrollers.app_page_scroller.scroller.translater.hooks.on('translate', () => {
+        scheduleStickyLetter()
     })
     $("div.letter-selector-letter").on("flowClick", function (e) {
         if (e.target.classList.contains("disabled")) return
@@ -523,7 +561,10 @@ function appMenuClean() {
     clearTimeout(window.appMenuCreationFirstTimeout)
     clearTimeout(window.appMenuCreationSecondTimeout)
     $("div.app-list-page").removeClass("app-menu-back-intro")
-    $("div.disco-app-tile").css("visibility", "")
+    // The sticky header also has .disco-app-tile, but its visibility is owned
+    // exclusively by stickyLetter(). Clearing it here desynchronizes the DOM
+    // from stickyLetterState and makes the header disappear permanently.
+    $("div.disco-app-tile").not("#sticky-letter").css("visibility", "")
     $("div.app-tile-clone").remove()
 }
 function appImmediateClose() {
@@ -570,37 +611,73 @@ function getTranslateY(element) {
     // Return 0 if there is no transform or translateY is not found
     return 0;
 }
-function stickyLetter(scroll) {
+
+function resetStickyLetter() {
+    stickyLetterTile.css({ visibility: "hidden" })
+    appListPage.removeClass("sticky-letter-visible").css("--sticky-letter-offset", "0px")
+    appListElement.classList.remove("hide-back")
+    // Clean up the old implementation if this module was hot-reloaded.
+    appListElement.style.removeProperty("clip-path")
+    stickyLetterState = { visible: false, icon: null, offset: 0 }
+}
+
+function stickyLetter() {
     if (appListPage[0].classList.contains("app-menu-back") || appListPage[0].classList.contains("app-menu-back-intro")) return;
-    scroll = Math.max(Math.min(scroll, -window.scrollers.app_page_scroller.maxScrollY), -window.scrollers.app_page_scroller.minScrollY)
-    var stickyEl
-    var overthrowingEl
+    const appScroller = window.scrollers.app_page_scroller
+    // Call sites used to pass both `y` (negative) and `-y` (positive). Read
+    // the source of truth directly so sticky headers cannot clamp back to the
+    // first section after a search/menu/scroll lifecycle transition.
+    const scroll = Math.max(0, Math.min(-appScroller.y, -appScroller.maxScrollY))
     const wInsets = windowInsets()
-    getLetterTileLayout().slice().reverse().forEach(({ element, top, icon }) => {
-        const scrollTop = top - scroll - wInsets.top
-        if (scrollTop < 0 && !stickyEl) stickyEl = { element, top, icon }; else if (0 <= scrollTop && scrollTop < 64 && !overthrowingEl) overthrowingEl = { element, top, icon };
-    })
-    if (stickyEl) {
-        const offset = overthrowingEl ? overthrowingEl.top - scroll - wInsets.top - 64 : 0
-        const icon = stickyEl.icon || stickyEl.element.getAttribute("icon")
-        if (!stickyLetterState.visible) stickyLetterTile.css({ visibility: "visible" })
-        if (stickyLetterState.icon !== icon) stickyLetterTile.children("p.disco-app-tile-icon").text(icon)
-        // The expensive clip-path update is only necessary while the next
-        // letter header is physically pushing the sticky one away.
-        if (stickyLetterState.offset !== offset) {
-            stickyLetterTile.css({ top: `calc(${offset}px + var(--window-inset-top))`, "--transform": `${offset}px` })
-            appListElement.style.clipPath = `inset(calc(var(--window-inset-top) + 64px + ${offset}px) 0 0 0)`
-        }
-        const hideBack = scroll >= 21
-        if (stickyLetterState.hideBack !== hideBack) appListElement.classList.toggle("hide-back", hideBack)
-        stickyLetterState = { visible: true, icon, offset, hideBack }
+    let sticky
+    if (window.appListVirtualizer.active) {
+        sticky = window.appListVirtualizer.getStickyLetter(scroll, wInsets.top)
     } else {
-        if (stickyLetterState.visible) {
-            stickyLetterTile.css({ visibility: "hidden" })
-            appListElement.classList.remove("hide-back")
-            appListElement.style.removeProperty("clip-path")
+        const letters = getLetterTileLayout()
+        const boundary = scroll + wInsets.top
+        let current = null
+        let next = null
+        for (const letter of letters) {
+            if (letter.top < boundary) current = letter
+            else {
+                next = letter
+                break
+            }
         }
-        stickyLetterState = { visible: false }
+        if (current) {
+            const distanceToNext = next ? next.top - boundary : Infinity
+            sticky = {
+                icon: current.element.getAttribute("icon"),
+                offset: distanceToNext < 64 ? distanceToNext - 64 : 0
+            }
+        }
+    }
+
+    if (sticky) {
+        const { icon, offset } = sticky
+        // Reconcile against the DOM as well as the cache. Other UI cleanup
+        // paths must not be able to leave a visible state with a hidden node.
+        if (!stickyLetterState.visible || stickyLetterTile[0]?.style.visibility !== "visible") {
+            stickyLetterTile.css({ visibility: "visible" })
+        }
+        if (!appListPage.hasClass("sticky-letter-visible")) appListPage.addClass("sticky-letter-visible")
+        if (stickyLetterState.icon !== icon) stickyLetterTile.children("p.disco-app-tile-icon").text(icon)
+        // Move only the fixed overlay. Updating clip-path/top on the scrolling
+        // wrapper forces layer rebuilds and becomes unstable on fast flicks.
+        if (stickyLetterState.offset !== offset) {
+            appListPage.css({ "--sticky-letter-offset": `${offset}px` })
+        }
+        stickyLetterState = { visible: true, icon, offset }
+    } else {
+        // Do not rely only on the cached state here. A layout mutation may
+        // have invalidated it while the sticky DOM and its clip-path remained
+        // visible, which caused stuck or duplicate letter headers.
+        const stickyDomIsActive = stickyLetterTile[0]?.style.visibility === "visible"
+            || appListPage.hasClass("sticky-letter-visible")
+            || appListElement.classList.contains("hide-back")
+            || Boolean(appListElement.style.clipPath)
+        if (stickyLetterState.visible || stickyDomIsActive) resetStickyLetter()
+        else stickyLetterState = { visible: false, icon: null, offset: 0 }
     }
 }
 

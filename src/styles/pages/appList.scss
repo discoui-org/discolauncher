@@ -2,6 +2,7 @@
 
 #search-icon {
   position: absolute;
+  z-index: 10;
   left: 25px;
   top: calc(26px + var(--window-inset-top));
   width: 42px;
@@ -115,6 +116,26 @@ div.app-search-search-store {
 
 div.inner-page.app-list-page {
   perspective: calc(var(--flow-perspective) * 2);
+
+  // This surface sits outside the pressed sticky tile, so Flow Touch cannot
+  // expose recycled list rows behind it. Its bottom follows the sticky tile
+  // while the next section pushes that tile away.
+  &::before {
+    content: "";
+    position: fixed;
+    z-index: 9;
+    pointer-events: none;
+    visibility: hidden;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: calc(var(--window-inset-top) + 64px + var(--sticky-letter-offset, 0px));
+    background: var(--metro-background);
+  }
+
+  &.sticky-letter-visible:not(.search-mode):not(.search-mode-animations)::before {
+    visibility: visible;
+  }
 
   &.search-mode-animations {
     input.app-list-search {
@@ -350,11 +371,12 @@ div.inner-page.app-list-page {
   left: 81px;
   width: 100%;
   top: calc(var(--window-inset-top));
-  background: var(--metro-background) !important;
-  box-shadow: 0px calc(-6px - var(--window-inset-top)) 0px var(--metro-background),
-  var(--metro-background) -10px 0px 0px,
-  var(--metro-background) -10px -50px 0px;
-  ;
+  // Keep the scroll offset independent from Flow Touch's transform. Using the
+  // transform shorthand here would override the press transform entirely.
+  translate: 0 var(--sticky-letter-offset, 0px);
+  will-change: translate, transform;
+  isolation: isolate;
+  background-color: var(--metro-background) !important;
 
   z-index: 10;
   visibility: hidden;
@@ -631,15 +653,14 @@ div.app-list-page {
 
   div.app-list,
   #search-icon,
-  #sticky-letter,
   input.app-list-search {
     transition: transform var(--flow-touch-up-transition) ease-out, opacity var(--flow-touch-up-transition) ease-out;
   }
 
   #sticky-letter {
-    p.disco-app-tile-icon {
-      transition: transform var(--flow-touch-up-transition) ease-out, opacity var(--flow-touch-up-transition) ease-out;
-    }
+    // Only Flow Touch's transform is animated. The independent `translate`
+    // offset above continues to follow virtual scrolling frame-for-frame.
+    transition: transform var(--flow-touch-up-transition) ease-out;
   }
 
   div.app-tile-clone {
