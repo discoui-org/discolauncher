@@ -626,7 +626,7 @@ class tileController {
                     inactiveTile.classList.remove(
                         'live-tile', 'has-notification-count', 'hide-app-title',
                         'tile-type-static', 'tile-type-carousel', 'tile-type-notification', 'tile-type-matrix',
-                        'native-widget-tile'
+                        'native-widget-tile', 'has-light-icon-background', 'notification-detail-visible'
                     );
                     delete inactiveTile.dataset.tapTarget;
                     delete inactiveTile.dataset.liveTileSurfaceFallback;
@@ -650,6 +650,11 @@ class tileController {
                 .forEach(badge => badge.remove());
             this.tileType = result.type;
             this.animationType = result.animationType;
+            const sourceIconBackground = tile.querySelector('.disco-home-tile-icon-background');
+            tile.classList.toggle(
+                'has-light-icon-background',
+                sourceIconBackground?.classList.contains('has-light-edges')
+            );
             tile.dataset.liveTileSurfaceFallback = result.surfaceFallback === 'metro'
                 ? 'metro'
                 : 'accent';
@@ -673,6 +678,7 @@ class tileController {
             this.configureNativeWidgetTap(liveTileContainer, result.isNativeWidget === true);
             liveTileContainer.setAttribute("current-page", 0);
             liveTileContainer.style.setProperty('--current-page', 0);
+            tile.classList.remove('notification-detail-visible');
             const iconElement = tile.querySelector('img.disco-home-tile-imageicon');
             if (iconElement) {
                 iconElement.style.visibility = 'visible';
@@ -904,6 +910,7 @@ class tileController {
         liveTileContainer.classList.add(`direction-${direction}`);
         liveTileContainer.setAttribute("current-page", nextPage);
         liveTileContainer.style.setProperty('--current-page', nextPage);
+        this.setNotificationDetailVisible(tile, nextPage);
 
         // Update direction classes for all pages
         const pages = liveTileContainer.querySelectorAll('.live-tile-page');
@@ -953,6 +960,7 @@ class tileController {
         incomingPage.classList.add('page-flip');
         liveTileContainer.setAttribute("current-page", nextPage);
         liveTileContainer.style.setProperty('--current-page', nextPage);
+        this.setNotificationDetailVisible(tile, nextPage);
 
         const durationValue = getComputedStyle(liveTileContainer)
             .getPropertyValue('--live-tile-page-flip-duration').trim();
@@ -971,6 +979,12 @@ class tileController {
         }, durationMs);
 
         return true;
+    }
+    setNotificationDetailVisible(tile, page) {
+        tile.classList.toggle(
+            'notification-detail-visible',
+            this.tileType === TileType.NOTIFICATION && page > 0
+        );
     }
     ///ESKİ
     /*

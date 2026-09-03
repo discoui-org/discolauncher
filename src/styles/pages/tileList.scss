@@ -638,6 +638,27 @@ div.disco-home-tile {
                 }
             }
 
+            // A title normally inherits the icon-background contrast chosen
+            // for the app. White icon surfaces keep the app title and count
+            // dark on the summary page; the fixed app title fades to white as
+            // a real notification card slides in behind it.
+            &.tile-type-notification {
+                p.disco-home-tile-title {
+                    transition: color var(--tile-list-animation-duration) var(--tile-list-animation-easing);
+                }
+
+                &.has-light-icon-background {
+                    &:not(.notification-detail-visible) p.disco-home-tile-title,
+                    span.live-tile-notification-count {
+                        color: #000 !important;
+                    }
+
+                    &.notification-detail-visible p.disco-home-tile-title {
+                        color: #fff !important;
+                    }
+                }
+            }
+
             div.disco-home-inner-tile {
                 &.show-flip-direction-0 {
                     animation: show-flip-direction-0 var(--tile-list-flip-animation-duration) forwards;
