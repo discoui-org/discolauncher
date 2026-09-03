@@ -3,7 +3,7 @@ import { applyOverscroll, appViewEvents, discoColors, discoThemes, setAccentColo
 import imageStore from "../../scripts/imageStore";
 import { DiscoScroll, DiscoSlide } from "../../scripts/overscrollFramework";
 import fontStore from "../../scripts/fontStore";
-import jQuery from "jquery";
+import $ from "../../scripts/dom";
 import i18n from "../../scripts/localeManager";
 import DiscoElements from "../../scripts/DiscoElements";
 const emptyResponses = [
@@ -21,7 +21,6 @@ const emptyResponses = [
 window.i18n = i18n
 await i18n.init()
 await i18n.translateDOM()
-const $ = jQuery
 window.fontStore = fontStore
 const settingsPages = document.getElementById("settings-pages")
 const appTabs = document.querySelector("div.innerApp div.app-tabs")

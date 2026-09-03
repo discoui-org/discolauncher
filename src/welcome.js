@@ -4,8 +4,8 @@ import { discoThemes } from "./scripts/DiscoProperties.js";
 window.newerThan = newerThan
 window.olderThan = olderThan
 window.compareVersions = compareVersions
-import jQuery from "jquery";
-window.$ = jQuery
+import $ from "./scripts/dom";
+window.$ = $
 import { i18n, greetings } from './scripts/localeManager';
 await i18n.init();
 window.i18n = i18n;

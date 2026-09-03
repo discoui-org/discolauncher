@@ -1,6 +1,4 @@
-import jQuery from "jquery";
 import DiscoBoard from "./DiscoBoard";
-const $ = jQuery
 var deletedApps = new Set()
 import BuildConfigMock from "./BuildConfigMock";
 // Add constants at the top

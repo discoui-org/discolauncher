@@ -1,8 +1,7 @@
 import DiscoBoard from "../../../scripts/DiscoBoard";
 import DiscoElements from "../../../scripts/DiscoElements";
 
-import jQuery from "jquery";
-const $ = jQuery
+import $ from "../../../scripts/dom";
 document.querySelector("#uninstallappbutton").addEventListener("flowClick", e => {
     const packageName = window.lastSelectedApp.packageName
     if (parent.DiscoBoard.backendMethods.packageManagerProvider.get() == 0) {

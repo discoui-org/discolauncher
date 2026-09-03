@@ -1,19 +1,16 @@
-@import url("https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css");
 @import url("flowTile.css");
 
 #container {
     width: 480px;
     height: 850px;
     background-color: rgb(255,255,255,.1);
+    overflow: auto;
+    resize: both;
 }
 
 body,
 html {
     color-scheme: dark;
-}
-
-.ui-icon-gripsmall-diagonal-se {
-    filter: invert();
 }
 
 .ft-tile {

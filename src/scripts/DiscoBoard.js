@@ -23,8 +23,7 @@ window.discoThemes = discoThemes;
 const tileListInnerContainer = document.querySelector(
   "div.tile-list-inner-container"
 );
-import jQuery from "jquery";
-var $ = jQuery
+import $ from "./dom";
 function hexToRgbObject(hex) {
   hex = hex.replace(/^#/, '');
   let r = parseInt(hex.slice(0, 2), 16);

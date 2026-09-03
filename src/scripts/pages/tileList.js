@@ -1,6 +1,5 @@
-import jQuery from "jquery";
+import $ from "../dom";
 import DiscoBoard from "../DiscoBoard";
-const $ = jQuery;
 import perlin from "../perlin";
 import DiscoTileGrid from "../DiscoTileGrid";
 const tileListInnerContainer = document.querySelector(

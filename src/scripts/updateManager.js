@@ -1,5 +1,3 @@
-import { type } from "jquery";
-
 const lastFetchedUpdate = "lastFetchedUpdate";
 const lastDismissedUpdate = "lastAcknowledgedUpdate";
 const isHome = window == window.parent

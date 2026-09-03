@@ -1,14 +1,8 @@
 
-import "https://code.jquery.com/jquery-3.7.1.js";
-import "https://code.jquery.com/ui/1.14.1/jquery-ui.js";
 import flowTileLib from "./flowTile.js";
-$("#container").resizable();
-$("#container").on("resize",(e,ui)=>{
-    fl.calculateCycle()
-
-})
 window.flowTile = flowTileLib.flowTile
 window.fl = flowTileLib.flowTile(document.querySelector("#container"))
+new ResizeObserver(() => fl.calculateCycle()).observe(document.querySelector("#container"))
 const sizes = {
     s: [1, 1],
     m: [2, 2],

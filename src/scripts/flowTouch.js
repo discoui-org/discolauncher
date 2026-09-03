@@ -1,7 +1,6 @@
-import jquery from "jquery"
+import $ from "./dom"
 import easing from "./easings"
 import DiscoBoard from "./DiscoBoard"
-const $ = jquery
 
 // Configuration for touch/click detection thresholds
 const clickDetectorConfig = {

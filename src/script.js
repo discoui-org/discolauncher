@@ -11,8 +11,8 @@ if (DiscoMockInstance) {
 }
 
 import startUpSequence from "./scripts/startUpSequence";
-import jQuery from "jquery";
-window.$ = jQuery
+import $ from "./scripts/dom";
+window.$ = $
 import appTransition from "./scripts/appTransition.js";
 import "./scripts/flowTouch.js";
 import { DiscoScroll, DiscoSlide } from "./scripts/overscrollFramework.js";

@@ -1,7 +1,6 @@
-import jQuery from "jquery";
+import $ from "../dom";
 import _ from "lodash";
 import i18n from "../localeManager";
-var $ = jQuery
 
 const appListPage = $("div.inner-page.app-list-page")
 const appListContainer = $("div.app-list-container")
