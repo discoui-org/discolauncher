@@ -96,7 +96,7 @@
                         }
 
                         // Inner tile animation
-                        &>div.disco-home-inner-tile {
+                        &>div:is(.disco-home-inner-tile, .disco-folder-matrix) {
                             transform-style: preserve-3d;
                             animation: innerTileListAppTransitionAnim0 calc(.35s * var(--animation-duration-scale)) calc((var(--app-animation-index) * var(--app-transition-scale) * .2s) * var(--animation-duration-scale)) cubic-bezier(.2, .25, 0.25, 1) forwards;
 

@@ -157,6 +157,15 @@ function resolveHomeTileTarget(target) {
   return target.closest?.("div.disco-home-tile") || target;
 }
 
+function isLaunchableHomeTile(tile) {
+  return tile.classList.contains("disco-home-tile")
+    && !tile.classList.contains("disco-home-folder-tile");
+}
+
+function isEditableHomeTile(tile) {
+  return tile.classList.contains("disco-home-tile");
+}
+
 $("#app-page-icon").on("flowClick", function () {
   window.scrollers.main_home_scroller.scrollTo(-window.innerWidth, 0, 750);
   $("#search-icon").addClass("shown");
@@ -174,7 +183,7 @@ resizeObserver.observe(document.querySelector("div.tile-list-inner-container"));
 $(window).on("flowClick", function (e) {
   const clickedTile = resolveHomeTileTarget(e.target);
   if (
-    clickedTile.classList.contains("disco-home-tile") &&
+    isLaunchableHomeTile(clickedTile) &&
     !clickedTile.classList.contains("disco-letter-tile")
   ) {
     if (clickedTile.dataset.tapTarget === "native-widget") return;
@@ -208,7 +217,7 @@ $(window).on("pointerdown", function (e) {
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
   }
   const targetTile = resolveHomeTileTarget(e.target);
-  if (targetTile.classList.contains("disco-home-tile") && !homeTileEditEnabled) {
+  if (isEditableHomeTile(targetTile) && !homeTileEditEnabled) {
     targetTile.canClick = true;
     targetTile.homeTileMenuState = false;
     targetTile.appRect = targetTile.getBoundingClientRect();
@@ -228,7 +237,7 @@ $(window).on("pointerdown", function (e) {
       targetTile.classList.add("home-menu-selected");
     }, 500);
   } else if (
-    targetTile.classList.contains("disco-home-tile") &&
+    isEditableHomeTile(targetTile) &&
     homeTileEditEnabled
   ) {
     $("div.disco-home-tile").removeClass("home-menu-selected");

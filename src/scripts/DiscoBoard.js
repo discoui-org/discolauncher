@@ -381,7 +381,7 @@ const boardMethods = {
     refresh: () => {
       const initializeLiveTiles = boardMethods.liveTiles.get()
       const newlyRegisteredPackages = new Set()
-      const homeTiles = document.querySelector("#main-home-slider div.tile-list-inner-container").querySelectorAll("div.disco-home-tile")
+      const homeTiles = document.querySelector("#main-home-slider div.tile-list-inner-container").querySelectorAll("div.disco-home-tile:not(.disco-home-folder-tile)")
       homeTiles.forEach(i => {
         const packageName = i.getAttribute("packagename")
         const providerId = initializeLiveTiles[packageName]
@@ -912,6 +912,7 @@ const backendMethods = {
             if (el.classList.contains("disco-home-folder-tile")) {
               config.push({
                 f: el.folderChildren || JSON.parse(el.dataset.folderChildren || "[]"),
+                mi: el.folderMatrixInset || el.dataset.folderMatrixInset || "",
                 w: el.gridstackNode.w,
                 h: el.gridstackNode.h,
                 x: el.gridstackNode.x,
@@ -957,7 +958,7 @@ const backendMethods = {
               s: child.s || ["s"]
             }
           })
-          const folder = DiscoElements.wHomeFolderTile(children, [tile.w, tile.h])
+          const folder = DiscoElements.wHomeFolderTile(children, [tile.w, tile.h], tile.mi)
           window.tileListGrid.addWidget(folder, {
             w: tile.w,
             h: tile.h,

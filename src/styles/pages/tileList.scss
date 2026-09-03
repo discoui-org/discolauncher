@@ -190,7 +190,7 @@ div.tile-list-page {
 
 
         div.disco-home-tile:not(.home-menu-selected),
-        div.disco-home-folder-tile {
+        div.disco-home-folder-tile:not(.home-menu-selected) {
             //transition: left .25s, top .25s, opacity .25s, transform .1s;
             transition: left .25s, top .25s, opacity .25s, transform .05s;
             opacity: .6;
@@ -614,11 +614,11 @@ div.disco-home-folder-tile {
             // but must never be painted behind (or above) the live surface.
             // Keeping this rule on the shared live state prevents every tile
             // type from having to manage the same two layers independently.
-            > div.disco-home-inner-tile {
+            >div.disco-home-inner-tile {
                 background: var(--live-tile-surface-fallback);
 
-                > div.disco-home-tile-icon-background,
-                > img.disco-home-tile-imageicon {
+                >div.disco-home-tile-icon-background,
+                >img.disco-home-tile-imageicon {
                     display: none !important;
                 }
             }
@@ -633,6 +633,7 @@ div.disco-home-folder-tile {
                 }
 
                 &.has-light-icon-background {
+
                     &:not(.notification-detail-visible) p.disco-home-tile-title,
                     span.live-tile-notification-count {
                         color: #000 !important;
@@ -916,13 +917,23 @@ div.disco-home-folder-tile {
                     }
 
                     @keyframes live-tile-media-track-fade-in {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
+                        from {
+                            opacity: 0;
+                        }
+
+                        to {
+                            opacity: 1;
+                        }
                     }
 
                     @keyframes live-tile-media-track-fade-out {
-                        from { opacity: 1; }
-                        to { opacity: 0; }
+                        from {
+                            opacity: 1;
+                        }
+
+                        to {
+                            opacity: 0;
+                        }
                     }
 
                     div.live-tile-background {
@@ -1415,11 +1426,11 @@ div.disco-home-folder-tile {
             height: 100%;
             object-fit: contain;
 
-            width: 50%;
-            height: 50%;
+            width: 60%;
+            height: 60%;
             position: absolute;
-            left: 25%;
-            top: 25%;
+            left: 20%;
+            top: 20%;
         }
 
         p.disco-home-tile-icon {
@@ -1570,26 +1581,23 @@ div.disco-home-folder-tile {
 
 div.disco-home-tile.folder-intent-target,
 div.disco-home-folder-tile {
-    background-color: var(--accent-color);
-
     * {
         pointer-events: none;
     }
 
-    > div.disco-folder-matrix {
+    >div.disco-folder-matrix {
         position: absolute;
-        inset: 0;
+        inset: var(--folder-matrix-inset, var(--tile-margin, 6px));
         display: grid;
         grid-template-columns: repeat(var(--folder-grid-columns, 2), minmax(0, 1fr));
         grid-template-rows: repeat(var(--folder-grid-rows, 2), minmax(0, 1fr));
         gap: 3px;
-        padding: 3px;
         box-sizing: border-box;
         background: var(--metro-background);
         overflow: hidden;
     }
 
-    > div.disco-home-inner-tile {
+    >div.disco-home-inner-tile {
         opacity: 0;
     }
 
@@ -1600,21 +1608,39 @@ div.disco-home-folder-tile {
         overflow: hidden;
         background: var(--accent-color);
 
-        > div.disco-home-inner-tile {
+        >div.disco-home-inner-tile {
             position: absolute;
             inset: 0;
             width: 200%;
             height: 200%;
             transform: scale(.5);
             transform-origin: top left;
+
+            &.disco-folder-thumbnail {
+                >img.disco-home-tile-imageicon {
+                    width: 60% !important;
+                    height: 60% !important;
+                    left: 20% !important;
+                    top: 20% !important;
+                }
+
+                >p.disco-home-tile-title,
+                div.live-tile-container,
+                .live-tile-notification-count {
+                    display: none !important;
+                }
+            }
         }
     }
 }
 
-div.tile-list-page.home-menu-back div.disco-home-tile.folder-intent-target {
+div.tile-list-page.home-menu-back div:is(.disco-home-tile, .disco-home-folder-tile).folder-intent-target {
     opacity: 1 !important;
-    transform: translateZ(0) scale(1) !important;
-    scale: 1 !important;
+    transform: scale(1) translate(var(--shake-x), var(--shake-y));
+}
+
+div.disco-home-folder-tile.folder-intent-target>div.disco-folder-matrix:not(.disco-folder-intent-preview) {
+    visibility: hidden;
 }
 
 div.disco-home-tile.live-tile.native-widget-tile div.live-tile-container,

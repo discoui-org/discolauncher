@@ -215,41 +215,45 @@ class DiscoTileGrid {
 
     const freeX = tileStartX + (event.clientX - pointerStartX) * scaleX;
     const freeY = tileStartY + (event.clientY - pointerStartY) * scaleY;
+    const containerRect = this.el.getBoundingClientRect();
+    const pointerX = (event.clientX - containerRect.left) * scaleX;
+    const pointerY = (event.clientY - containerRect.top) * scaleY;
     const x = Math.max(0, Math.min(Math.round(freeX / cell), this.columnCount - node.w));
     const y = Math.max(0, Math.round(freeY / cell));
 
     // Folder hit testing must use the untouched grid, not the temporary
     // relocation layout created by the previous pointer move.
     this.restoreDragSnapshot();
-    this.drag.proposed = { x, y, freeX, freeY, event };
-    this.updateFolderHover(this.findFolderCandidate(node, freeX, freeY));
+    this.drag.proposed = { x, y, freeX, freeY, pointerX, pointerY, event };
+    this.updateFolderHover(this.findFolderCandidate(node, freeX, freeY, pointerX, pointerY));
     this.applyDragLayout();
   }
 
-  findFolderCandidate(node, freeX, freeY) {
-    if (!node.el.classList.contains("disco-home-tile")) return null;
+  findFolderCandidate(node, freeX, freeY, pointerX, pointerY) {
+    const canCreateFolder = node.el.classList.contains("disco-home-tile")
+      && !node.el.classList.contains("disco-home-folder-tile");
 
     const cell = this.el.clientWidth / this.columnCount;
     if (!cell) return null;
     const source = { x: freeX / cell, y: freeY / cell, w: node.w, h: node.h };
-    const sourceCenterX = source.x + source.w / 2;
-    const sourceCenterY = source.y + source.h / 2;
+    const pointerGridX = pointerX / cell;
+    const pointerGridY = pointerY / cell;
     const target = this.engine.nodes
       .filter(candidate => candidate !== node
-        && candidate.el.classList.contains("disco-home-tile")
+        && candidate.el.matches(".disco-home-tile, .disco-home-folder-tile")
         && overlaps(source, candidate))
       .sort((first, second) => {
-        const firstDistance = Math.hypot(sourceCenterX - (first.x + first.w / 2), sourceCenterY - (first.y + first.h / 2));
-        const secondDistance = Math.hypot(sourceCenterX - (second.x + second.w / 2), sourceCenterY - (second.y + second.h / 2));
+        const firstDistance = Math.hypot(pointerGridX - (first.x + first.w / 2), pointerGridY - (first.y + first.h / 2));
+        const secondDistance = Math.hypot(pointerGridX - (second.x + second.w / 2), pointerGridY - (second.y + second.h / 2));
         return firstDistance - secondDistance;
       })[0];
     if (!target) return null;
 
     const targetCenterX = target.x + target.w / 2;
     const targetCenterY = target.y + target.h / 2;
-    const distance = Math.hypot(sourceCenterX - targetCenterX, sourceCenterY - targetCenterY);
+    const distance = Math.hypot(pointerGridX - targetCenterX, pointerGridY - targetCenterY);
     const centerRadius = Math.min(target.w, target.h) * 0.28;
-    return { target, isCentered: distance <= centerRadius };
+    return { target, isCentered: canCreateFolder && distance <= centerRadius };
   }
 
   updateFolderHover(candidate) {
@@ -266,7 +270,13 @@ class DiscoTileGrid {
       if (!this.drag || this.drag.folderHover !== hover) return;
       hover.resolved = true;
       const proposed = this.drag.proposed;
-      const current = proposed && this.findFolderCandidate(this.drag.node, proposed.freeX, proposed.freeY);
+      const current = proposed && this.findFolderCandidate(
+        this.drag.node,
+        proposed.freeX,
+        proposed.freeY,
+        proposed.pointerX,
+        proposed.pointerY
+      );
       if (current?.target === hover.target && current.isCentered) {
         this.drag.folderIntent = { target: hover.target };
         this.showFolderPreview(hover.target.el, this.drag.node.el);
@@ -319,9 +329,19 @@ class DiscoTileGrid {
 
   showFolderPreview(target, source) {
     this.clearFolderPreview(target);
-    const preview = this.createFolderMatrix(target.gridstackNode, [target, source]);
+    const existingMatrix = target.querySelector(":scope > .disco-folder-matrix");
+    const preview = existingMatrix
+      ? existingMatrix.cloneNode(true)
+      : this.createFolderMatrix(target.gridstackNode, [target, source]);
     preview.classList.add("disco-folder-intent-preview");
     preview.setAttribute("aria-hidden", "true");
+
+    if (existingMatrix) {
+      const emptyCell = [...preview.children]
+        .find(cell => !cell.querySelector(":scope > .disco-home-inner-tile"));
+      const innerTile = this.createFolderThumbnail(source);
+      if (emptyCell && innerTile) emptyCell.append(innerTile);
+    }
 
     target.classList.add("folder-intent-target");
     target.append(preview);
@@ -333,17 +353,43 @@ class DiscoTileGrid {
     matrix.className = "disco-folder-matrix";
     matrix.style.setProperty("--folder-grid-columns", columns);
     matrix.style.setProperty("--folder-grid-rows", rows);
+    const inset = this.getFolderMatrixInset(tiles[0]);
+    if (inset) matrix.style.setProperty("--folder-matrix-inset", inset);
 
     for (let index = 0; index < columns * rows; index += 1) {
       const cell = document.createElement("div");
       cell.className = "disco-folder-matrix-cell";
-      const innerTile = tiles[index]
-        ?.querySelector(":scope > .disco-home-inner-tile")
-        ?.cloneNode(true);
+      const innerTile = this.createFolderThumbnail(tiles[index]);
       if (innerTile) cell.append(innerTile);
       matrix.append(cell);
     }
     return matrix;
+  }
+
+  createFolderThumbnail(tile) {
+    const thumbnail = tile
+      ?.querySelector(":scope > .disco-home-inner-tile")
+      ?.cloneNode(true);
+    if (!thumbnail) return null;
+
+    thumbnail.classList.add("disco-folder-thumbnail");
+    thumbnail.querySelectorAll(".live-tile-container, .live-tile-notification-count").forEach(element => element.remove());
+    thumbnail.querySelectorAll(".disco-home-tile-imageicon").forEach(icon => {
+      icon.classList.remove("hide-direction-0", "hide-direction-1", "show-direction-0", "show-direction-1");
+      icon.style.removeProperty("visibility");
+    });
+    return thumbnail;
+  }
+
+  getFolderMatrixInset(tile) {
+    const innerTile = tile?.querySelector(":scope > .disco-home-inner-tile");
+    if (!innerTile || !tile.clientWidth || !tile.clientHeight) return "";
+
+    const top = innerTile.offsetTop;
+    const left = innerTile.offsetLeft;
+    const right = tile.clientWidth - left - innerTile.offsetWidth;
+    const bottom = tile.clientHeight - top - innerTile.offsetHeight;
+    return `${top}px ${right}px ${bottom}px ${left}px`;
   }
 
   clearFolderPreview(target) {
@@ -357,7 +403,9 @@ class DiscoTileGrid {
 
     const { node, folderIntent } = this.drag;
     if (event.type !== "pointercancel" && folderIntent) {
-      const folder = this.createFolder(folderIntent.target, node);
+      const folder = folderIntent.target.el.classList.contains("disco-home-folder-tile")
+        ? this.addToFolder(folderIntent.target, node)
+        : this.createFolder(folderIntent.target, node);
       this.clearFolderHover();
       this.drag = null;
       this.render();
@@ -416,20 +464,17 @@ class DiscoTileGrid {
     this.restoreDragSnapshot();
     const target = targetNode.el;
     const source = sourceNode.el;
-    const children = [target, source].map(tile => ({
-      p: tile.getAttribute("packagename"),
-      i: tile.getAttribute("icon"),
-      ib: tile.getAttribute("icon-bg"),
-      t: tile.getAttribute("title"),
-      s: tile.getAttribute("supportedsizes")?.split(",") || ["s"]
-    }));
+    const children = [target, source].map(tile => this.tileData(tile));
     const matrix = target.querySelector(":scope > .disco-folder-intent-preview")?.cloneNode(true);
     const folder = document.createElement("div");
-    folder.className = "disco-element disco-home-folder-tile grid-stack-item";
+    folder.className = "disco-element disco-home-tile disco-home-folder-tile grid-stack-item";
+    folder.setAttribute("supportedsizes", "s,m,w");
     folder.folderChildren = children;
     folder.dataset.folderChildren = JSON.stringify(children);
     if (matrix) {
       matrix.classList.remove("disco-folder-intent-preview");
+      folder.folderMatrixInset = matrix.style.getPropertyValue("--folder-matrix-inset");
+      folder.dataset.folderMatrixInset = folder.folderMatrixInset;
       folder.append(matrix);
     }
 
@@ -442,6 +487,41 @@ class DiscoTileGrid {
     source.remove();
     this.collapseEmptyRows();
     return folder;
+  }
+
+  addToFolder(targetNode, sourceNode) {
+    this.restoreDragSnapshot();
+    const folder = targetNode.el;
+    const source = sourceNode.el;
+    const children = [
+      ...(folder.folderChildren || JSON.parse(folder.dataset.folderChildren || "[]")),
+      this.tileData(source)
+    ];
+    const preview = folder.querySelector(":scope > .disco-folder-intent-preview");
+
+    folder.folderChildren = children;
+    folder.dataset.folderChildren = JSON.stringify(children);
+    if (preview) {
+      folder.querySelector(":scope > .disco-folder-matrix:not(.disco-folder-intent-preview)")?.remove();
+      preview.classList.remove("disco-folder-intent-preview");
+      preview.removeAttribute("aria-hidden");
+    }
+
+    this.engine.nodes = this.engine.nodes.filter(candidate => candidate !== sourceNode);
+    delete source.gridstackNode;
+    source.remove();
+    this.collapseEmptyRows();
+    return folder;
+  }
+
+  tileData(tile) {
+    return {
+      p: tile.getAttribute("packagename"),
+      i: tile.getAttribute("icon"),
+      ib: tile.getAttribute("icon-bg"),
+      t: tile.getAttribute("title"),
+      s: tile.getAttribute("supportedsizes")?.split(",") || ["s"]
+    };
   }
 
   findFirstFit(w, h) {
@@ -513,15 +593,32 @@ class DiscoTileGrid {
       node.el.setAttribute("gs-w", node.w);
       node.el.setAttribute("gs-h", node.h);
       if (node.el.classList.contains("disco-home-folder-tile")) {
-        const { columns, rows } = folderMatrixDimensions(node.w, node.h);
-        node.el.style.setProperty("--folder-grid-columns", columns);
-        node.el.style.setProperty("--folder-grid-rows", rows);
+        this.syncFolderMatrix(node.el, node);
       }
       if (node === this.drag?.node) return;
       node.el.style.left = `${node.x * cell}px`;
       node.el.style.top = `${node.y * cell}px`;
       node.el.style.width = `${node.w * cell}px`;
       node.el.style.height = `${node.h * cell}px`;
+    });
+  }
+
+  syncFolderMatrix(folder, node) {
+    const matrix = folder.querySelector(":scope > .disco-folder-matrix");
+    if (!matrix) return;
+
+    const { columns, rows } = folderMatrixDimensions(node.w, node.h);
+    const cellCount = columns * rows;
+    matrix.style.setProperty("--folder-grid-columns", columns);
+    matrix.style.setProperty("--folder-grid-rows", rows);
+
+    while (matrix.children.length < cellCount) {
+      const cell = document.createElement("div");
+      cell.className = "disco-folder-matrix-cell";
+      matrix.append(cell);
+    }
+    [...matrix.children].forEach((cell, index) => {
+      cell.hidden = index >= cellCount;
     });
   }
 }
