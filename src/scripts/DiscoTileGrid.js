@@ -360,9 +360,6 @@ class DiscoTileGrid {
     matrix.className = "disco-folder-matrix";
     matrix.style.setProperty("--folder-grid-columns", columns);
     matrix.style.setProperty("--folder-grid-rows", rows);
-    const inset = this.getFolderMatrixInset(tiles[0]);
-    if (inset) matrix.style.setProperty("--folder-matrix-inset", inset);
-
     for (let index = 0; index < columns * rows; index += 1) {
       const cell = document.createElement("div");
       cell.className = "disco-folder-matrix-cell";
@@ -386,17 +383,6 @@ class DiscoTileGrid {
       icon.style.removeProperty("visibility");
     });
     return thumbnail;
-  }
-
-  getFolderMatrixInset(tile) {
-    const innerTile = tile?.querySelector(":scope > .disco-home-inner-tile");
-    if (!innerTile || !tile.clientWidth || !tile.clientHeight) return "";
-
-    const top = innerTile.offsetTop;
-    const left = innerTile.offsetLeft;
-    const right = tile.clientWidth - left - innerTile.offsetWidth;
-    const bottom = tile.clientHeight - top - innerTile.offsetHeight;
-    return `${top}px ${right}px ${bottom}px ${left}px`;
   }
 
   clearFolderPreview(target) {
@@ -480,8 +466,6 @@ class DiscoTileGrid {
     folder.dataset.folderChildren = JSON.stringify(children);
     if (matrix) {
       matrix.classList.remove("disco-folder-intent-preview");
-      folder.folderMatrixInset = matrix.style.getPropertyValue("--folder-matrix-inset");
-      folder.dataset.folderMatrixInset = folder.folderMatrixInset;
       folder.append(matrix);
     }
 

@@ -43,7 +43,7 @@ div.tile-list-page {
             scale: 1;
         }
 
-        div.disco-home-tile:not(.home-menu-selected),
+        div.disco-home-tile:not(.home-menu-selected):not(.disco-folder-open-item),
         div.disco-home-folder-tile {
             transition: .25s ease-out !important;
             opacity: 1;
@@ -189,10 +189,11 @@ div.tile-list-page {
         }
 
 
-        div.disco-home-tile:not(.home-menu-selected),
+        div.disco-home-tile:not(.home-menu-selected):not(.disco-folder-open-item),
         div.disco-home-folder-tile:not(.home-menu-selected) {
             //transition: left .25s, top .25s, opacity .25s, transform .1s;
-            transition: left .25s, top .25s, opacity .25s, transform .05s;
+            transition: left .25s, top .25s, opacity .25s, transform .05s,
+                translate 340ms cubic-bezier(.2, .8, .2, 1);
             opacity: .6;
             --shake-x: 0px;
             --shake-y: 0px;
@@ -200,6 +201,14 @@ div.tile-list-page {
             --shake-easing: cubic-bezier(.25, 0, .53, 1);
             will-change: left,
                 top;
+        }
+
+        div.disco-folder-open-item {
+            opacity: .6;
+            scale: .925;
+            translate: var(--shake-x, 0px) var(--shake-y, 0px);
+            --shake-easing: cubic-bezier(.25, 0, .53, 1);
+            will-change: transform, translate;
         }
 
         .app-page-icon-banner {
@@ -1589,7 +1598,7 @@ div.disco-home-folder-tile {
 
     >div.disco-folder-matrix {
         position: absolute;
-        inset: var(--folder-matrix-inset, var(--tile-margin, 6px));
+        inset: 6px;
         display: grid;
         grid-template-columns: repeat(var(--folder-grid-columns, 2), minmax(0, 1fr));
         grid-template-rows: repeat(var(--folder-grid-rows, 2), minmax(0, 1fr));

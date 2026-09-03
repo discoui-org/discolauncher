@@ -912,7 +912,6 @@ const backendMethods = {
             if (el.classList.contains("disco-home-folder-tile")) {
               config.push({
                 f: el.folderChildren || JSON.parse(el.dataset.folderChildren || "[]"),
-                mi: el.folderMatrixInset || el.dataset.folderMatrixInset || "",
                 w: el.gridstackNode.w,
                 h: el.gridstackNode.h,
                 x: el.gridstackNode.x,
@@ -958,7 +957,7 @@ const backendMethods = {
               s: child.s || ["s"]
             }
           })
-          const folder = DiscoElements.wHomeFolderTile(children, [tile.w, tile.h], tile.mi)
+          const folder = DiscoElements.wHomeFolderTile(children, [tile.w, tile.h])
           window.tileListGrid.addWidget(folder, {
             w: tile.w,
             h: tile.h,

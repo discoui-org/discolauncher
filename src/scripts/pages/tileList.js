@@ -81,15 +81,19 @@ const homeTileEditSwitch = {
     const homeTileEditShakeStart = Date.now()
     window.homeTileEditShake = setInterval(() => {
 
-      tileListGrid.engine.nodes.forEach(e => {
-        const packageName = e.el.getAttribute("packagename")
+      const shakingTiles = tileListGrid.engine.nodes.map(node => node.el);
+      if (openFolderState?.panel) {
+        shakingTiles.push(...openFolderState.panel.querySelectorAll(".disco-folder-open-item"));
+      }
+      shakingTiles.forEach(tile => {
+        const packageName = tile.getAttribute("packagename")
         const distance = (Date.now() - homeTileEditShakeStart) / (2000 + hashStringToNumber(packageName, 1000))
-        const hash = hashStringToNumber(e.el.getAttribute("packagename"), 500)
-        e.el.style.setProperty("--shake-x",
+        const hash = hashStringToNumber(packageName, 500)
+        tile.style.setProperty("--shake-x",
           Math.round(perlin.get(distance, hash) * 1.5
             * 10 * devicePixelRatio
           ) / devicePixelRatio + "px")
-        e.el.style.setProperty("--shake-y",
+        tile.style.setProperty("--shake-y",
           Math.round(perlin.get(distance, hash + 1000) * 1.5
             * 10 * devicePixelRatio
           ) / devicePixelRatio + "px")
@@ -167,6 +171,12 @@ function isLaunchableHomeTile(tile) {
 function isEditableHomeTile(tile) {
   return tile.classList.contains("disco-home-tile")
     && !tile.classList.contains("disco-folder-open-item");
+}
+
+function selectHomeTileForEdit(tile) {
+  $("div.disco-home-tile").removeClass("home-menu-selected");
+  tile.classList.add("home-menu-selected");
+  DiscoBoard.boardMethods.createTileMenu(tile);
 }
 
 let openFolderState = null;
@@ -340,7 +350,7 @@ function animateFolderOpenPanel(panel) {
 }
 
 function openFolder(folder) {
-  if (!folder?.gridstackNode || homeTileEditEnabled) return;
+  if (!folder?.gridstackNode) return;
   if (openFolderState?.folder === folder) {
     closeOpenFolder();
     return;
@@ -443,8 +453,28 @@ resizeObserver.observe(document.querySelector("div.tile-list-inner-container"));
 
 $(window).on("flowClick", function (e) {
   const clickedTile = resolveHomeTileTarget(e.target);
+  if (clickedTile.classList.contains("disco-folder-open-item") && homeTileEditEnabled) {
+    return;
+  }
   if (clickedTile.classList.contains("disco-home-folder-tile")) {
-    if (!homeTileEditEnabled && clickedTile.canClick) openFolder(clickedTile);
+    if (!homeTileEditEnabled) {
+      if (clickedTile.canClick) openFolder(clickedTile);
+      return;
+    }
+    if (e.target.closest?.(".disco-tile-menu")) return;
+    if (openFolderState?.folder === clickedTile) {
+      closeOpenFolder();
+      selectHomeTileForEdit(clickedTile);
+      return;
+    }
+    if (!clickedTile.classList.contains("home-menu-selected")) {
+      if (openFolderState) closeOpenFolder();
+      selectHomeTileForEdit(clickedTile);
+    } else {
+      openFolder(clickedTile);
+      clickedTile.classList.remove("home-menu-selected");
+      clickedTile.querySelector(":scope > .disco-tile-menu")?.remove();
+    }
     return;
   }
   if (
@@ -481,24 +511,26 @@ $(window).on("pointerdown", function (e) {
     clearTimeout(window.homeTileEditTimeout)
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
   }
-  const targetTile = resolveHomeTileTarget(e.target);
-  if (targetTile.classList.contains("disco-folder-open-item") && !homeTileEditEnabled) {
-    targetTile.canClick = true;
-    return;
+  const pressedTile = resolveHomeTileTarget(e.target);
+  let targetTile = pressedTile;
+  if (pressedTile.classList.contains("disco-folder-open-item")) {
+    if (homeTileEditEnabled) return;
+    pressedTile.canClick = true;
+    targetTile = openFolderState?.folder;
+    if (!targetTile) return;
   }
   if (isEditableHomeTile(targetTile) && !homeTileEditEnabled) {
-    targetTile.canClick = true;
+    pressedTile.canClick = true;
     targetTile.homeTileMenuState = false;
     targetTile.appRect = targetTile.getBoundingClientRect();
     clearTimeout(window.homeTileMenuCreationFirstTimeout);
     clearTimeout(window.homeTileMenuCreationSecondTimeout);
     $("div.disco-home-menu").remove();
     window.homeTileMenuCreationFirstTimeout = setTimeout(() => {
-      targetTile.canClick = false;
+      pressedTile.canClick = false;
 
       homeTileEditSwitch.on(false, () => {
-        targetTile.classList.add("home-menu-selected");
-        DiscoBoard.boardMethods.createTileMenu(targetTile);
+        selectHomeTileForEdit(targetTile);
         generateShakeAnimations();
         targetTile.homeTileMenuState = true;
         tileListGrid.beginDrag(targetTile, e.originalEvent || e);
@@ -507,11 +539,10 @@ $(window).on("pointerdown", function (e) {
     }, 500);
   } else if (
     isEditableHomeTile(targetTile) &&
-    homeTileEditEnabled
+    homeTileEditEnabled &&
+    !targetTile.classList.contains("disco-home-folder-tile")
   ) {
-    $("div.disco-home-tile").removeClass("home-menu-selected");
-    targetTile.classList.add("home-menu-selected");
-    DiscoBoard.boardMethods.createTileMenu(targetTile);
+    selectHomeTileForEdit(targetTile);
   }
 });
 $(
