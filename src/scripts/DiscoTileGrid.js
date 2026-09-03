@@ -48,6 +48,7 @@ class DiscoTileGrid {
       node.x = Math.max(0, Math.min(node.x, column - node.w));
     });
     this.resolveAllCollisions();
+    this.collapseEmptyRows();
     this.render();
     return this;
   }
@@ -62,6 +63,7 @@ class DiscoTileGrid {
     this.batchMode = Boolean(enabled);
     if (!this.batchMode) {
       this.resolveAllCollisions();
+      this.collapseEmptyRows();
       this.render();
     }
     return this;
@@ -97,6 +99,7 @@ class DiscoTileGrid {
 
     if (!this.batchMode) {
       this.pushCollisionsBelow(node);
+      this.collapseEmptyRows();
       this.render();
     }
     return el;
@@ -108,7 +111,7 @@ class DiscoTileGrid {
     this.engine.nodes = this.engine.nodes.filter(candidate => candidate !== node);
     delete el.gridstackNode;
     el.remove();
-    this.compactVertically();
+    this.collapseEmptyRows();
     this.render();
     this.emit("change", null, this.engine.nodes);
     return this;
@@ -123,6 +126,7 @@ class DiscoTileGrid {
     node.y = Math.max(0, changes.y ?? node.y);
 
     this.pushCollisionsBelow(node);
+    this.collapseEmptyRows();
     this.render();
 
     const changed = previous.x !== node.x || previous.y !== node.y
@@ -144,10 +148,6 @@ class DiscoTileGrid {
     const scaleY = containerRect.height && this.el.clientHeight
       ? this.el.clientHeight / containerRect.height
       : scaleX;
-    const placeholder = document.createElement("div");
-    placeholder.className = "disco-tile-grid-placeholder";
-    placeholder.setAttribute("aria-hidden", "true");
-    this.el.append(placeholder);
     this.drag = {
       node,
       pointerId: Number.isFinite(pointerEvent.pointerId) ? pointerEvent.pointerId : null,
@@ -159,7 +159,6 @@ class DiscoTileGrid {
       scaleY,
       targetX: node.x,
       targetY: node.y,
-      placeholder,
       snapshot: new Map(this.engine.nodes.map(candidate => [candidate, {
         x: candidate.x,
         y: candidate.y,
@@ -169,7 +168,6 @@ class DiscoTileGrid {
     };
 
     el.classList.add("grid-dragging");
-    this.renderPlaceholder();
     try {
       el.setPointerCapture?.(pointerEvent.pointerId);
     } catch {
@@ -226,9 +224,10 @@ class DiscoTileGrid {
     if (!this.drag) return;
     if (this.drag.pointerId !== null && event.pointerId !== this.drag.pointerId) return;
 
-    const { node, placeholder } = this.drag;
+    const { node } = this.drag;
     const tile = node.el;
     if (event.type === "pointercancel") this.restoreDragSnapshot();
+    this.collapseEmptyRows();
     const fromLeft = tile.style.left;
     const fromTop = tile.style.top;
     const cell = this.el.clientWidth / this.columnCount;
@@ -236,7 +235,6 @@ class DiscoTileGrid {
     const targetTop = `${node.y * cell}px`;
     const shouldAnimate = typeof tile.animate === "function"
       && (fromLeft !== targetLeft || fromTop !== targetTop);
-    placeholder.remove();
     tile.classList.remove("grid-dragging");
     if (shouldAnimate) tile.classList.add("disco-tile-grid-settling");
     this.drag = null;
@@ -266,16 +264,6 @@ class DiscoTileGrid {
   restoreDragSnapshot() {
     if (!this.drag) return;
     this.drag.snapshot.forEach((position, node) => Object.assign(node, position));
-  }
-
-  renderPlaceholder() {
-    if (!this.drag) return;
-    const cell = this.el.clientWidth / this.columnCount;
-    const { node, placeholder } = this.drag;
-    placeholder.style.left = `${node.x * cell}px`;
-    placeholder.style.top = `${node.y * cell}px`;
-    placeholder.style.width = `${node.w * cell}px`;
-    placeholder.style.height = `${node.h * cell}px`;
   }
 
   findFirstFit(w, h) {
@@ -308,18 +296,24 @@ class DiscoTileGrid {
       .forEach(node => this.pushCollisionsBelow(node));
   }
 
-  compactVertically() {
-    const nodes = [...this.engine.nodes]
-      .sort((first, second) => first.y - second.y || first.x - second.x);
+  collapseEmptyRows() {
+    let rowCount = this.engine.nodes.reduce(
+      (max, node) => Math.max(max, node.y + node.h),
+      0
+    );
 
-    nodes.forEach(node => {
-      const originalY = node.y;
-      for (let y = 0; y <= originalY; y += 1) {
-        node.y = y;
-        if (!this.engine.nodes.some(other => other !== node && overlaps(node, other))) break;
-      }
-    });
-    this.resolveAllCollisions();
+    for (let row = 0; row < rowCount; row += 1) {
+      const isEmpty = !this.engine.nodes.some(node => node.y <= row && node.y + node.h > row);
+      if (!isEmpty) continue;
+
+      // Keep gaps inside a row intact. Only a fully empty horizontal row is
+      // removed, so every tile below it moves up by exactly one grid unit.
+      this.engine.nodes.forEach(node => {
+        if (node.y > row) node.y -= 1;
+      });
+      rowCount -= 1;
+      row -= 1;
+    }
   }
 
   render() {
@@ -340,7 +334,6 @@ class DiscoTileGrid {
       node.el.style.width = `${node.w * cell}px`;
       node.el.style.height = `${node.h * cell}px`;
     });
-    this.renderPlaceholder();
   }
 }
 

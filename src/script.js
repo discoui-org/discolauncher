@@ -34,6 +34,10 @@ window.normalizeDiacritics = (input = "") => {
     return normalize(input)
 }
 import i18n from "./scripts/localeManager.js";
+
+// Prevent the WebView/browser's native context menu (right-click and long press).
+document.addEventListener("contextmenu", (event) => event.preventDefault(), { capture: true });
+
 DiscoBoard.backendMethods.setUIScale(1, true)
 
 window.imageStore = imageStore

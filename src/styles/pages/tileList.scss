@@ -290,24 +290,6 @@ div.tile-list-inner-container {
             }
         }
 
-        >div.disco-tile-grid-placeholder {
-            position: absolute;
-            box-sizing: border-box;
-            pointer-events: none;
-            transition: left 180ms cubic-bezier(.2, .8, .2, 1),
-                top 180ms cubic-bezier(.2, .8, .2, 1),
-                width 180ms cubic-bezier(.2, .8, .2, 1),
-                height 180ms cubic-bezier(.2, .8, .2, 1);
-
-            &::after {
-                content: "";
-                position: absolute;
-                inset: var(--tile-margin, 6px);
-                background: var(--accent-color);
-                opacity: .35;
-            }
-        }
-
         &.disco-tile-grid-editing>div.grid-stack-item {
             touch-action: none;
         }
