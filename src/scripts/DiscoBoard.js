@@ -712,6 +712,7 @@ const backendMethods = {
     const appSizeDictionary = { s: [1, 1], m: [2, 2], w: [4, 2], l: [4, 4] };
     const supportedSizes = el.getAttribute("supportedsizes").split(",");
     if (!appSizeDictionary[size] || !el["gridstackNode"]) return;
+    const ownerGrid = el.tileGrid || window.tileListGrid;
     const chosenSize = appSizeDictionary[size];
     if (size == "s") {
       el.removeAttribute("gs-w");
@@ -722,13 +723,13 @@ const backendMethods = {
     }
     const fitRightBorder = Math.min(
       0,
-      window.tileListGrid.getColumn() - (chosenSize[0] + el.gridstackNode.x)
+      ownerGrid.getColumn() - (chosenSize[0] + el.gridstackNode.x)
     );
     //window.tileListGrid.update(el.gridstackNode, { w: chosenSize[0], h: chosenSize[1] })
-    window.tileListGrid.moveNode(el.gridstackNode, {
+    ownerGrid.moveNode(el.gridstackNode, {
       x: el.gridstackNode.x + fitRightBorder,
     });
-    window.tileListGrid.moveNode(el.gridstackNode, {
+    ownerGrid.moveNode(el.gridstackNode, {
       w: chosenSize[0],
       h: chosenSize[1],
     });
@@ -750,13 +751,10 @@ const backendMethods = {
       return;
     }
     else {
-      $.ajax({
-        url: './apps/' + packageName + '/index.html',
-        type: 'HEAD',
-        error: function () {
-          console.log("This app doesn't exist!")
-        },
-        success: function () {
+      fetch('./apps/' + packageName + '/index.html', { method: 'HEAD' })
+        .then(response => {
+          if (!response.ok) throw new Error(`Unable to load internal app: ${packageName}`);
+
           backendMethods.navigation.push(
             "appOpened/" + packageName,
             () => { },
@@ -765,13 +763,14 @@ const backendMethods = {
             }
           );
 
-          const appView = boardMethods.createAppView(packageName, args)
+          boardMethods.createAppView(packageName, args)
           window.launchedInternalApps.add(packageName);
           clearTimeout(window.appTransitionLaunchError)
           //console.log("Launch internal app:", packageName);
-        }
-      });
-
+        })
+        .catch(() => {
+          console.log("This app doesn't exist!")
+        });
     }
   },
   destroyInternalApp: (packageName, homeBack = false) => {

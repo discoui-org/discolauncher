@@ -15,9 +15,11 @@ function folderMatrixDimensions(width, height) {
 }
 
 class DiscoTileGrid {
-  constructor(container, { column = 4 } = {}) {
+  constructor(container, { column = 4, allowFolders = true, dragBoundary = null } = {}) {
     this.el = container;
     this.columnCount = column;
+    this.allowFolders = allowFolders;
+    this.dragBoundary = dragBoundary;
     this.engine = { nodes: [] };
     this.listeners = new Map();
     this.movable = false;
@@ -27,6 +29,7 @@ class DiscoTileGrid {
 
     this.el.classList.add("disco-tile-grid", `gs-${column}`);
     this.el.addEventListener("pointerdown", event => {
+      if (event.target.closest?.(".disco-tile-menu")) return;
       const tile = event.target.closest?.(".disco-home-tile, .disco-home-folder-tile");
       if (tile) this.beginDrag(tile, event);
     });
@@ -88,6 +91,7 @@ class DiscoTileGrid {
   clear() {
     this.engine.nodes.forEach(node => {
       delete node.el.gridstackNode;
+      delete node.el.tileGrid;
       node.el.remove();
     });
     this.engine.nodes = [];
@@ -109,6 +113,7 @@ class DiscoTileGrid {
     if (!hasPosition) Object.assign(node, this.findFirstFit(node.w, node.h));
 
     el.gridstackNode = node;
+    el.tileGrid = this;
     el.classList.add("grid-stack-item");
     this.el.append(el);
     this.engine.nodes.push(node);
@@ -126,6 +131,7 @@ class DiscoTileGrid {
     if (!node) return this;
     this.engine.nodes = this.engine.nodes.filter(candidate => candidate !== node);
     delete el.gridstackNode;
+    delete el.tileGrid;
     el.remove();
     this.collapseEmptyRows();
     this.render();
@@ -153,7 +159,11 @@ class DiscoTileGrid {
 
   beginDrag(el, event) {
     const pointerEvent = event?.originalEvent || event;
-    if (!this.movable || this.drag || !el?.gridstackNode || !pointerEvent) return false;
+    if (!this.movable
+      || this.drag
+      || !el?.gridstackNode
+      || !this.engine.nodes.includes(el.gridstackNode)
+      || !pointerEvent) return false;
 
     pointerEvent.preventDefault?.();
     const node = el.gridstackNode;
@@ -228,6 +238,15 @@ class DiscoTileGrid {
     const x = Math.max(0, Math.min(Math.round(freeX / cell), this.columnCount - node.w));
     const y = Math.max(0, Math.round(freeY / cell));
 
+    if (this.dragBoundary && !this.dragBoundary(event, node.el)) {
+      this.clearFolderHover();
+      node.el.style.left = `${freeX}px`;
+      node.el.style.top = `${freeY}px`;
+      this.emit("dragoutside", event, node.el);
+      return;
+    }
+    if (this.dragBoundary) this.emit("draginside", event, node.el);
+
     // Folder hit testing must use the untouched grid, not the temporary
     // relocation layout created by the previous pointer move.
     this.restoreDragSnapshot();
@@ -237,7 +256,8 @@ class DiscoTileGrid {
   }
 
   findFolderCandidate(node, freeX, freeY, pointerX, pointerY) {
-    const canCreateFolder = node.el.classList.contains("disco-home-tile")
+    const canCreateFolder = this.allowFolders
+      && node.el.classList.contains("disco-home-tile")
       && !node.el.classList.contains("disco-home-folder-tile");
 
     const cell = this.el.clientWidth / this.columnCount;
@@ -471,10 +491,13 @@ class DiscoTileGrid {
 
     target.replaceWith(folder);
     delete target.gridstackNode;
+    delete target.tileGrid;
     targetNode.el = folder;
     folder.gridstackNode = targetNode;
+    folder.tileGrid = this;
     this.engine.nodes = this.engine.nodes.filter(candidate => candidate !== sourceNode);
     delete source.gridstackNode;
+    delete source.tileGrid;
     source.remove();
     this.collapseEmptyRows();
     return folder;
@@ -500,6 +523,7 @@ class DiscoTileGrid {
 
     this.engine.nodes = this.engine.nodes.filter(candidate => candidate !== sourceNode);
     delete source.gridstackNode;
+    delete source.tileGrid;
     source.remove();
     this.collapseEmptyRows();
     return folder;

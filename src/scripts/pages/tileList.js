@@ -47,8 +47,8 @@ function hashStringToNumber(str, max) {
 }
 const homeTileEditSwitch = {
   isActive: () => homeTileEditEnabled,
-  on: (immediate = false, callback = () => { }) => {
-    closeOpenFolder({ immediate: true });
+  on: (immediate = false, callback = () => { }, { keepFolderOpen = false } = {}) => {
+    if (!keepFolderOpen) closeOpenFolder({ immediate: true });
     clearTimeout(window.homeTileEditTimeout)
     window.homeTileEditTimeout = setTimeout(() => { homeTileEditSwitch.off() }, 30000);
     DiscoBoard.backendMethods.navigation.push(
@@ -59,6 +59,7 @@ const homeTileEditSwitch = {
     scrollers.main_home_scroller.enabled = false;
     homeTileEditEnabled = true;
     tileListGrid.enableMove(true);
+    openFolderState?.folderGrid?.enableMove(true);
     $("div.disco-home-tile").removeClass("home-menu-selected");
     $("div.tile-list-page").addClass("home-menu-back-intro");
     if (immediate) {
@@ -113,6 +114,7 @@ const homeTileEditSwitch = {
     scrollers.main_home_scroller.enabled = true;
     homeTileEditEnabled = false;
     tileListGrid.enableMove(false);
+    openFolderState?.folderGrid?.enableMove(false);
     clearTimeout(window.homeTileMenuCreationFirstTimeout);
     clearTimeout(window.homeTileMenuCreationSecondTimeout);
     $("div.disco-home-menu").remove();
@@ -169,8 +171,7 @@ function isLaunchableHomeTile(tile) {
 }
 
 function isEditableHomeTile(tile) {
-  return tile.classList.contains("disco-home-tile")
-    && !tile.classList.contains("disco-folder-open-item");
+  return tile.classList.contains("disco-home-tile");
 }
 
 function selectHomeTileForEdit(tile) {
@@ -184,6 +185,7 @@ let folderOpenVersion = 0;
 const FOLDER_OPEN_STEP = 18;
 const FOLDER_OPEN_DELAY = 60;
 const FOLDER_OPEN_DURATION = 340;
+const FOLDER_EXIT_DELAY = 500;
 
 function getFolderChildren(folder) {
   if (Array.isArray(folder.folderChildren)) return folder.folderChildren;
@@ -210,9 +212,11 @@ function layoutFolderChildren(children, columns) {
   children.forEach(child => {
     const width = Math.max(1, Math.min(Number(child.w) || 1, columns));
     const height = Math.max(1, Number(child.h) || 1);
-    let x = 0;
-    let y = 0;
-    let placed = false;
+    const savedX = Number(child.x);
+    const savedY = Number(child.y);
+    let x = Number.isInteger(savedX) ? savedX : 0;
+    let y = Number.isInteger(savedY) ? savedY : 0;
+    let placed = x >= 0 && y >= 0 && fits(x, y, width, height);
 
     while (!placed) {
       for (x = 0; x <= columns - width; x += 1) {
@@ -273,21 +277,14 @@ function createFolderOpenPanel(folder) {
   content.className = "disco-folder-open-content";
   bottomBar.className = "disco-folder-open-bar disco-folder-open-bar-bottom";
   panel.style.top = `${(node.y + node.h) * cell}px`;
-  content.style.height = `${rowCount * cell}px`;
+  content.style.minHeight = `${rowCount * cell}px`;
   bottomBar.style.setProperty("--folder-open-order", 0);
 
   placements.forEach(placement => {
     const { child, x, y, w, h } = placement;
     const tile = DiscoElements.wHomeTile(child.i, child.ib, child.t, child.p, "", child.s);
     tile.classList.add("disco-folder-open-item");
-    tile.setAttribute("gs-x", x);
-    tile.setAttribute("gs-y", y);
-    tile.setAttribute("gs-w", w);
-    tile.setAttribute("gs-h", h);
-    tile.style.left = `${x * cell}px`;
-    tile.style.top = `${y * cell}px`;
-    tile.style.width = `${w * cell}px`;
-    tile.style.height = `${h * cell}px`;
+    tile.folderChild = child;
     content.append(tile);
     placement.el = tile;
   });
@@ -304,8 +301,228 @@ function createFolderOpenPanel(folder) {
   const lastIconOrder = orderedPlacements.length;
   topBar.style.setProperty("--folder-open-order", lastIconOrder + 1);
   panel.style.setProperty("--folder-open-last-order", lastIconOrder + 1);
+  panel.folderPlacements = placements;
   panel.append(topBar, content, bottomBar);
   return panel;
+}
+
+function isPointerInsideFolderContent(content, event) {
+  if (!content || !Number.isFinite(event?.clientX) || !Number.isFinite(event?.clientY)) return false;
+  const rect = content.getBoundingClientRect();
+  return event.clientX >= rect.left
+    && event.clientX <= rect.right
+    && event.clientY >= rect.top
+    && event.clientY <= rect.bottom;
+}
+
+function createFolderContentGrid(panel) {
+  const content = panel.querySelector(":scope > .disco-folder-open-content");
+  const folderGrid = new DiscoTileGrid(content, {
+    column: tileListGrid.getColumn(),
+    allowFolders: false,
+    dragBoundary: event => isPointerInsideFolderContent(content, event)
+  });
+  folderGrid.batchUpdate(true);
+  panel.folderPlacements.forEach(({ el, x, y, w, h }) => {
+    folderGrid.addWidget(el, { x, y, w, h });
+  });
+  folderGrid.batchUpdate(false);
+  folderGrid.enableMove(homeTileEditEnabled);
+  return folderGrid;
+}
+
+function rebuildFolderThumbnail(folder) {
+  const node = folder.gridstackNode;
+  const currentMatrix = folder.querySelector(":scope > .disco-folder-matrix");
+  if (!node || !currentMatrix) return;
+  const replacement = DiscoElements
+    .wHomeFolderTile(getFolderChildren(folder), [node.w, node.h])
+    .querySelector(":scope > .disco-folder-matrix");
+  currentMatrix.replaceWith(replacement);
+  tileListGrid.syncFolderMatrix(folder, node);
+  setFolderThumbnailOrder(folder);
+  if (folder.classList.contains("folder-open")) replacement.offsetHeight;
+}
+
+function syncFolderContent(state, { rebuildThumbnail = true, save = true } = {}) {
+  const children = [...state.folderGrid.engine.nodes]
+    .sort((first, second) => first.y - second.y || first.x - second.x)
+    .map(node => {
+      const child = {
+        ...node.el.folderChild,
+        x: node.x,
+        y: node.y,
+        w: node.w,
+        h: node.h
+      };
+      node.el.folderChild = child;
+      return child;
+    });
+  state.folder.folderChildren = children;
+  state.folder.dataset.folderChildren = JSON.stringify(children);
+  if (rebuildThumbnail) rebuildFolderThumbnail(state.folder);
+  if (save) DiscoBoard.backendMethods.homeConfiguration.save();
+}
+
+function updateFolderOpenLayout(state, shiftRows = state.rowsShifted) {
+  if (!state?.panel?.isConnected || !state.folder?.gridstackNode) return;
+  const node = state.folder.gridstackNode;
+  const panelHeight = state.panel.offsetHeight;
+  const cell = tileListGrid.el.clientWidth / tileListGrid.getColumn();
+  const folderBottomRow = node.y + node.h;
+  const previousTiles = state.shiftedTiles || [];
+  const shiftedTiles = tileListGrid.engine.nodes
+    .filter(candidate => candidate !== node && candidate.y >= node.y)
+    .map(candidate => ({
+      el: candidate.el,
+      offset: panelHeight + (candidate.y < folderBottomRow ? node.h * cell : 0),
+      bottom: (candidate.y + candidate.h) * cell
+    }));
+  const shiftedElements = new Set(shiftedTiles.map(candidate => candidate.el));
+  previousTiles.forEach(({ el }) => {
+    if (!shiftedElements.has(el)) el.style.removeProperty("--folder-row-offset");
+  });
+  state.shiftedTiles = shiftedTiles;
+
+  const gridHeight = tileListGrid.engine.nodes.reduce(
+    (max, candidate) => Math.max(max, candidate.y + candidate.h),
+    0
+  ) * cell;
+  const panelBottom = (node.y + node.h) * cell + panelHeight;
+  const expandedHeight = shiftedTiles.reduce(
+    (max, candidate) => Math.max(max, candidate.bottom + candidate.offset),
+    Math.max(gridHeight, panelBottom)
+  );
+  tileListGrid.setExtraHeight(Math.max(0, expandedHeight - gridHeight));
+  setFolderOpenTravel(state.panel);
+
+  if (shiftRows) {
+    shiftedTiles.forEach(({ el, offset }) => {
+      el.style.setProperty("--folder-row-offset", `${offset}px`);
+    });
+  }
+  if (window.scrollers) scrollers.tile_page_scroller.refresh();
+}
+
+function scheduleFolderOpenLayout(state) {
+  if (state.layoutFrame) return;
+  state.layoutFrame = requestAnimationFrame(() => {
+    state.layoutFrame = null;
+    if (openFolderState === state) updateFolderOpenLayout(state);
+  });
+}
+
+function folderHomeDropPosition(state, tile, event) {
+  const mainRect = tileListGrid.el.getBoundingClientRect();
+  const scaleX = mainRect.width && tileListGrid.el.clientWidth
+    ? tileListGrid.el.clientWidth / mainRect.width
+    : 1;
+  const scaleY = mainRect.height && tileListGrid.el.clientHeight
+    ? tileListGrid.el.clientHeight / mainRect.height
+    : scaleX;
+  const cell = tileListGrid.el.clientWidth / tileListGrid.getColumn();
+  const width = tile.gridstackNode?.w || 1;
+  const height = tile.gridstackNode?.h || 1;
+  const localX = (event.clientX - mainRect.left) * scaleX;
+  let localY = (event.clientY - mainRect.top) * scaleY;
+  const panelTop = Number.parseFloat(state.panel.style.top) || 0;
+  const panelHeight = state.panel.offsetHeight;
+  if (localY >= panelTop) localY = Math.max(panelTop, localY - panelHeight);
+  return {
+    x: Math.max(0, Math.min(
+      Math.round(localX / cell - width / 2),
+      tileListGrid.getColumn() - width
+    )),
+    y: Math.max(0, Math.round(localY / cell - height / 2)),
+    w: width,
+    h: height
+  };
+}
+
+function extractFolderTile(state, tile, event, continueDrag) {
+  if (!state || openFolderState !== state || state.extracting || !tile?.gridstackNode) return;
+  state.extracting = true;
+  if (state.exitDrag?.timer) clearTimeout(state.exitDrag.timer);
+  if (state.folderGrid.drag) state.folderGrid.endDrag(event);
+
+  const position = folderHomeDropPosition(state, tile, event);
+  tile.getAnimations?.().forEach(animation => animation.cancel());
+  state.folderGrid.removeWidget(tile);
+  syncFolderContent(state, { save: false });
+
+  tile.classList.remove("disco-folder-open-item", "disco-tile-grid-settling");
+  tile.style.removeProperty("--folder-open-order");
+  tile.style.removeProperty("--folder-open-travel");
+  tile.style.removeProperty("--shake-x");
+  tile.style.removeProperty("--shake-y");
+  delete tile.folderChild;
+  tileListGrid.addWidget(tile, position);
+  closeOpenFolder();
+  selectHomeTileForEdit(tile);
+  DiscoBoard.backendMethods.homeConfiguration.save();
+
+  if (continueDrag && event.type !== "pointercancel") {
+    tileListGrid.beginDrag(tile, event);
+  }
+}
+
+function bindFolderContentGrid(state) {
+  const { folderGrid, panel } = state;
+  const content = folderGrid.el;
+
+  folderGrid.on("relocate", () => {
+    Disco.triggerHapticFeedback("CLOCK_TICK");
+    scheduleFolderOpenLayout(state);
+  });
+  folderGrid.on("change", () => {
+    if (state.extracting || state.closing || openFolderState !== state) return;
+    syncFolderContent(state, { save: false });
+    updateFolderOpenLayout(state);
+  });
+  folderGrid.on("drag", () => scheduleFolderOpenLayout(state));
+  folderGrid.on("dragstart", (event, tile) => {
+    if (!homeTileEditEnabled) return;
+    scrollers.tile_page_scroller.cancelScroll();
+    panel.classList.add("folder-child-dragging");
+    state.exitDrag = { tile, lastEvent: event, timer: null, extracted: false };
+  });
+  folderGrid.on("draginside", (event, tile) => {
+    const exitDrag = state.exitDrag;
+    if (!exitDrag || exitDrag.tile !== tile || exitDrag.extracted) return;
+    exitDrag.lastEvent = event;
+    if (exitDrag.timer) clearTimeout(exitDrag.timer);
+    exitDrag.timer = null;
+  });
+  folderGrid.on("dragoutside", (event, tile) => {
+    const exitDrag = state.exitDrag;
+    if (!exitDrag || exitDrag.tile !== tile || exitDrag.extracted) return;
+    exitDrag.lastEvent = event;
+    if (exitDrag.timer) return;
+    exitDrag.timer = setTimeout(() => {
+      if (openFolderState !== state || state.exitDrag !== exitDrag) return;
+      exitDrag.extracted = true;
+      extractFolderTile(state, tile, exitDrag.lastEvent, true);
+    }, FOLDER_EXIT_DELAY);
+  });
+  folderGrid.on("dragstop", (event, tile) => {
+    panel.classList.remove("folder-child-dragging");
+    const exitDrag = state.exitDrag;
+    if (!exitDrag || exitDrag.tile !== tile) return;
+    if (exitDrag.timer) clearTimeout(exitDrag.timer);
+    if (state.closing) {
+      state.exitDrag = null;
+      return;
+    }
+    if (exitDrag.extracted) return;
+    state.exitDrag = null;
+
+    if (event.type !== "pointercancel" && !isPointerInsideFolderContent(content, event)) {
+      extractFolderTile(state, tile, event, false);
+      return;
+    }
+    syncFolderContent(state);
+    scheduleFolderOpenLayout(state);
+  });
 }
 
 function setFolderOpenTravel(panel) {
@@ -357,37 +574,26 @@ function openFolder(folder) {
   }
   if (openFolderState) closeOpenFolder({ immediate: true });
 
-  const node = folder.gridstackNode;
   const panel = createFolderOpenPanel(folder);
   tileListInnerContainer.append(panel);
-  setFolderOpenTravel(panel);
-  const panelHeight = panel.offsetHeight;
-  const cell = tileListGrid.el.clientWidth / tileListGrid.getColumn();
-  const folderBottomRow = node.y + node.h;
-  const shiftedTiles = tileListGrid.engine.nodes
-    .filter(candidate => candidate !== node && candidate.y >= node.y)
-    .map(candidate => ({
-      el: candidate.el,
-      offset: panelHeight + (candidate.y < folderBottomRow ? node.h * cell : 0),
-      bottom: (candidate.y + candidate.h) * cell
-    }));
-  const gridHeight = tileListGrid.engine.nodes.reduce(
-    (max, candidate) => Math.max(max, candidate.y + candidate.h),
-    0
-  ) * cell;
-  const panelBottom = (node.y + node.h) * cell + panelHeight;
-  const expandedHeight = shiftedTiles.reduce(
-    (max, candidate) => Math.max(max, candidate.bottom + candidate.offset),
-    Math.max(gridHeight, panelBottom)
-  );
+  const folderGrid = createFolderContentGrid(panel);
   const version = ++folderOpenVersion;
 
   folder.classList.remove("folder-closing");
   folder.style.setProperty("--folder-thumbnail-travel", `${folder.offsetHeight}px`);
   setFolderThumbnailOrder(folder);
   folder.folderOpenVersion = version;
-  openFolderState = { folder, panel, shiftedTiles, version, panelAnimations: [] };
-  tileListGrid.setExtraHeight(Math.max(0, expandedHeight - gridHeight));
+  openFolderState = {
+    folder,
+    panel,
+    folderGrid,
+    shiftedTiles: [],
+    rowsShifted: false,
+    version,
+    panelAnimations: []
+  };
+  bindFolderContentGrid(openFolderState);
+  updateFolderOpenLayout(openFolderState, false);
   DiscoBoard.backendMethods.navigation.push(
     "homeFolderOpen",
     () => { },
@@ -398,10 +604,8 @@ function openFolder(folder) {
     if (openFolderState?.folder !== folder) return;
     folder.classList.add("folder-open");
     openFolderState.panelAnimations = animateFolderOpenPanel(panel);
-    shiftedTiles.forEach(({ el, offset }) => {
-      el.style.setProperty("--folder-row-offset", `${offset}px`);
-    });
-    if (window.scrollers) scrollers.tile_page_scroller.refresh();
+    openFolderState.rowsShifted = true;
+    updateFolderOpenLayout(openFolderState);
   }));
 }
 
@@ -409,6 +613,17 @@ function closeOpenFolder({ immediate = false, invalidateNavigation = true } = {}
   const state = openFolderState;
   if (!state) return;
   openFolderState = null;
+  state.closing = true;
+
+  if (state.layoutFrame) cancelAnimationFrame(state.layoutFrame);
+  if (state.exitDrag?.timer) clearTimeout(state.exitDrag.timer);
+  if (state.folderGrid?.drag) {
+    state.folderGrid.endDrag({
+      type: "pointercancel",
+      pointerId: state.folderGrid.drag.pointerId
+    });
+  }
+  state.folderGrid?.enableMove(false);
 
   if (invalidateNavigation
     && DiscoBoard.backendMethods.navigation.lastPush?.change === "homeFolderOpen") {
@@ -420,6 +635,7 @@ function closeOpenFolder({ immediate = false, invalidateNavigation = true } = {}
   state.panelAnimations.forEach(animation => animation.cancel());
   state.folder.classList.remove("folder-open");
   state.panel.classList.remove("folder-open-visible");
+  state.rowsShifted = false;
   state.shiftedTiles.forEach(({ el }) => el.style.removeProperty("--folder-row-offset"));
   tileListGrid.setExtraHeight(0);
 
@@ -454,6 +670,10 @@ resizeObserver.observe(document.querySelector("div.tile-list-inner-container"));
 $(window).on("flowClick", function (e) {
   const clickedTile = resolveHomeTileTarget(e.target);
   if (clickedTile.classList.contains("disco-folder-open-item") && homeTileEditEnabled) {
+    if (e.target.closest?.(".disco-tile-menu")) return;
+    if (!clickedTile.classList.contains("home-menu-selected")) {
+      selectHomeTileForEdit(clickedTile);
+    }
     return;
   }
   if (clickedTile.classList.contains("disco-home-folder-tile")) {
@@ -513,11 +733,17 @@ $(window).on("pointerdown", function (e) {
   }
   const pressedTile = resolveHomeTileTarget(e.target);
   let targetTile = pressedTile;
-  if (pressedTile.classList.contains("disco-folder-open-item")) {
-    if (homeTileEditEnabled) return;
+  const isFolderChild = pressedTile.classList.contains("disco-folder-open-item");
+  if (isFolderChild) {
+    if (homeTileEditEnabled) {
+      if (!e.target.closest?.(".disco-tile-menu")
+        && !pressedTile.classList.contains("home-menu-selected")) {
+        selectHomeTileForEdit(pressedTile);
+      }
+      return;
+    }
     pressedTile.canClick = true;
-    targetTile = openFolderState?.folder;
-    if (!targetTile) return;
+    if (!openFolderState || pressedTile.tileGrid !== openFolderState.folderGrid) return;
   }
   if (isEditableHomeTile(targetTile) && !homeTileEditEnabled) {
     pressedTile.canClick = true;
@@ -533,8 +759,8 @@ $(window).on("pointerdown", function (e) {
         selectHomeTileForEdit(targetTile);
         generateShakeAnimations();
         targetTile.homeTileMenuState = true;
-        tileListGrid.beginDrag(targetTile, e.originalEvent || e);
-      });
+        (targetTile.tileGrid || tileListGrid).beginDrag(targetTile, e.originalEvent || e);
+      }, { keepFolderOpen: isFolderChild });
       targetTile.classList.add("home-menu-selected");
     }, 500);
   } else if (

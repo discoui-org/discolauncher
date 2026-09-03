@@ -249,7 +249,7 @@ function wTileMenu(el) {
     .addEventListener("flowClick", (e) => {
       el.classList.add("delete-anim");
       setTimeout(() => {
-        tileListGrid.removeWidget(el);
+        (el.tileGrid || window.tileListGrid).removeWidget(el);
         DiscoBoard.backendMethods.homeConfiguration.save()
         if (
           document

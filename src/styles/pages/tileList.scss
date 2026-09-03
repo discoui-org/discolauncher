@@ -37,7 +37,7 @@ div.tile-list-page {
         transform: translateZ(-5px) !important;
 
         // opacity: .9;
-        div.disco-home-tile.home-menu-selected {
+        div.disco-home-tile.home-menu-selected:not(.disco-folder-open-item) {
             transition: .5s ease-in !important;
             transform: translateZ(10px) scale(1.12) !important;
             scale: 1;
@@ -76,7 +76,7 @@ div.tile-list-page {
 
 
         // opacity: .5;
-        div.disco-home-tile.home-menu-selected {
+        div.disco-home-tile.home-menu-selected:not(.disco-folder-open-item) {
             transition: all .25s cubic-bezier(.43, 1.5, .5, 1), left .1s, top .1s, width .1s, height .1s, scale .25s cubic-bezier(.43, 2, .5, 1) !important;
 
             &.e_active {
@@ -209,6 +209,13 @@ div.tile-list-page {
             translate: var(--shake-x, 0px) var(--shake-y, 0px);
             --shake-easing: cubic-bezier(.25, 0, .53, 1);
             will-change: transform, translate;
+
+            &.home-menu-selected {
+                z-index: 5;
+                opacity: 1;
+                scale: 1.05;
+                translate: 0 0;
+            }
         }
 
         .app-page-icon-banner {
@@ -1687,6 +1694,10 @@ div.disco-folder-open-panel {
         --folder-open-bar-color: #bfbfbf;
     }
 
+    &.folder-child-dragging {
+        clip-path: none;
+    }
+
     &.folder-open-preparing {
         visibility: hidden;
 
@@ -1711,13 +1722,26 @@ div.disco-folder-open-panel {
         width: 100%;
         margin: 24px 0;
 
+        &.disco-tile-grid-editing>div.disco-folder-open-item {
+            touch-action: none;
+        }
+
         >div.disco-folder-open-item {
             position: absolute;
             box-sizing: border-box;
             pointer-events: auto;
             transform: translateY(var(--folder-open-travel, -32px));
-            transition: transform 340ms cubic-bezier(.2, 1.55, .45, 1);
-            transition-delay: calc(60ms + var(--folder-open-order, 1) * 18ms);
+            transition: left 180ms cubic-bezier(.2, .8, .2, 1),
+                top 180ms cubic-bezier(.2, .8, .2, 1),
+                width 180ms cubic-bezier(.2, .8, .2, 1),
+                height 180ms cubic-bezier(.2, .8, .2, 1),
+                transform 340ms cubic-bezier(.2, 1.55, .45, 1);
+            transition-delay: 0ms, 0ms, 0ms, 0ms,
+                calc(60ms + var(--folder-open-order, 1) * 18ms);
+
+            &.grid-dragging {
+                z-index: 10;
+            }
         }
     }
 
