@@ -28,7 +28,7 @@
             &.app-transition-on-pause {
 
                 // EXPLANATION: YOU PRESSED AN APP TO ENTER IT FROM HOME.
-                div.tile-list-inner-container>div.disco-home-tile,
+                div.tile-list-inner-container>div:is(.disco-home-tile, .disco-home-folder-tile),
                 div.app-page-icon-banner {
                     transform-origin: 0% 50%;
 
@@ -66,7 +66,7 @@
                 &:not(.app-transition-back) {
                     // EXPLANATION: YOU ENTERED AN APP AND USED HOME BUTTON TO RETURN TO HOME OR LAUNCHER STARTED FRESH ON HOME.
 
-                    div.tile-list-inner-container>div.disco-home-tile,
+                    div.tile-list-inner-container>div:is(.disco-home-tile, .disco-home-folder-tile),
                     div.app-page-icon-banner {
                         --app-animation-distance: 0px;
                         --s0: calc(0px - var(--app-animation-distance));
@@ -141,7 +141,7 @@
                 &.app-transition-back {
                     // EXPLANATION: YOU ENTERED AN APP AND USED BACK BUTTON TO RETURN TO HOME.
 
-                    div.tile-list-inner-container>div.disco-home-tile,
+                    div.tile-list-inner-container>div:is(.disco-home-tile, .disco-home-folder-tile),
                     div.app-page-icon-banner {
                         transform-origin: var(--app-animation-distance) 50%;
                         opacity: 0;

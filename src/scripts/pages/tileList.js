@@ -14,7 +14,7 @@ grid.on("dragstart", function (event, el) {
   scrollers.tile_page_scroller.cancelScroll()
   isDragging = true
 });
-grid.on('drag', function (event, el) {
+grid.on('relocate', function () {
   Disco.triggerHapticFeedback("CLOCK_TICK")
 });
 grid.on('change', function (event, items) {

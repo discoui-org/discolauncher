@@ -43,7 +43,8 @@ div.tile-list-page {
             scale: 1;
         }
 
-        div.disco-home-tile:not(.home-menu-selected) {
+        div.disco-home-tile:not(.home-menu-selected),
+        div.disco-home-folder-tile {
             transition: .25s ease-out !important;
             opacity: 1;
         }
@@ -188,7 +189,8 @@ div.tile-list-page {
         }
 
 
-        div.disco-home-tile:not(.home-menu-selected) {
+        div.disco-home-tile:not(.home-menu-selected),
+        div.disco-home-folder-tile {
             //transition: left .25s, top .25s, opacity .25s, transform .1s;
             transition: left .25s, top .25s, opacity .25s, transform .05s;
             opacity: .6;
@@ -531,7 +533,8 @@ div.placeholder-content {
     }
 }
 
-div.disco-home-tile {
+div.disco-home-tile,
+div.disco-home-folder-tile {
     @include flow-touch;
 
     * {
@@ -1563,6 +1566,55 @@ div.disco-home-tile {
             }
         }
     }
+}
+
+div.disco-home-tile.folder-intent-target,
+div.disco-home-folder-tile {
+    background-color: var(--accent-color);
+
+    * {
+        pointer-events: none;
+    }
+
+    > div.disco-folder-matrix {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-columns: repeat(var(--folder-grid-columns, 2), minmax(0, 1fr));
+        grid-template-rows: repeat(var(--folder-grid-rows, 2), minmax(0, 1fr));
+        gap: 3px;
+        padding: 3px;
+        box-sizing: border-box;
+        background: var(--metro-background);
+        overflow: hidden;
+    }
+
+    > div.disco-home-inner-tile {
+        opacity: 0;
+    }
+
+    div.disco-folder-matrix-cell {
+        position: relative;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        background: var(--accent-color);
+
+        > div.disco-home-inner-tile {
+            position: absolute;
+            inset: 0;
+            width: 200%;
+            height: 200%;
+            transform: scale(.5);
+            transform-origin: top left;
+        }
+    }
+}
+
+div.tile-list-page.home-menu-back div.disco-home-tile.folder-intent-target {
+    opacity: 1 !important;
+    transform: translateZ(0) scale(1) !important;
+    scale: 1 !important;
 }
 
 div.disco-home-tile.live-tile.native-widget-tile div.live-tile-container,

@@ -906,9 +906,19 @@ const backendMethods = {
       }
       if (window.cantSaveHomeConfig) return;
       const config = [];
-      document.querySelectorAll("div.tile-list-inner-container > div.disco-home-tile").forEach(el => {
+      document.querySelectorAll("div.tile-list-inner-container > div.disco-home-tile, div.tile-list-inner-container > div.disco-home-folder-tile").forEach(el => {
         if (el["gridstackNode"]) {
           try {
+            if (el.classList.contains("disco-home-folder-tile")) {
+              config.push({
+                f: el.folderChildren || JSON.parse(el.dataset.folderChildren || "[]"),
+                w: el.gridstackNode.w,
+                h: el.gridstackNode.h,
+                x: el.gridstackNode.x,
+                y: el.gridstackNode.y
+              })
+              return
+            }
             config.push({
               p: el.getAttribute("packagename"),        // packageName
               /*t: el.getAttribute("title"),              // title
@@ -935,6 +945,27 @@ const backendMethods = {
       const config = JSON.parse(localStorage.getItem("homeConfiguration")) || []
 
       config.forEach(tile => {
+        if (Array.isArray(tile.f)) {
+          const children = tile.f.map(child => {
+            if (child.i && child.ib && child.t) return child
+            const appdetail = backendMethods.getAppDetails(child.p)
+            return {
+              ...child,
+              i: child.i || appdetail.icon.foreground,
+              ib: child.ib || appdetail.icon.background,
+              t: child.t || appdetail.label,
+              s: child.s || ["s"]
+            }
+          })
+          const folder = DiscoElements.wHomeFolderTile(children, [tile.w, tile.h])
+          window.tileListGrid.addWidget(folder, {
+            w: tile.w,
+            h: tile.h,
+            x: tile.x ?? tile.l ?? 0,
+            y: tile.y ?? tile.t ?? 0
+          })
+          return
+        }
         const appdetail = backendMethods.getAppDetails(tile.p)
         if (document.querySelectorAll(`div.disco-home-tile[packagename="${tile.p}"]`).length > 0) return
 

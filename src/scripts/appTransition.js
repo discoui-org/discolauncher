@@ -13,7 +13,7 @@ const CONFIG = {
     SELECTORS: {
         MAIN_SLIDER: '#main-home-slider',
         APP_TILES: 'div.app-list-container > div.disco-element:is(.disco-app-tile, .disco-letter-tile):not(.search-hidden)',
-        HOME_TILES: 'div.tile-list-inner-container > div.disco-element.disco-home-tile',
+        HOME_TILES: 'div.tile-list-inner-container > div.disco-element:is(.disco-home-tile, .disco-home-folder-tile)',
         TILE_CONTAINER: 'div.tile-list-container',
         STICKY_LETTER: '#sticky-letter',
         SEARCH_ICON: '#search-icon',
@@ -81,13 +81,19 @@ function getElementCenter(el) {
 function removeAnimClasses() {
     const classesToRemove = Object.values(CONFIG.CLASSES.TRANSITION);
     mainHomeSlider.classList.remove(...classesToRemove);
-    document.querySelectorAll('.disco-home-tile').forEach(e => e.classList.remove('active'));
+    document.querySelectorAll('.disco-home-tile, .disco-home-folder-tile').forEach(e => e.classList.remove('active'));
 }
 
 // Get the current horizontal offset of the app page
 function appPageOffset() {
     const container = document.querySelector(CONFIG.SELECTORS.TILE_CONTAINER);
     return container ? container.getBoundingClientRect().left : 0;
+}
+
+function homeTilesInGridOrder() {
+    return [...tileListGrid.engine.nodes]
+        .sort((first, second) => first.y - second.y || first.x - second.x)
+        .map(node => node.el);
 }
 
 // Set animation indices for elements based on their visibility
@@ -100,29 +106,35 @@ function indexElements(page) {
 
     const elements = page
         ? document.querySelectorAll(CONFIG.SELECTORS.APP_TILES)
-        : tileListGrid.engine.nodes.map(e => e.el);
+        : homeTilesInGridOrder();
 
     const visibleElements = Array.from(elements).filter(isElementVisible);
+    // A transformed/scrolled home grid can temporarily report no visible
+    // tiles. Keep app-transition variables valid in that frame instead of
+    // producing an invalid animation declaration for every tile.
+    const animationElements = visibleElements.length ? visibleElements : Array.from(elements);
 
     if (page) {
         // Handle app page elements
         const stickyLetter = document.querySelector(CONFIG.SELECTORS.STICKY_LETTER);
         const searchIcon = document.querySelector(CONFIG.SELECTORS.SEARCH_ICON);
 
-        if (stickyLetter) visibleElements.unshift(stickyLetter);
-        if (searchIcon) visibleElements.unshift(searchIcon);
+        if (stickyLetter) animationElements.unshift(stickyLetter);
+        if (searchIcon) animationElements.unshift(searchIcon);
 
-        visibleElements.reverse().forEach((element, index) => {
-            const normalizedIndex = (index / (visibleElements.length - 1)).toFixed(2);
+        const maxAnimationIndex = Math.max(animationElements.length - 1, 1);
+        animationElements.reverse().forEach((element, index) => {
+            const normalizedIndex = (index / maxAnimationIndex).toFixed(2);
             setElementAnimationProperties(element, normalizedIndex);
         });
     } else {
         // Handle tile list elements
         const iconBanner = document.querySelector(CONFIG.SELECTORS.ICON_BANNER);
-        if (iconBanner) visibleElements.push(iconBanner);
+        if (iconBanner) animationElements.push(iconBanner);
 
-        visibleElements.reverse().forEach((element, index) => {
-            const normalizedIndex = (index / (visibleElements.length - 1)).toFixed(2);
+        const maxAnimationIndex = Math.max(animationElements.length - 1, 1);
+        animationElements.reverse().forEach((element, index) => {
+            const normalizedIndex = (index / maxAnimationIndex).toFixed(2);
             setElementAnimationProperties(element, normalizedIndex, true);
         });
     }

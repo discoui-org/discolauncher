@@ -3,6 +3,7 @@ import * as colorContrastDetector from "./colorContrastDetector"
 window.colorContrastDetector = colorContrastDetector
 const DiscoElements = {
   wHomeTile,
+  wHomeFolderTile,
   wAppTile,
   wLetterTile,
   wAppMenu,
@@ -91,6 +92,32 @@ function wHomeTile(
     }
   })
   return homeTile;
+}
+
+function wHomeFolderTile(children = [], size = [1, 1]) {
+  const folder = document.createElement("div");
+  folder.classList.add("disco-element", "disco-home-folder-tile");
+  folder.folderChildren = children;
+  folder.dataset.folderChildren = JSON.stringify(children);
+
+  const matrix = document.createElement("div");
+  matrix.classList.add("disco-folder-matrix");
+  const columns = Math.max(2, Math.round(size[0] * 1.5));
+  const rows = Math.max(2, Math.round(size[1] * 1.5));
+  matrix.style.setProperty("--folder-grid-columns", columns);
+  matrix.style.setProperty("--folder-grid-rows", rows);
+  for (let index = 0; index < columns * rows; index += 1) {
+    const cell = document.createElement("div");
+    cell.classList.add("disco-folder-matrix-cell");
+    const child = children[index];
+    if (child) {
+      const tile = wHomeTile(child.i, child.ib, child.t, child.p, "", child.s);
+      cell.append(tile.querySelector(":scope > .disco-home-inner-tile"));
+    }
+    matrix.append(cell);
+  }
+  folder.append(matrix);
+  return folder;
 }
 function getImage(url) {
   return new Promise(function (resolve, reject) {
