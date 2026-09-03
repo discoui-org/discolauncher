@@ -629,6 +629,7 @@ class tileController {
                         'native-widget-tile'
                     );
                     delete inactiveTile.dataset.tapTarget;
+                    delete inactiveTile.dataset.liveTileSurfaceFallback;
                     const inactiveContainer = inactiveTile.querySelector('div.live-tile-container');
                     if (inactiveContainer) inactiveContainer.innerHTML = '';
                     const inactiveIcon = inactiveTile.querySelector('img.disco-home-tile-imageicon');
@@ -649,6 +650,9 @@ class tileController {
                 .forEach(badge => badge.remove());
             this.tileType = result.type;
             this.animationType = result.animationType;
+            tile.dataset.liveTileSurfaceFallback = result.surfaceFallback === 'metro'
+                ? 'metro'
+                : 'accent';
             const notificationCount = Math.max(0, Number(result.notificationCount) || 0);
             const hasNotificationSummary = result.type === TileType.NOTIFICATION && notificationCount > 0;
             tile.classList.toggle('has-notification-count', hasNotificationSummary);
@@ -675,10 +679,9 @@ class tileController {
                 iconElement.classList.remove('hide-direction-0', 'hide-direction-1', 'show-direction-0', 'show-direction-1');
             }
             liveTileContainer.setAttribute("show-app-title", result.showAppTitle ? "true" : "false");
-            // The visible app title is cloned into every live-tile page below,
-            // so it becomes part of the page animation instead of staying fixed
-            // above the live-tile surface.
-            tile.classList.add("hide-app-title");
+            // The original title is the stable layer above the live surface;
+            // it must not be duplicated into each animated page.
+            tile.classList.toggle("hide-app-title", !result.showAppTitle);
 
             // Build and sanitize content
             const pageIndexOffset = result.type === TileType.NOTIFICATION ? 1 : 0;
@@ -776,11 +779,6 @@ class tileController {
                     const appTitle = tile.querySelector('p.disco-home-tile-title')?.textContent;
                     if (appTitle) {
                         liveTileContainer.querySelectorAll('.live-tile-page').forEach(page => {
-                            const pageTitle = document.createElement('p');
-                            pageTitle.className = 'live-tile-app-title';
-                            pageTitle.textContent = appTitle;
-                            page.appendChild(pageTitle);
-
                             const notificationTitle = page.querySelector(
                                 'p.live-tile-notification-title'
                             );

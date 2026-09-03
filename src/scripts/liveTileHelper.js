@@ -121,6 +121,9 @@ class TileFeed {
             showAppTitle: true,
             duration: 5000 + Math.random() * 500,
             notificationCount: null,
+            // The base beneath a provider's own surface. Providers with
+            // transparent or anti-aliased artwork can request "metro".
+            surfaceFallback: "accent",
             active: true
         };
         Object.assign(this, defaults, options);
@@ -134,6 +137,9 @@ class TileFeed {
         }
         if (!Object.values(AnimationType).includes(this.animationType)) {
             throw new Error(`Invalid animation type. Must be one of: ${Object.values(AnimationType).join(', ')}`);
+        }
+        if (!['accent', 'metro'].includes(this.surfaceFallback)) {
+            this.surfaceFallback = defaults.surfaceFallback;
         }
         this.tiles = [];
     }

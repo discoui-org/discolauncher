@@ -614,10 +614,28 @@ div.disco-home-tile {
         }
 
         &.live-tile {
-            // The live-tile surface supplies its own divider. Keeping the
-            // normal icon background divider here makes it appear twice.
-            div.disco-home-tile-icon-background {
-                box-shadow: none !important;
+            // Providers select the base for the whole live surface through a
+            // single state attribute. Accent keeps the traditional calendar,
+            // clock and notification appearance; metro protects transparent
+            // or anti-aliased provider artwork such as weather.
+            --live-tile-surface-fallback: var(--accent-color);
+
+            &[data-live-tile-surface-fallback="metro"] {
+                --live-tile-surface-fallback: var(--metro-background);
+            }
+
+            // A live tile owns the complete painted surface. The regular icon
+            // elements stay in the DOM as sources for the notification summary,
+            // but must never be painted behind (or above) the live surface.
+            // Keeping this rule on the shared live state prevents every tile
+            // type from having to manage the same two layers independently.
+            > div.disco-home-inner-tile {
+                background: var(--live-tile-surface-fallback);
+
+                > div.disco-home-tile-icon-background,
+                > img.disco-home-tile-imageicon {
+                    display: none !important;
+                }
             }
 
             div.disco-home-inner-tile {
@@ -651,13 +669,6 @@ div.disco-home-tile {
 
                 &.hide-flip-direction-3 {
                     animation: hide-flip-direction-3 var(--tile-list-flip-animation-duration) forwards;
-                }
-            }
-
-            &.tile-type-notification,
-            &.tile-type-carousel {
-                img.disco-home-tile-imageicon {
-                    display: none !important;
                 }
             }
 
@@ -833,9 +844,10 @@ div.disco-home-tile {
                 z-index: 1;
                 padding: 10px 12px;
                 box-sizing: border-box;
-                // The stage is visible briefly around the edge of a flip.
-                // Keep it neutral so one page cannot bleed into the other.
-                background: var(--metro-background);
+                // The stage is briefly visible around a page flip. It shares
+                // the page fallback so an icon's transparent background never
+                // exposes the launcher background between frames.
+                background: var(--live-tile-surface-fallback);
                 // Like Matrix, this is the non-clipping 3D stage. The page
                 // itself is the flipping surface, while the inner tile keeps
                 // its normal overflow clipping.
@@ -878,7 +890,7 @@ div.disco-home-tile {
                     // content but above this accent fallback.
                     z-index: 0;
                     isolation: isolate;
-                    background: var(--accent-color);
+                    background: var(--live-tile-surface-fallback);
 
                     &.page-flip {
                         animation: live-tile-matrix-tile-flip var(--live-tile-page-flip-duration) forwards;
@@ -1168,10 +1180,11 @@ div.disco-home-tile {
                         width: 100%;
                         height: 100%;
                         object-fit: fill;
-                        // Non-adaptive apps intentionally return a transparent
-                        // icons-bg asset. This neutral backing also covers any
-                        // transparent adaptive/icon-pack outsets.
-                        background: var(--metro-background);
+                        // The icon background can be fully transparent for a
+                        // non-adaptive app. Fall back to the same live-tile
+                        // surface as every other page instead of the global
+                        // launcher background.
+                        background: var(--live-tile-surface-fallback);
 
                         // App backgrounds may contain transparent antialiased
                         // edge pixels. Fill those from the detected edge color
@@ -1210,22 +1223,6 @@ div.disco-home-tile {
                         margin: 0;
                         font-size: var(--home-tile-title-font-size);
                         font-weight: 600;
-                        line-height: 1.15;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                    }
-
-                    p.live-tile-app-title {
-                        position: absolute;
-                        left: 12px;
-                        right: 12px;
-                        bottom: 12px;
-                        z-index: 2;
-                        margin: 0;
-                        color: white;
-                        font-size: var(--home-tile-title-font-size);
-                        font-weight: 550;
                         line-height: 1.15;
                         overflow: hidden;
                         text-overflow: ellipsis;

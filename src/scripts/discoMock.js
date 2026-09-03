@@ -445,6 +445,38 @@ function removeNotificationToSystem(notification) {
     window.dispatchEvent(new CustomEvent("notificationRemoved", { detail: JSON.stringify(notification) }))
 }
 var notifications = []
+
+const mockGoogleNews = [
+    {
+        title: "Lorem Ipsum Daily",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        longDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    },
+    {
+        title: "Metro News",
+        description: "Ut enim ad minim veniam, quis nostrud exercitation.",
+        longDescription: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+        title: "The Daily Brief",
+        description: "Duis aute irure dolor in reprehenderit in voluptate.",
+        longDescription: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    }
+];
+
+// Keep a few deterministic Google notifications available for live-tile work.
+// They are dispatched after the launcher has installed its event listeners.
+setTimeout(() => {
+    mockGoogleNews.forEach((news, index) => {
+        sendNotificationToSystem({
+            id: 999991000 + index,
+            ...news,
+            postTime: Date.now() - (mockGoogleNews.length - index) * 1000,
+            packageName: "com.google.android.googlequicksearchbox"
+        });
+    });
+}, 750);
+
 window.notificationsenderinterval = setInterval(() => {
     if (notifications.length > 4) {
         clearInterval(window.notificationsenderinterval)

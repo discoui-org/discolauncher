@@ -88,7 +88,10 @@ async function refreshWeather() {
 function draw() {
     const tileFeed = new liveTileHelper.TileFeed({
         type: liveTileHelper.TileType.STATIC,
-        showAppTitle: true
+        showAppTitle: true,
+        // Weather owns its visual surface; transparent/anti-aliased artwork
+        // should blend into the launcher background rather than the accent.
+        surfaceFallback: 'metro'
     });
 
     if (!weather) {
