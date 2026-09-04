@@ -677,6 +677,10 @@ $(window).on("flowClick", function (e) {
     return;
   }
   if (clickedTile.classList.contains("disco-home-folder-tile")) {
+    if (clickedTile.canClick === false) {
+      clickedTile.canClick = true;
+      return;
+    }
     if (!homeTileEditEnabled) {
       if (clickedTile.canClick) openFolder(clickedTile);
       return;
@@ -734,6 +738,9 @@ $(window).on("pointerdown", function (e) {
   const pressedTile = resolveHomeTileTarget(e.target);
   let targetTile = pressedTile;
   const isFolderChild = pressedTile.classList.contains("disco-folder-open-item");
+  if (pressedTile.classList.contains("disco-home-folder-tile")) {
+    pressedTile.canClick = true;
+  }
   if (isFolderChild) {
     if (homeTileEditEnabled) {
       if (!e.target.closest?.(".disco-tile-menu")
