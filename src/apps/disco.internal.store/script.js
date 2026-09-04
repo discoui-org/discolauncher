@@ -2,6 +2,7 @@ const windowInsets = () => ({ top: 0, left: 0, right: 0, bottom: 0 })
 import { applyOverscroll, appViewEvents, discoColors, discoThemes, setAccentColor } from "../../scripts/shared/internal-app";
 import imageStore from "../../scripts/imageStore";
 import { DiscoScroll } from "../../scripts/overscrollFramework";
+import { indexInternalAppListItems } from "../../scripts/shared/internalAppTabSlider";
 import fontStore from "../../scripts/fontStore";
 import $ from "../../scripts/dom";
 import i18n from "../../scripts/localeManager";
@@ -22,6 +23,7 @@ window.i18n = i18n
 await i18n.init()
 await i18n.translateDOM()
 window.fontStore = fontStore
+indexInternalAppListItems()
 window.scrollers = {
     home: new DiscoScroll("#home-tab", {
         bounceTime: 300,

@@ -2,7 +2,7 @@ import { DiscoSlide } from "../overscrollFramework.js";
 
 const modulo = (value, length) => ((value % length) + length) % length;
 
-function indexListItems(root) {
+function indexInternalAppListItems(root = document) {
   root.querySelectorAll("div.disco-list-view").forEach((listView) => {
     let index = 0;
     listView.querySelectorAll("div.disco-list-view-item:not(.hidden)").forEach((item) => {
@@ -34,7 +34,9 @@ function createInternalAppTabSlider({
     throw new Error(`Internal app tab/page count mismatch: ${tabs.length}/${pages.length}`);
   }
 
-  indexListItems(root);
+  indexInternalAppListItems(root);
+
+  const slideThreshold = slideOptions.slide?.threshold ?? swipeThreshold;
 
   const slider = new DiscoSlide(pagesElement, {
     ...slideOptions,
@@ -42,6 +44,7 @@ function createInternalAppTabSlider({
       loop: true,
       speed: 400,
       ...slideOptions.slide,
+      threshold: slideThreshold,
     },
   });
   const scrollWidth = () => pagesElement.clientWidth || Math.min(window.innerWidth, 768);
@@ -83,7 +86,7 @@ function createInternalAppTabSlider({
   });
   slider.on("touchEnd", () => {
     const distance = Math.abs(scrollStartX - pagePosition()) * scrollWidth();
-    if (!flickHandled && distance > swipeThreshold) activateDraggedPage();
+    if (!flickHandled && distance > slideThreshold) activateDraggedPage();
   });
 
   let tabPointer = null;
@@ -177,5 +180,5 @@ function createInternalAppTabSlider({
   return { slider, pages, tabs, activatePage, activeTabScroll, scrollWidth };
 }
 
-export { createInternalAppTabSlider };
+export { createInternalAppTabSlider, indexInternalAppListItems };
 export default createInternalAppTabSlider;

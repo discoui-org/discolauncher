@@ -342,9 +342,11 @@ class DiscoScroller {
       } else {
         startPage = clamp(startPage, 0, Math.max(0, this.pageCount - 1));
       }
-      const page = wasFlick
-        ? startPage + (velocity < 0 ? 1 : -1)
-        : this.getCurrentPage().pageX;
+      const distance = this.x - pointer.startScrollX;
+      const threshold = this.options.slide?.threshold ?? width / 2;
+      const changesPage = wasFlick || Math.abs(distance) > threshold;
+      const direction = wasFlick ? Math.sign(velocity) : Math.sign(distance);
+      const page = changesPage ? startPage + (direction < 0 ? 1 : -1) : startPage;
       this.goToPage(page);
       return;
     }
