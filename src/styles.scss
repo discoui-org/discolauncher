@@ -345,6 +345,7 @@ body.alternative-wallpaper {
 
   #app-page-icon:not(.t_active),
   #search-icon:not(.t_active),
+  #work-profile-icon:not(.t_active):not(.work-profile-enabled),
   div.app-page-icon-banner,
   .disco-element.disco-letter-tile .disco-app-tile-icon {
     background: transparent !important;

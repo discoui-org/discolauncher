@@ -17,8 +17,10 @@ import org.json.JSONObject;
 public class SystemEvents {
     private final MainActivity mainActivity;
     private AppChangeBroadcastReceiver appChangeBroadcastReceiver;
+    private WorkProfileBroadcastReceiver workProfileBroadcastReceiver;
     private AnimationScaleObserver animationScaleObserver;
     private boolean appChangeReceiverRegistered;
+    private boolean workProfileReceiverRegistered;
     private boolean animationScaleObserverRegistered;
 
     SystemEvents(MainActivity m) {
@@ -31,6 +33,16 @@ public class SystemEvents {
         appChangeBroadcastReceiver = new AppChangeBroadcastReceiver();
         mainActivity.registerReceiver(appChangeBroadcastReceiver, filter);
         appChangeReceiverRegistered = true;
+
+        IntentFilter workProfileFilter = new IntentFilter();
+        workProfileFilter.addAction(Intent.ACTION_MANAGED_PROFILE_ADDED);
+        workProfileFilter.addAction(Intent.ACTION_MANAGED_PROFILE_REMOVED);
+        workProfileFilter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
+        workProfileFilter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
+        workProfileBroadcastReceiver = new WorkProfileBroadcastReceiver();
+        mainActivity.registerReceiver(workProfileBroadcastReceiver, workProfileFilter);
+        workProfileReceiverRegistered = true;
+
         animationScaleObserver = new AnimationScaleObserver(new Handler(), mainActivity);
         mainActivity.getContentResolver().registerContentObserver(
                 Settings.Global.getUriFor(Settings.Global.ANIMATOR_DURATION_SCALE),
@@ -48,6 +60,15 @@ public class SystemEvents {
                 Log.w("SystemEvents", "App change receiver was already unregistered", exception);
             } finally {
                 appChangeReceiverRegistered = false;
+            }
+        }
+        if (workProfileReceiverRegistered) {
+            try {
+                mainActivity.unregisterReceiver(workProfileBroadcastReceiver);
+            } catch (IllegalArgumentException exception) {
+                Log.w("SystemEvents", "Work profile receiver was already unregistered", exception);
+            } finally {
+                workProfileReceiverRegistered = false;
             }
         }
         if (animationScaleObserverRegistered) {
@@ -90,6 +111,15 @@ public class SystemEvents {
                 }
                 mainActivity.webEvents.dispatchEvent(WebEvents.events.appUninstall, argument);
                 Log.d("TAG", "onReceive: APP UNINSTALL");
+            }
+        }
+    }
+
+    public class WorkProfileBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mainActivity.webEvents != null) {
+                mainActivity.webEvents.dispatchEvent(WebEvents.events.workProfileChanged);
             }
         }
     }

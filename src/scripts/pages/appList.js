@@ -8,6 +8,38 @@ const appListSearch = $("input.app-list-search")
 const letterSelector = $("div.letter-selector")
 const stickyLetterTile = $("#sticky-letter")
 const appListElement = document.querySelector("div.app-list")
+const workProfileButton = document.querySelector("#work-profile-icon")
+
+let workProfileState = { available: false, enabled: false, userSerial: -1 }
+
+function applyWorkProfileState(state) {
+    workProfileState = Object.assign({}, workProfileState, state)
+    workProfileButton.hidden = !workProfileState.available
+    workProfileButton.classList.toggle("shown", workProfileState.available)
+    workProfileButton.classList.toggle("work-profile-enabled", workProfileState.enabled)
+    workProfileButton.setAttribute("aria-pressed", String(workProfileState.enabled))
+}
+
+function refreshWorkProfileState(reloadApps = false) {
+    try {
+        applyWorkProfileState(JSON.parse(Disco.getWorkProfileState()))
+        if (reloadApps && window.scrollers?.app_page_scroller) {
+            DiscoBoard.backendMethods.reloadApps()
+        }
+    } catch (error) {
+        applyWorkProfileState({ available: false, enabled: false, userSerial: -1 })
+        console.warn("Could not refresh work profile state", error)
+    }
+}
+
+function launchAppTile(tile) {
+    const packageName = tile.getAttribute("packagename")
+    const userSerial = tile.dataset.userSerial
+    if (userSerial != null) {
+        return Disco.launchAppForProfile(packageName, Number(userSerial))
+    }
+    return Disco.launchApp(packageName)
+}
 
 class VirtualAppList {
     constructor(container) {
@@ -264,7 +296,7 @@ function searchResultClick(e) {
     appTransition.onPause()
     const packageName = e.target.getAttribute("packagename")
     setTimeout(() => {
-        if (!window.doubleTapOverride) Disco.launchApp(packageName)
+        if (!window.doubleTapOverride) launchAppTile(e.target)
         setTimeout(() => {
             searchModeSwitch.off()
         }, 100 * animationDurationScale);
@@ -395,6 +427,28 @@ $("#search-icon").on("flowClick", function () {
     }
 
 })
+$("#work-profile-icon").on("flowClick", function () {
+    if (!workProfileState.available || workProfileButton.dataset.busy === "true") return
+
+    workProfileButton.dataset.busy = "true"
+    try {
+        applyWorkProfileState(JSON.parse(
+            Disco.setWorkProfileEnabled(!workProfileState.enabled)
+        ))
+    } catch (error) {
+        console.warn("Could not change work profile state", error)
+    }
+
+    setTimeout(() => {
+        refreshWorkProfileState(true)
+        delete workProfileButton.dataset.busy
+    }, 500)
+})
+
+window.addEventListener("workProfileChanged", () => refreshWorkProfileState(true))
+window.addEventListener("activityResume", () => refreshWorkProfileState(false))
+refreshWorkProfileState()
+
 $(window).on("finishedLoading", () => {
     window.scrollers.main_home_scroller.on("scrollStart", () => {
         scrollers.tile_page_scroller.refresh()
@@ -469,7 +523,7 @@ $(window).on("flowClick", function (e) {
             e.target.classList.add("app-transition-selected")
             appTransition.onPause()
             setTimeout(() => {
-                if (!isSearchModeOn) if (!window.doubleTapOverride) Disco.launchApp(e.target.getAttribute("packageName"))
+                if (!isSearchModeOn) if (!window.doubleTapOverride) launchAppTile(e.target)
             }, 1000 * animationDurationScale);
         }
     }
@@ -486,6 +540,10 @@ $(window).on("pointerdown", function (e) {
         e.target.appMenu = false
         e.target.appMenuState = false
         e.target.appRect = e.target.getBoundingClientRect()
+
+        // The existing context menu only operates on the current Android user.
+        // Do not let it act on a personal app that shares the work app's package name.
+        if (e.target.dataset.userSerial != null) return
 
         clearTimeout(window.appMenuCreationFirstTimeout)
         clearTimeout(window.appMenuCreationSecondTimeout)

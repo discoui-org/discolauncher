@@ -1,6 +1,7 @@
 @import "../flowTouch.scss";
 
-#search-icon {
+#search-icon,
+#work-profile-icon {
   position: absolute;
   z-index: 10;
   left: 25px;
@@ -41,6 +42,31 @@
     padding: 0px;
     width: min-content;
     height: min-content;
+  }
+}
+
+#work-profile-icon {
+  top: calc(80px + var(--window-inset-top));
+
+  &[hidden] {
+    display: none;
+  }
+
+  p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: static;
+    width: 100%;
+    height: 100%;
+    left: auto;
+    top: auto;
+    transform: none;
+  }
+
+  &.work-profile-enabled {
+    color: white;
+    background-color: var(--accent-color);
   }
 }
 
@@ -192,6 +218,11 @@ div.inner-page.app-list-page {
         pointer-events: none;
       }
 
+      #work-profile-icon {
+        opacity: 0;
+        pointer-events: none;
+      }
+
       div.disco-app-tile {
         width: 100%;
       }
@@ -323,6 +354,10 @@ div.inner-page.app-list-page {
     background-size: 100% 100% !important;
   }
 
+  .disco-app-tile-icon.has-icon-background {
+    background-color: transparent;
+  }
+
   .disco-app-tile-imageicon {
     padding: 0px;
     margin: 0px;
@@ -357,6 +392,19 @@ div.inner-page.app-list-page {
     text-overflow: ellipsis;
     font-weight: 320;
     pointer-events: none;
+  }
+
+  .disco-app-tile-work-glyph {
+    flex: 0 0 auto;
+    margin-left: 9px;
+    font-family: SymbolsNerd;
+    font-size: 18px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  &.work-profile-app .disco-app-tile-title {
+    margin-left: 8px;
   }
 }
 

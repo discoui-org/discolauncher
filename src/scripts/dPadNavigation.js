@@ -1,7 +1,7 @@
 const selectableElements = {
     home: {
         tileMenu: ["div.disco-home-tile", "button.update-read-more", "button.update-dismiss", "#app-page-icon"],
-        appMenu: ["div.disco-app-tile", "div.letter-selector-letter", "#search-icon", "input.app-list-search"]
+        appMenu: ["div.disco-app-tile", "div.letter-selector-letter", "#search-icon", "#work-profile-icon", "input.app-list-search"]
     },
     settings: {
 

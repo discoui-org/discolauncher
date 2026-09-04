@@ -95,6 +95,19 @@ class DiscoMock {
             background: CONSTANTS.EMPTY_SVG
         });
     }
+    getProfileAppIconURL(packageName = 'undefined') {
+        return this.getAppIconURL(packageName)
+    }
+    getWorkProfileState() {
+        return JSON.stringify({ available: false, enabled: false, userSerial: -1 })
+    }
+    setWorkProfileEnabled() {
+        return this.getWorkProfileState()
+    }
+    launchAppForProfile(packageName, userSerial) {
+        console.log("Start work app:", packageName, userSerial)
+        return true
+    }
     launchApp(packageName) {
         console.log("Start app:", packageName)
         if (packageName.startsWith("disco.internal")) {

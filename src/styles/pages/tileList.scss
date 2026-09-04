@@ -1423,11 +1423,22 @@ div.disco-home-folder-tile {
         background: var(--accent-color);
         background-size: 100% 100% !important;
 
+        // An app-provided background owns the full tile surface. Leaving the
+        // accent fallback underneath it makes that color show through
+        // transparent and anti-aliased pixels around the asset's edges.
+        &.has-icon-background {
+            background-color: transparent;
+        }
+
         div.disco-home-tile-icon-background {
             position: absolute;
             inset: 0;
             background: var(--accent-color);
             background-size: 100% 100% !important;
+
+            &.has-icon-background {
+                background-color: transparent;
+            }
 
             &.svg-background {
                 background-size: cover !important;
@@ -1648,6 +1659,10 @@ div.disco-home-folder-tile {
         min-height: 0;
         overflow: hidden;
         background: var(--accent-color);
+
+        &.has-icon-background {
+            background-color: transparent;
+        }
 
         >div.disco-home-inner-tile {
             position: absolute;

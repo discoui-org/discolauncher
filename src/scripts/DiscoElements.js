@@ -21,7 +21,8 @@ function sizedAppIconURL(url, size) {
   const value = String(url || "");
   // Only Android's intercepted icon endpoints understand this parameter.
   // Icon-pack SVGs, data URLs and mock assets keep their original URL.
-  if (!value.startsWith("https://appassets.androidplatform.net/assets/icons")) return value;
+  if (!value.startsWith("https://appassets.androidplatform.net/assets/icons")
+    && !value.includes("/__disco_content/app-icon")) return value;
   const iconURL = new URL(value);
   // `size` is the CSS size. WebView renders it in device pixels, so requesting
   // only 52 source pixels on a 3x screen caused visible upscaling/aliasing.
@@ -29,6 +30,18 @@ function sizedAppIconURL(url, size) {
   iconURL.searchParams.set("size", String(rasterSize));
   return iconURL.toString();
 }
+
+const emptyIconBackground = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>`;
+
+function hasIconBackgroundSource(url) {
+  const value = String(url || "").trim();
+  return value !== "" && value !== "none" && value !== emptyIconBackground;
+}
+
+function colorHasVisiblePixels(color) {
+  return Number(color?.a) > 0;
+}
+
 function wHomeTile(
   // imageIcon = false,
   icon = "",
@@ -69,18 +82,24 @@ function wHomeTile(
   //else 
   const imageIcon = homeTile.querySelector("img.disco-home-tile-imageicon");
   const titleElement = homeTile.querySelector("p.disco-home-tile-title");
+  const innerTile = homeTile.querySelector(".disco-home-inner-tile");
   const iconBackground = homeTile.querySelector(".disco-home-tile-icon-background");
   imageIcon.src = sizedAppIconURL(icon, 114);
   titleElement.innerText = title;
-  if (iconbg) {
+  if (hasIconBackgroundSource(iconbg)) {
     iconBackground.style.backgroundImage = `url('${sizedAppIconURL(iconbg, 114)}')`;
-    if (iconbg.includes("data:image/svg+xml")) iconBackground.classList.add("svg-background");
+    if (String(iconbg).includes("data:image/svg+xml")) iconBackground.classList.add("svg-background");
 
   }
 
   requestAnimationFrame(() => {
     const appPreference = DiscoBoard.backendMethods.getAppPreferences(packageName)
     colorContrastDetector.getAverageColor(iconbg).then((color) => {
+      const hasIconBackground = hasIconBackgroundSource(iconbg) && colorHasVisiblePixels(color);
+      homeTile.classList.toggle("has-icon-background", hasIconBackground);
+      innerTile.classList.toggle("has-icon-background", hasIconBackground);
+      iconBackground.classList.toggle("has-icon-background", hasIconBackground);
+
       if (appPreference.textColor == "auto") {
         titleElement.style.color = colorContrastDetector.getTextColor(color);
 
@@ -125,6 +144,11 @@ function wHomeFolderTile(children = [], size = [1, 1], name = "") {
       const tile = wHomeTile(child.i, child.ib, child.t, child.p, "", child.s);
       const thumbnail = tile.querySelector(":scope > .disco-home-inner-tile");
       thumbnail.classList.add("disco-folder-thumbnail");
+      if (hasIconBackgroundSource(child.ib)) {
+        colorContrastDetector.getAverageColor(child.ib).then((color) => {
+          cell.classList.toggle("has-icon-background", colorHasVisiblePixels(color));
+        }).catch(() => { });
+      }
       cell.append(thumbnail);
     }
     matrix.append(cell);
@@ -150,7 +174,8 @@ function wAppTile(
   iconbg = "none",
   title = "Unknown",
   packageName = "com.unknown",
-  letterTile = false
+  letterTile = false,
+  workProfile = false
 ) {
   const appTile = document.createElement("div");
   appTile.innerHTML = `
@@ -162,6 +187,7 @@ function wAppTile(
           <p class="disco-element disco-app-tile-icon"></p>
       `
     }
+        ${workProfile ? '<span class="disco-app-tile-work-glyph" aria-hidden="true"></span>' : ''}
         <p class="disco-element disco-app-tile-title"></>
     `;
   appTile.classList.add("disco-element");
@@ -171,15 +197,24 @@ function wAppTile(
   appTile.setAttribute("icon-bg", iconbg);
   appTile.setAttribute("title", title);
   appTile.setAttribute("packageName", packageName);
+  if (workProfile) appTile.classList.add("work-profile-app");
   appTile.querySelector("p.disco-app-tile-title").innerText = title;
   if (!letterTile) appTile.querySelector("img.disco-app-tile-imageicon").src = sizedAppIconURL(icon, 52); else appTile.querySelector("p.disco-app-tile-icon").innerText = icon;
-  if (iconbg && iconbg != "none") appTile.querySelector(".disco-app-tile-imageicon").style.background = "url('" + sizedAppIconURL(iconbg, 52) + "')";
-  else appTile.querySelector("p.disco-app-tile-icon").innerText = icon;
+  if (hasIconBackgroundSource(iconbg)) {
+    const iconContainer = appTile.querySelector(".disco-app-tile-icon");
+    const imageIcon = appTile.querySelector(".disco-app-tile-imageicon");
+    imageIcon.style.backgroundImage = "url('" + sizedAppIconURL(iconbg, 52) + "')";
+    colorContrastDetector.getAverageColor(iconbg).then((color) => {
+      const hasIconBackground = colorHasVisiblePixels(color);
+      iconContainer.classList.toggle("has-icon-background", hasIconBackground);
+      imageIcon.classList.toggle("has-icon-background", hasIconBackground);
+    }).catch(() => { });
+  }
 
   return appTile;
 }
 function wLetterTile(letter) {
-  const el = wAppTile(letter, "", "", "", true);
+  const el = wAppTile(letter, "", "", "", true, false);
   el.querySelector(".disco-app-tile-title").remove();
   el.classList.add("disco-letter-tile");
   el.removeAttribute("title");

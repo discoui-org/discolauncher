@@ -18,6 +18,7 @@ public class WebEvents {
         activityResume,
         appInstall,
         appUninstall,
+        workProfileChanged,
         animationDurationScaleChange,
         deepLink,
         systemThemeChange,

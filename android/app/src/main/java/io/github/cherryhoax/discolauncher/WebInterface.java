@@ -21,6 +21,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -34,6 +35,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -84,6 +86,7 @@ public class WebInterface {
     private final MainActivity mainActivity;
     private final DiscoWebView webView;
     private final NativeWidgetManager nativeWidgetManager;
+    private final WorkProfileManager workProfileManager;
     private final ExecutorService shizukuExecutor = Executors.newSingleThreadExecutor();
     private final ConcurrentLinkedQueue<ShizukuUninstallRequest> pendingShizukuUninstalls =
             new ConcurrentLinkedQueue<>();
@@ -123,6 +126,7 @@ public class WebInterface {
         this.mainActivity = mainActivity;
         this.webView = webView;
         this.nativeWidgetManager = new NativeWidgetManager(mainActivity);
+        this.workProfileManager = new WorkProfileManager(mainActivity);
         this.shizukuServiceArgs = new Shizuku.UserServiceArgs(
                 new ComponentName(mainActivity, ShizukuPackageService.class))
                 .daemon(false)
@@ -193,20 +197,21 @@ public class WebInterface {
 
     @JavascriptInterface
     public String retrieveApps() throws JSONException {
-        mainActivity.webView.retrieveApps();
-        Log.d("discolauncher", "retrieveApps: " + mainActivity.webView.retrievedApps.toString());
         JSONArray retrievedApps = new JSONArray();
+        Intent launcherIntent = new Intent(Intent.ACTION_MAIN, null);
+        launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> personalApps = mainActivity.packageManager.queryIntentActivities(launcherIntent, 0);
 
         // First, count how many intents each package has
         Map<String, Integer> packageIntentCount = new HashMap<>();
-        for (ResolveInfo resolveInfo : mainActivity.webView.retrievedApps) {
+        for (ResolveInfo resolveInfo : personalApps) {
             String packageName = resolveInfo.activityInfo.packageName;
             packageIntentCount.put(packageName, packageIntentCount.getOrDefault(packageName, 0) + 1);
         }
 
         // Now process each app
-        for (ResolveInfo resolveInfo : mainActivity.webView.retrievedApps) {
-            if (!resolveInfo.activityInfo.packageName.equals("io.github.cherryhoax.discolauncher2") && !resolveInfo.activityInfo.packageName.equals("io.github.cherryhoax.discolauncher2.nightly")) {
+        for (ResolveInfo resolveInfo : personalApps) {
+            if (!resolveInfo.activityInfo.packageName.equals(mainActivity.getPackageName())) {
                 JSONObject appInfo = new JSONObject();
                 String packageName = resolveInfo.activityInfo.packageName;
                 String packageNameWithIntent;
@@ -236,6 +241,39 @@ public class WebInterface {
                 retrievedApps.put(appInfo);
             }
         }
+
+        for (UserHandle profile : workProfileManager.getWorkProfiles()) {
+            if (!workProfileManager.isProfileEnabled(profile)) continue;
+
+            List<LauncherActivityInfo> workApps = workProfileManager.getActivityList(profile);
+            Map<String, Integer> workPackageIntentCount = new HashMap<>();
+            for (LauncherActivityInfo app : workApps) {
+                String packageName = app.getComponentName().getPackageName();
+                workPackageIntentCount.put(
+                        packageName,
+                        workPackageIntentCount.getOrDefault(packageName, 0) + 1
+                );
+            }
+
+            long userSerial = workProfileManager.getSerialNumber(profile);
+            for (LauncherActivityInfo app : workApps) {
+                String packageName = app.getComponentName().getPackageName();
+                if (packageName.equals(mainActivity.getPackageName())) continue;
+
+                JSONObject appInfo = new JSONObject();
+                String packageNameWithIntent = workPackageIntentCount.get(packageName) > 1
+                        ? packageName + "/" + app.getComponentName().getClassName()
+                        : packageName;
+                appInfo.put("packageName", packageNameWithIntent);
+                appInfo.put("label", app.getLabel().toString());
+                appInfo.put("monochromeIcon", false);
+                appInfo.put("type", (app.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0 ? 0 : 1);
+                appInfo.put("workProfile", true);
+                appInfo.put("userSerial", userSerial);
+                retrievedApps.put(appInfo);
+            }
+        }
+
         JSONObject discoSettings = new JSONObject();
         discoSettings.put("packageName", "disco.internal.settings");
         discoSettings.put("label", "Disco Settings");
@@ -303,6 +341,15 @@ public class WebInterface {
 
     @JavascriptInterface
     public String getAppIconURL(String packageName) throws JSONException {
+        return getAppIconURL(packageName, null);
+    }
+
+    @JavascriptInterface
+    public String getProfileAppIconURL(String packageName, long userSerial) throws JSONException {
+        return getAppIconURL(packageName, userSerial);
+    }
+
+    private String getAppIconURL(String packageName, Long userSerial) throws JSONException {
         PackageNameInfo packageNameInfo = parsePackageName(packageName);
         String iconIdentifier = packageNameInfo.packageName == null
                 ? "undefined"
@@ -314,10 +361,12 @@ public class WebInterface {
         JSONObject appicon = new JSONObject();
         appicon.put("foreground", "https://appassets.androidplatform.net/assets/icons/"
                 + iconIdentifier
-                + ".webp");
+                + ".webp"
+                + (userSerial == null ? "" : "?userSerial=" + userSerial));
         appicon.put("background", "https://appassets.androidplatform.net/assets/icons-bg/"
                 + iconIdentifier
-                + ".webp");
+                + ".webp"
+                + (userSerial == null ? "" : "?userSerial=" + userSerial));
         return appicon.toString();
         // return "https://appassets.androidplatform.net/assets/icons/" + (packageName
         // == null ? "undefined" : packageName) + ".webp";
@@ -421,6 +470,21 @@ public class WebInterface {
             }
             return false;
         }
+    }
+
+    @JavascriptInterface
+    public boolean launchAppForProfile(String packageNameWithIntent, long userSerial) {
+        return workProfileManager.launchApp(packageNameWithIntent, userSerial);
+    }
+
+    @JavascriptInterface
+    public String getWorkProfileState() throws JSONException {
+        return workProfileManager.getState();
+    }
+
+    @JavascriptInterface
+    public String setWorkProfileEnabled(boolean enabled) throws JSONException {
+        return workProfileManager.setEnabled(enabled);
     }
 
     String TAG = "discolauncher";

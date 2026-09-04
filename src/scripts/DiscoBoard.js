@@ -205,6 +205,8 @@ const boardMethods = {
         iconbg: "none",
         title: "Unknown",
         packageName: "com.unknown",
+        workProfile: false,
+        userSerial: null,
       },
       options
     );
@@ -212,8 +214,13 @@ const boardMethods = {
       options.icon,
       options.iconbg,
       options.title,
-      options.packageName
+      options.packageName,
+      false,
+      options.workProfile
     );
+    if (options.workProfile && options.userSerial != null) {
+      el.dataset.userSerial = String(options.userSerial);
+    }
     document
       .querySelector(
         "#main-home-slider > div > div:nth-child(2) > div > div.app-list > div.app-list-container"
@@ -560,7 +567,7 @@ const backendMethods = {
           : labelSortCategory.toLocaleLowerCase("en");
       virtualEntries.push({ type: "letter", icon: letter });
       appSortCategories[labelSortCategory].forEach((app) => {
-        const appdetail = backendMethods.getAppDetails(app.packageName);
+        const appdetail = backendMethods.getAppDetails(app.packageName, false, app.userSerial);
         virtualEntries.push({
           type: "app",
           title: appdetail.label,
@@ -568,6 +575,8 @@ const backendMethods = {
           imageIcon: true,
           icon: appdetail.icon.foreground,
           iconbg: appdetail.icon.background,
+          workProfile: app.workProfile === true,
+          userSerial: app.userSerial,
           searchTitle: window.normalizeDiacritics(appdetail.label).toLocaleLowerCase("en"),
         });
       });
@@ -575,10 +584,17 @@ const backendMethods = {
     if (window.appListVirtualizer) window.appListVirtualizer.setEntries(virtualEntries);
     scrollers.app_page_scroller.refresh();
   },
-  getAppDetails: (packageName, rawDetails = false) => {
+  getAppDetails: (packageName, rawDetails = false, userSerial = null) => {
     if (!window["allappsarchive"]) backendMethods.reloadAppDatabase(); else if (window["allappsarchive"].length == 0) backendMethods.reloadAppDatabase();
-    const search = window["allappsarchive"].filter(e => e.packageName == packageName)[0]
-    const icon = JSON.parse(Disco.getAppIconURL(packageName))
+    const search = window["allappsarchive"].find(e =>
+      e.packageName == packageName
+      && (userSerial == null
+        ? e.userSerial == null
+        : String(e.userSerial) == String(userSerial))
+    )
+    const icon = JSON.parse(userSerial == null
+      ? Disco.getAppIconURL(packageName)
+      : Disco.getProfileAppIconURL(packageName, Number(userSerial)))
     var returnee = { packageName: "com.unknown." + Math.random().toFixed(4) * 10000, label: "Unknown", type: 0, icon: icon }
     if (search) returnee = Object.assign(returnee, search)
     if (Object.keys(iconPackDB).includes(packageName)) {

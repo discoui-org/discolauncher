@@ -2,10 +2,6 @@ package io.github.cherryhoax.discolauncher2;
 
 import android.content.Context;
 import android.content.ContentUris;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,14 +36,18 @@ public final class GeckoBridgeServer extends NanoHTTPD {
     private static final String BRIDGE_PREFIX = "/__disco_bridge/";
     private static final String CONTACT_AVATAR_PREFIX = "/__disco_content/contact-icon/";
     private static final String PHOTO_PREFIX = "/__disco_content/photos/";
+    private static final String APP_ICON_PREFIX = "/__disco_content/app-icon/";
+    private static final String APP_ICON_BACKGROUND_PREFIX = "/__disco_content/app-icon-bg/";
 
     private final MainActivity activity;
     private final WebInterface legacyInterface;
+    private final WorkProfileManager workProfileManager;
 
     public GeckoBridgeServer(MainActivity activity) {
         super("127.0.0.1", 0);
         this.activity = activity;
         this.legacyInterface = new WebInterface(activity, null);
+        this.workProfileManager = new WorkProfileManager(activity);
     }
 
     @Override
@@ -66,6 +66,12 @@ public final class GeckoBridgeServer extends NanoHTTPD {
         }
         if (request.getUri().startsWith(PHOTO_PREFIX)) {
             return servePhoto(request);
+        }
+        if (request.getUri().startsWith(APP_ICON_PREFIX)) {
+            return serveAppIcon(request, false);
+        }
+        if (request.getUri().startsWith(APP_ICON_BACKGROUND_PREFIX)) {
+            return serveAppIcon(request, true);
         }
         return serveAsset(request);
     }
@@ -144,7 +150,7 @@ public final class GeckoBridgeServer extends NanoHTTPD {
                         (float) arguments.optDouble(1), (float) arguments.optDouble(2));
                 return null;
             case "retrieveApps":
-                return retrieveApps();
+                return legacyInterface.retrieveApps();
             case "getSystemInsets":
                 return new JSONObject().put("left", 0).put("top", 0).put("right", 0).put("bottom", 0).toString();
             case "retrieveContacts":
@@ -153,6 +159,13 @@ public final class GeckoBridgeServer extends NanoHTTPD {
                 return legacyInterface.getAppLabel(arguments.optString(0));
             case "launchApp":
                 return legacyInterface.launchApp(arguments.optString(0));
+            case "launchAppForProfile":
+                return legacyInterface.launchAppForProfile(
+                        arguments.optString(0), arguments.optLong(1));
+            case "getWorkProfileState":
+                return legacyInterface.getWorkProfileState();
+            case "setWorkProfileEnabled":
+                return legacyInterface.setWorkProfileEnabled(arguments.optBoolean(0));
             case "uninstallApp":
                 if (arguments.length() > 1) {
                     return legacyInterface.uninstallApp(arguments.optString(0), arguments.optInt(1));
@@ -205,7 +218,9 @@ public final class GeckoBridgeServer extends NanoHTTPD {
             case "checkPermission":
                 return legacyInterface.checkPermission(arguments.optString(0));
             case "getAppIconURL":
-                return legacyInterface.getAppIconURL(arguments.optString(0));
+                return getAppIconURL(arguments.optString(0), null);
+            case "getProfileAppIconURL":
+                return getAppIconURL(arguments.optString(0), arguments.optLong(1));
             case "triggerHapticFeedback":
                 return legacyInterface.triggerHapticFeedback(arguments.optString(0));
             case "requestPermission":
@@ -332,35 +347,40 @@ public final class GeckoBridgeServer extends NanoHTTPD {
         }
     }
 
-    private String retrieveApps() throws Exception {
-        Intent launcherIntent = new Intent(Intent.ACTION_MAIN, null);
-        launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        List<ResolveInfo> apps = activity.getPackageManager().queryIntentActivities(launcherIntent, 0);
-        Map<String, Integer> packageIntentCount = new HashMap<>();
-        JSONArray result = new JSONArray();
-
-        for (ResolveInfo app : apps) {
-            String packageName = app.activityInfo.packageName;
-            packageIntentCount.put(packageName, packageIntentCount.getOrDefault(packageName, 0) + 1);
-        }
-        for (ResolveInfo app : apps) {
-            String packageName = app.activityInfo.packageName;
-            if (packageName.equals(activity.getPackageName())) {
-                continue;
-            }
-            String appId = packageIntentCount.get(packageName) > 1
-                    ? packageName + "/" + app.activityInfo.name
-                    : packageName;
-            JSONObject item = new JSONObject();
-            item.put("packageName", appId);
-            item.put("label", app.loadLabel(activity.getPackageManager()).toString());
-            item.put("monochromeIcon", false);
-            item.put("type", (app.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0 ? 0 : 1);
-            result.put(item);
-        }
-        result.put(new JSONObject().put("packageName", "disco.internal.settings").put("label", "Disco Settings").put("type", 0));
-        result.put(new JSONObject().put("packageName", "disco.internal.tweaks").put("label", "Disco Tweaks").put("type", 0));
+    private String getAppIconURL(String packageName, Long userSerial) throws Exception {
+        WebInterface.PackageNameInfo packageNameInfo = legacyInterface.parsePackageName(packageName);
+        String iconIdentifier = packageNameInfo.packageName == null
+                ? "undefined"
+                : packageNameInfo.packageName
+                        + (packageNameInfo.intentId == null ? "" : "|" + packageNameInfo.intentId);
+        String query = userSerial == null ? "" : "?userSerial=" + userSerial;
+        String baseURL = "http://127.0.0.1:" + getListeningPort();
+        JSONObject result = new JSONObject();
+        result.put("foreground", baseURL + APP_ICON_PREFIX + Uri.encode(iconIdentifier) + query);
+        result.put("background", baseURL + APP_ICON_BACKGROUND_PREFIX + Uri.encode(iconIdentifier) + query);
         return result.toString();
+    }
+
+    private Response serveAppIcon(IHTTPSession request, boolean background) {
+        if (request.getMethod() != Method.GET && request.getMethod() != Method.HEAD) {
+            return newFixedLengthResponse(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT,
+                    "Method not allowed");
+        }
+        String prefix = background ? APP_ICON_BACKGROUND_PREFIX : APP_ICON_PREFIX;
+        try {
+            String iconIdentifier = Uri.decode(request.getUri().substring(prefix.length()));
+            long userSerial = Long.parseLong(request.getParms().getOrDefault("userSerial", "-1"));
+            int requestedSize = Integer.parseInt(request.getParms().getOrDefault("size", "0"));
+            requestedSize = Math.max(0, Math.min(requestedSize, 512));
+            Bitmap bitmap = workProfileManager.getAppIcon(iconIdentifier, userSerial, background);
+            if (bitmap == null) {
+                return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not found");
+            }
+            return newChunkedResponse(Response.Status.OK, "image/webp",
+                    new ByteArrayInputStream(Utils.bitmapAsWebpBytes(bitmap, requestedSize)));
+        } catch (Exception error) {
+            return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not found");
+        }
     }
 
     private Response serveAsset(IHTTPSession request) {

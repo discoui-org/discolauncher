@@ -51,6 +51,7 @@ public class ContentServer extends WebViewClientCompat {
     private static final int ALBUM_ART_MAX_SIZE = 512;
     private final MainActivity mainActivity;
     private final DiscoWebView discoWebView;
+    private final WorkProfileManager workProfileManager;
     private final WebViewAssetLoader assetLoader;
     private final String TAG = "ContentServer";
     private final LruCache<String, IconPack> iconPackCache = new LruCache<>(ICON_PACK_CACHE_SIZE);
@@ -65,6 +66,7 @@ public class ContentServer extends WebViewClientCompat {
         this.discoWebView = discoWebView;
         this.assetLoader = assetLoader;
         this.mainActivity = (MainActivity) discoWebView.getContext();
+        this.workProfileManager = new WorkProfileManager(mainActivity);
     }
 
     private int getRequestedIconSize(Uri requestUri) {
@@ -73,6 +75,15 @@ public class ContentServer extends WebViewClientCompat {
             return Math.max(16, Math.min(size, 512));
         } catch (Exception ignored) {
             return 0;
+        }
+    }
+
+    private long getRequestedUserSerial(Uri requestUri) {
+        try {
+            String value = requestUri.getQueryParameter("userSerial");
+            return value == null ? -1 : Long.parseLong(value);
+        } catch (Exception ignored) {
+            return -1;
         }
     }
 
@@ -196,6 +207,7 @@ public class ContentServer extends WebViewClientCompat {
 
         String path = requestUri.getPath(); // Get the path part of the URL
         int requestedIconSize = getRequestedIconSize(requestUri);
+        long requestedUserSerial = getRequestedUserSerial(requestUri);
         // Split the path into segments
         String[] segments = path.split("/");
         if (segments.length == 4) {
@@ -216,11 +228,16 @@ public class ContentServer extends WebViewClientCompat {
                     if (iconFileName.length() > 5) {
                         String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);
                         String iconPackageName = iconPackageNameWithIntent.split("\\|")[0];
-                        String cacheKey = iconCacheKey(key, iconPackageName, iconPackageNameWithIntent, requestedIconSize);
+                        String cacheIdentifier = requestedUserSerial < 0
+                                ? iconPackageNameWithIntent
+                                : iconPackageNameWithIntent + "|user:" + requestedUserSerial;
+                        String cacheKey = iconCacheKey(key, iconPackageName, cacheIdentifier, requestedIconSize);
                         WebResourceResponse cachedResponse = cachedIconResponse(cacheKey);
                         if (cachedResponse != null) return cachedResponse;
-                        Bitmap dra = discoWebView.getAppIcon(discoWebView.packageManager,
-                                iconPackageNameWithIntent);
+                        Bitmap dra = requestedUserSerial < 0
+                                ? discoWebView.getAppIcon(discoWebView.packageManager, iconPackageNameWithIntent)
+                                : workProfileManager.getAppIcon(
+                                        iconPackageNameWithIntent, requestedUserSerial, false);
                         IconPack selectedIconPack = getSelectedIconPack(iconPackageName);
                         boolean useIconPackBackground = selectedIconPack != null
                                 && selectedIconPack.hasIconForPackage(iconPackageName);
@@ -238,11 +255,17 @@ public class ContentServer extends WebViewClientCompat {
                     if (iconFileName.length() > 5) {
                         String iconPackageNameWithIntent = iconFileName.substring(0, iconFileName.length() - 5);
                         String iconPackageName = iconPackageNameWithIntent.split("\\|")[0];
-                        String cacheKey = iconCacheKey(key, iconPackageName, iconPackageNameWithIntent, requestedIconSize);
+                        String cacheIdentifier = requestedUserSerial < 0
+                                ? iconPackageNameWithIntent
+                                : iconPackageNameWithIntent + "|user:" + requestedUserSerial;
+                        String cacheKey = iconCacheKey(key, iconPackageName, cacheIdentifier, requestedIconSize);
                         WebResourceResponse cachedResponse = cachedIconResponse(cacheKey);
                         if (cachedResponse != null) return cachedResponse;
-                        Bitmap dra = discoWebView.getAppIconBackground(discoWebView.packageManager,
-                                iconPackageNameWithIntent);
+                        Bitmap dra = requestedUserSerial < 0
+                                ? discoWebView.getAppIconBackground(
+                                        discoWebView.packageManager, iconPackageNameWithIntent)
+                                : workProfileManager.getAppIcon(
+                                        iconPackageNameWithIntent, requestedUserSerial, true);
                         IconPack selectedIconPack = getSelectedIconPack(iconPackageName);
 
                         if (selectedIconPack != null
