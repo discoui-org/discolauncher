@@ -23,7 +23,6 @@ const CONFIG = {
         TRANSITION: {
             BASE: 'app-transition',
             BACK: 'app-transition-back',
-            EXTERNAL_RESUME: 'app-transition-external-resume',
             RESUME: 'app-transition-on-resume',
             PAUSE: 'app-transition-on-pause',
             TILE_LIST: 'app-transition-tile-list',
@@ -39,6 +38,7 @@ const defaultSliderX = () => {
     const hasTiles = DiscoBoard.backendMethods.homeConfiguration.hasTiles();
     return hasTiles ? (rtl ? -window.innerWidth : 0) : (rtl ? 0 : -window.innerWidth);
 };
+const defaultPageIsAppList = () => !DiscoBoard.backendMethods.homeConfiguration.hasTiles();
 const isAppListPage = () => {
     const page = window.scrollers.main_home_scroller.getCurrentPage().pageX;
     return document.body.classList.contains("rtl") ? page === 0 : page === 1;
@@ -106,17 +106,31 @@ function homeTilesInGridOrder() {
         .map(node => node.el);
 }
 
+function appTilesInLayoutOrder() {
+    const virtualizer = window.appListVirtualizer;
+
+    if (virtualizer?.active && virtualizer.getRenderedElementsInLayoutOrder) {
+        // Synchronize the rendered window before taking the animation snapshot.
+        // DOM order cannot be used here because virtualized nodes are appended
+        // in the order in which they enter the viewport.
+        virtualizer.render();
+        return virtualizer.getRenderedElementsInLayoutOrder();
+    }
+
+    return Array.from(document.querySelectorAll(CONFIG.SELECTORS.APP_TILES));
+}
+
 // Set animation indices for elements based on their visibility
 function indexElements(page) {
+    const elements = page
+        ? appTilesInLayoutOrder()
+        : homeTilesInGridOrder();
+
     // Reset all animation properties
     document.querySelectorAll(`${CONFIG.SELECTORS.APP_TILES}, ${CONFIG.SELECTORS.HOME_TILES}`).forEach(element => {
         element.style.removeProperty('--app-animation-index');
         element.style.removeProperty('--app-animation-distance');
     });
-
-    const elements = page
-        ? document.querySelectorAll(CONFIG.SELECTORS.APP_TILES)
-        : homeTilesInGridOrder();
 
     const visibleElements = Array.from(elements).filter(isElementVisible);
     // A transformed/scrolled home grid can temporarily report no visible
@@ -165,10 +179,9 @@ const appTransition = {
     onPause: () => {
         mainHomeSlider.classList.remove(
             CONFIG.CLASSES.TRANSITION.RESUME,
-            CONFIG.CLASSES.TRANSITION.BACK,
-            CONFIG.CLASSES.TRANSITION.EXTERNAL_RESUME
+            CONFIG.CLASSES.TRANSITION.PAUSE,
+            CONFIG.CLASSES.TRANSITION.BACK
         );
-        mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.PAUSE);
 
         clearTimeout(window.appTransitionLaunchError);
         window.appTransitionLaunchError = setTimeout(() => {
@@ -176,6 +189,7 @@ const appTransition = {
         }, ANIMATION_TIMINGS.launchHide() + CONFIG.ANIMATION.ERROR_TIMEOUT);
 
         startAnim();
+        mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.PAUSE);
 
         setTimeout(() => {
             scrollers.main_home_scroller.scrollTo(defaultSliderX(), 0);
@@ -188,23 +202,24 @@ const appTransition = {
     },
 
     // Handle app resume state
-    onResume: (back = false, firstIntro = false, externalApp = false) => {
+    onResume: (back = false, firstIntro = false) => {
         mainHomeSlider.style.removeProperty('visibility');
         mainHomeSlider.classList.remove('visibility-hidden');
         clearTimeout(window.appTransitionLaunchError);
         scrollers.main_home_scroller.scrollTo(defaultSliderX(), 0);
-        mainHomeSlider.classList.remove(CONFIG.CLASSES.TRANSITION.PAUSE);
-        mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.RESUME);
+        mainHomeSlider.classList.remove(
+            CONFIG.CLASSES.TRANSITION.PAUSE,
+            CONFIG.CLASSES.TRANSITION.RESUME
+        );
         mainHomeSlider.classList.toggle(
             CONFIG.CLASSES.TRANSITION.BACK,
             back
         );
-        mainHomeSlider.classList.toggle(
-            CONFIG.CLASSES.TRANSITION.EXTERNAL_RESUME,
-            externalApp && !back
-        );
-
-        startAnim();
+        // Resume always snaps to the default page. Derive its type from the
+        // current home configuration instead of a possibly stale page value
+        // from before the first tile was created.
+        startAnim(defaultPageIsAppList());
+        mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.RESUME);
 
         if (firstIntro) mainHomeSlider.style.removeProperty('visibility');
 
@@ -219,8 +234,7 @@ const appTransition = {
 };
 
 // Start the animation sequence
-function startAnim() {
-    const appListPage = isAppListPage();
+function startAnim(appListPage = isAppListPage()) {
     indexElements(appListPage ? 1 : 0);
     mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.BASE);
 

@@ -134,6 +134,15 @@ class VirtualAppList {
             .map((entry) => ({ top: entry.top, icon: entry.icon }))
     }
 
+    getRenderedElementsInLayoutOrder() {
+        // Nodes are appended when they enter the virtual window, so their DOM
+        // order stops matching the list after a few scrolls. Consumers such as
+        // app transitions must follow the persistent entry/layout order.
+        return this.visibleEntries
+            .map((entry) => this.rendered.get(entry.key))
+            .filter((node) => node?.isConnected)
+    }
+
     getStickyLetter(scrollTop, insetTop) {
         const boundary = scrollTop + insetTop
         // Use the persistent virtual letter index. Rendered nodes are only a

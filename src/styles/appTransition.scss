@@ -135,42 +135,6 @@
                             }
                         }
                     }
-
-                    // Normal Android apps resume the Activity. Keep that path
-                    // lightweight: one short 2D motion per tile, without the
-                    // nested perspective rotations used by internal apps.
-                    &.app-transition-external-resume {
-                        div.tile-list-inner-container>div:is(.disco-home-tile, .disco-home-folder-tile),
-                        div.app-page-icon-banner {
-                            opacity: 0;
-                            transform-style: flat;
-                            transform-origin: 50% 50%;
-                            animation: tileListExternalResume calc(.28s * var(--animation-duration-scale)) calc((var(--app-animation-index) * .04s) * var(--animation-duration-scale)) cubic-bezier(.2, .8, .2, 1) forwards;
-
-                            @keyframes tileListExternalResume {
-                                from {
-                                    transform: translateY(14px) scale(.985);
-                                    opacity: 0;
-                                }
-
-                                to {
-                                    transform: translateY(0) scale(1);
-                                    opacity: 1;
-                                }
-                            }
-
-                            &>div:is(.disco-home-inner-tile, .disco-folder-matrix) {
-                                animation: none;
-                                transform: none;
-                            }
-                        }
-
-                        div.inner-page.app-list-page {
-                            animation: none;
-                            transform: none;
-                            opacity: 1;
-                        }
-                    }
                 }
 
                 // Back transition

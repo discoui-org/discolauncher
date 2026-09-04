@@ -79,11 +79,6 @@ body.reduced-motion {
         animation-name: rd-innerTileListAppTransitionAnim0 !important;
     }
 
-    #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-external-resume:not(.app-transition-back) div.tile-list-inner-container>div.disco-home-tile,
-    #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-external-resume:not(.app-transition-back) div.app-page-icon-banner {
-        animation-name: rd-tileListExternalResume !important;
-    }
-
     #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-back div.tile-list-inner-container>div.disco-home-tile,
     #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-back div.app-page-icon-banner {
         animation-name: rd-tileListAppTransitionAnim2 !important;
@@ -182,18 +177,6 @@ body.reduced-motion {
 
         100% {
             transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    @keyframes rd-tileListExternalResume {
-        from {
-            transform: none;
-            opacity: 0;
-        }
-
-        to {
-            transform: none;
             opacity: 1;
         }
     }

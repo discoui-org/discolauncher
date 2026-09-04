@@ -1,6 +1,5 @@
 package io.github.cherryhoax.discolauncher2;
 
-import static io.github.cherryhoax.discolauncher2.SystemEvents.mainActivity;
 import static io.github.cherryhoax.discolauncher2.UriEncode.decodeURIComponent;
 import static io.github.cherryhoax.discolauncher2.UriEncode.encodeURIComponent;
 
@@ -50,6 +49,7 @@ public class ContentServer extends WebViewClientCompat {
     private static final int ICON_PACK_CACHE_SIZE = 16;
     private static final int ICON_BYTES_CACHE_SIZE = 4 * 1024 * 1024;
     private static final int ALBUM_ART_MAX_SIZE = 512;
+    private final MainActivity mainActivity;
     private final DiscoWebView discoWebView;
     private final WebViewAssetLoader assetLoader;
     private final String TAG = "ContentServer";
@@ -64,6 +64,7 @@ public class ContentServer extends WebViewClientCompat {
     public ContentServer(DiscoWebView discoWebView, WebViewAssetLoader assetLoader) {
         this.discoWebView = discoWebView;
         this.assetLoader = assetLoader;
+        this.mainActivity = (MainActivity) discoWebView.getContext();
     }
 
     private int getRequestedIconSize(Uri requestUri) {

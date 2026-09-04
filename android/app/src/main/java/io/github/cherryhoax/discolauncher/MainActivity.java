@@ -345,10 +345,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        systemEvents.onDestroy();
-        //remove and free systemEvents
-        systemEvents = null;
+        if (systemEvents != null) {
+            systemEvents.onDestroy();
+            systemEvents = null;
+        }
         if (myServer != null) {
             myServer.stop();
         }
@@ -356,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
             logcatReader.stopReader();
             logcatReader = null;
         }
+        super.onDestroy();
     }
 
     @Override

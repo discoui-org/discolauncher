@@ -15,9 +15,11 @@ import org.json.JSONObject;
 
 
 public class SystemEvents {
-    static MainActivity mainActivity;
+    private final MainActivity mainActivity;
     private AppChangeBroadcastReceiver appChangeBroadcastReceiver;
     private AnimationScaleObserver animationScaleObserver;
+    private boolean appChangeReceiverRegistered;
+    private boolean animationScaleObserverRegistered;
 
     SystemEvents(MainActivity m) {
         this.mainActivity = m;
@@ -28,20 +30,33 @@ public class SystemEvents {
         filter.addDataScheme("package");
         appChangeBroadcastReceiver = new AppChangeBroadcastReceiver();
         mainActivity.registerReceiver(appChangeBroadcastReceiver, filter);
+        appChangeReceiverRegistered = true;
         animationScaleObserver = new AnimationScaleObserver(new Handler(), mainActivity);
         mainActivity.getContentResolver().registerContentObserver(
                 Settings.Global.getUriFor(Settings.Global.ANIMATOR_DURATION_SCALE),
                 true,
                 animationScaleObserver
         );
+        animationScaleObserverRegistered = true;
     }
 
     public void onDestroy() {
-        mainActivity.unregisterReceiver(appChangeBroadcastReceiver);
-        mainActivity.getContentResolver().unregisterContentObserver(animationScaleObserver);
+        if (appChangeReceiverRegistered) {
+            try {
+                mainActivity.unregisterReceiver(appChangeBroadcastReceiver);
+            } catch (IllegalArgumentException exception) {
+                Log.w("SystemEvents", "App change receiver was already unregistered", exception);
+            } finally {
+                appChangeReceiverRegistered = false;
+            }
+        }
+        if (animationScaleObserverRegistered) {
+            mainActivity.getContentResolver().unregisterContentObserver(animationScaleObserver);
+            animationScaleObserverRegistered = false;
+        }
     }
 
-    public static class AppChangeBroadcastReceiver extends BroadcastReceiver {
+    public class AppChangeBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
