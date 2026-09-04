@@ -22,7 +22,27 @@
     return new Proxy({}, {
       get(_object, method) {
         if (typeof method !== "string") return undefined;
-        return (...args) => invoke(target, method, args);
+        return (...args) => {
+          // Internal apps are views owned by the launcher document, not Android
+          // activities. Launch them in Gecko just as the web mock does.
+          if (target === "Disco" && method === "launchApp"
+              && typeof args[0] === "string" && args[0].startsWith("disco.internal")) {
+            const [packageName, launchArgs] = args[0].split("?", 2);
+            const launcher = window.DiscoBoard?.backendMethods?.launchInternalApp;
+            if (typeof launcher === "function") {
+              launcher(packageName, launchArgs);
+              return true;
+            }
+          }
+
+          const result = invoke(target, method, args);
+          // WebView applies this native-side. GeckoView has no equivalent
+          // zoom API, so preserve the public method's visual result in CSS.
+          if (target === "Disco" && method === "setUIScale" && document.body) {
+            document.body.style.setProperty("--ui-scale", args[0]);
+          }
+          return result;
+        };
       }
     });
   }
