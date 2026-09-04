@@ -27,9 +27,10 @@
   // Kept while callers migrate to DiscoPlatform.isMock.
   window.DiscoMockInstance = window.DiscoPlatform.isMock;
 
-  // GeckoView opts in through the marker injected by GeckoBridgeServer. The
-  // bridge is deliberately never loaded by a normal browser or Android WebView.
+  // GeckoBridgeServer synchronously injects gecko-bridge.js before this file.
+  // Keep the bridge out of normal browsers and Android WebView, and avoid
+  // document.write() here because Gecko can reparse the page around it.
   if (platform === platforms.GECKO && !window.Disco) {
-    document.write('<script src="/gecko-bridge.js"><\\/script>');
+    console.error("Gecko bridge was not installed before platform bootstrap.");
   }
 })();
