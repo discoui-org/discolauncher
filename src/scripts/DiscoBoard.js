@@ -909,12 +909,14 @@ const backendMethods = {
         if (el["gridstackNode"]) {
           try {
             if (el.classList.contains("disco-home-folder-tile")) {
+              const folderName = String(el.folderName ?? el.dataset.folderName ?? "").trim();
               config.push({
                 f: el.folderChildren || JSON.parse(el.dataset.folderChildren || "[]"),
                 w: el.gridstackNode.w,
                 h: el.gridstackNode.h,
                 x: el.gridstackNode.x,
-                y: el.gridstackNode.y
+                y: el.gridstackNode.y,
+                ...(folderName ? { n: folderName } : {})
               })
               return
             }
@@ -956,7 +958,7 @@ const backendMethods = {
               s: child.s || ["s"]
             }
           })
-          const folder = DiscoElements.wHomeFolderTile(children, [tile.w, tile.h])
+          const folder = DiscoElements.wHomeFolderTile(children, [tile.w, tile.h], tile.n)
           window.tileListGrid.addWidget(folder, {
             w: tile.w,
             h: tile.h,

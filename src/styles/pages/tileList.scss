@@ -1627,8 +1627,15 @@ div.disco-home-folder-tile {
         overflow: hidden;
     }
 
-    >div.disco-home-inner-tile {
+    >div.disco-home-inner-tile:not(.disco-folder-title-layer) {
         opacity: 0;
+    }
+
+    >div.disco-folder-title-layer {
+        z-index: 2;
+        opacity: 1;
+        background: transparent !important;
+        overflow: hidden;
     }
 
     div.disco-folder-matrix-cell {
@@ -1674,18 +1681,25 @@ div.disco-home-folder-tile.folder-intent-target>div.disco-folder-matrix:not(.dis
 }
 
 div.disco-home-folder-tile {
+    &[data-folder-name=""]>div.disco-folder-title-layer>p.disco-folder-title {
+        display: none !important;
+    }
+
+    >div.disco-folder-title-layer>p.disco-folder-title,
     >div.disco-folder-matrix div.disco-folder-thumbnail {
         translate: 0 0;
         transition: translate 180ms cubic-bezier(.2, .8, .2, 1);
         transition-delay: calc(var(--folder-thumbnail-order, 0) * 24ms);
     }
 
+    &.folder-open>div.disco-folder-title-layer>p.disco-folder-title,
     &.folder-open>div.disco-folder-matrix div.disco-folder-thumbnail {
         translate: 0 var(--folder-thumbnail-travel);
         transition-timing-function: ease-in;
         transition-delay: calc(60ms + var(--folder-thumbnail-order, 0) * 24ms);
     }
 
+    &.folder-closing>div.disco-folder-title-layer>p.disco-folder-title,
     &.folder-closing>div.disco-folder-matrix div.disco-folder-thumbnail {
         transition-delay: 0ms;
     }
@@ -1729,6 +1743,64 @@ div.disco-folder-open-panel {
         transform: translateY(var(--folder-open-travel, -18px));
         transition: transform 340ms cubic-bezier(.2, 1.55, .45, 1);
         transition-delay: calc(60ms + var(--folder-open-order, 0) * 18ms);
+
+        &.disco-folder-open-bar-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: transparent;
+
+            &::after {
+                content: "";
+                min-width: 0;
+                height: 12px;
+                flex: 1 1 auto;
+                background: var(--folder-open-bar-color);
+            }
+
+            >button.disco-folder-name-button {
+                display: none;
+                max-width: 70%;
+                flex: 0 1 auto;
+                padding: 0;
+                border: 0;
+                overflow: hidden;
+                background: transparent;
+                color: var(--folder-open-bar-color);
+                font: inherit;
+                font-size: 23px;
+                line-height: 1;
+                text-align: start;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                pointer-events: none;
+            }
+
+            >input.disco-folder-name-input {
+                display: none;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                z-index: 1;
+                width: 100%;
+                min-width: 0;
+                translate: 0 -50%;
+                pointer-events: auto;
+            }
+
+            &.folder-name-editing {
+                gap: 0;
+
+                &::after,
+                >button.disco-folder-name-button {
+                    display: none !important;
+                }
+
+                >input.disco-folder-name-input {
+                    display: block;
+                }
+            }
+        }
     }
 
     div.disco-folder-open-content {
@@ -1798,8 +1870,28 @@ div.disco-folder-open-panel {
     }
 }
 
+div.tile-list-page:is(.home-menu-back-intro, .home-menu-back) div.disco-folder-open-panel {
+    div.disco-folder-open-bar {
+        opacity: 1 !important;
+    }
+}
+
+div.disco-folder-open-panel {
+    div.disco-folder-open-bar-top.has-folder-name:not(.folder-name-editing)>button.disco-folder-name-button {
+        display: block;
+    }
+}
+
+div.tile-list-page.home-menu-back div.disco-folder-open-panel {
+    div.disco-folder-open-bar-top:not(.folder-name-editing)>button.disco-folder-name-button {
+        display: block;
+        pointer-events: auto;
+    }
+}
+
 body.reduced-motion {
     div.disco-folder-open-panel *,
+    div.disco-home-folder-tile>div.disco-folder-title-layer>p.disco-folder-title,
     div.disco-home-folder-tile>div.disco-folder-matrix div.disco-folder-thumbnail,
     div.tile-list-inner-container>div.grid-stack-item {
         transition-delay: 0ms !important;

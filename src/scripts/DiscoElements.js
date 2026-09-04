@@ -94,12 +94,21 @@ function wHomeTile(
   return homeTile;
 }
 
-function wHomeFolderTile(children = [], size = [1, 1]) {
+function wHomeFolderTile(children = [], size = [1, 1], name = "") {
   const folder = document.createElement("div");
   folder.classList.add("disco-element", "disco-home-tile", "disco-home-folder-tile");
   folder.setAttribute("supportedsizes", "s,m,w");
   folder.folderChildren = children;
   folder.dataset.folderChildren = JSON.stringify(children);
+  folder.folderName = String(name || "").trim();
+  folder.dataset.folderName = folder.folderName;
+
+  const titleLayer = document.createElement("div");
+  titleLayer.className = "disco-element disco-home-inner-tile disco-folder-title-layer";
+  const title = document.createElement("p");
+  title.className = "disco-element disco-home-tile-title disco-folder-title";
+  title.textContent = folder.folderName;
+  titleLayer.append(title);
 
   const matrix = document.createElement("div");
   matrix.classList.add("disco-folder-matrix");
@@ -119,7 +128,7 @@ function wHomeFolderTile(children = [], size = [1, 1]) {
     }
     matrix.append(cell);
   }
-  folder.append(matrix);
+  folder.append(matrix, titleLayer);
   return folder;
 }
 function getImage(url) {

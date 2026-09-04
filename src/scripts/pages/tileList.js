@@ -199,6 +199,76 @@ function getFolderChildren(folder) {
   }
 }
 
+function getFolderName(folder) {
+  return String(folder.folderName ?? folder.dataset.folderName ?? "").trim();
+}
+
+function createFolderNameEditor(folder, panel, topBar) {
+  const nameButton = document.createElement("button");
+  const nameInput = document.createElement("input");
+  let nameBeforeEdit = getFolderName(folder);
+
+  nameButton.type = "button";
+  nameButton.className = "disco-folder-name-button";
+  nameButton.textContent = nameBeforeEdit || "Name folder";
+  nameButton.setAttribute("aria-label", "Name folder");
+  topBar.classList.toggle("has-folder-name", Boolean(nameBeforeEdit));
+
+  nameInput.type = "text";
+  nameInput.className = "metro-text-input disco-folder-name-input";
+  nameInput.maxLength = 64;
+  nameInput.autocomplete = "off";
+  nameInput.enterKeyHint = "done";
+  nameInput.setAttribute("aria-label", "Folder name");
+
+  const refreshLayout = () => {
+    const state = openFolderState;
+    if (state?.panel === panel) scheduleFolderOpenLayout(state);
+  };
+  const finishEditing = () => {
+    if (!topBar.classList.contains("folder-name-editing")) return;
+    const nextName = nameInput.value.trim();
+    const nameChanged = nextName !== getFolderName(folder);
+    folder.folderName = nextName;
+    folder.dataset.folderName = nextName;
+    folder
+      .querySelector(":scope > .disco-folder-title-layer > .disco-folder-title")
+      ?.replaceChildren(nextName);
+    nameButton.textContent = nextName || "Name folder";
+    topBar.classList.toggle("has-folder-name", Boolean(nextName));
+    topBar.classList.remove("folder-name-editing");
+    refreshLayout();
+    if (nameChanged) DiscoBoard.backendMethods.homeConfiguration.save();
+  };
+
+  nameButton.addEventListener("flowClick", event => {
+    if (!homeTileEditEnabled) return;
+    event.preventDefault();
+    event.stopPropagation();
+    nameBeforeEdit = getFolderName(folder);
+    nameInput.value = nameBeforeEdit;
+    topBar.classList.add("folder-name-editing");
+    refreshLayout();
+    nameInput.focus({ preventScroll: true });
+    nameInput.select();
+  });
+  nameInput.addEventListener("flowClick", event => event.stopPropagation());
+  nameInput.addEventListener("blur", finishEditing);
+  nameInput.addEventListener("keydown", event => {
+    if (event.isComposing) return;
+    if (event.key === "Enter") {
+      event.preventDefault();
+      nameInput.blur();
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      nameInput.value = nameBeforeEdit;
+      nameInput.blur();
+    }
+  });
+
+  topBar.append(nameButton, nameInput);
+}
+
 function layoutFolderChildren(children, columns) {
   const occupied = new Set();
   const placements = [];
@@ -260,7 +330,8 @@ function setFolderThumbnailOrder(folder) {
       || second.y - first.y
       || first.x - second.x)
     .forEach((entry, index) => {
-      entry.thumbnail.style.setProperty("--folder-thumbnail-order", index);
+      // The folder title occupies the first thumbnail stagger.
+      entry.thumbnail.style.setProperty("--folder-thumbnail-order", index + 1);
     });
 }
 
@@ -282,6 +353,7 @@ function createFolderOpenPanel(folder) {
   panel.style.top = `${(node.y + node.h) * cell}px`;
   content.style.minHeight = `${rowCount * cell}px`;
   bottomBar.style.setProperty("--folder-open-order", 0);
+  createFolderNameEditor(folder, panel, topBar);
 
   placements.forEach(placement => {
     const { child, x, y, w, h } = placement;
@@ -640,6 +712,7 @@ function closeOpenFolder({ immediate = false, invalidateNavigation = true } = {}
   if (!state) return;
   openFolderState = null;
   state.closing = true;
+  state.panel.querySelector(".disco-folder-name-input:focus")?.blur();
 
   if (state.layoutFrame) cancelAnimationFrame(state.layoutFrame);
   if (state.exitDrag?.timer) clearTimeout(state.exitDrag.timer);

@@ -492,10 +492,18 @@ class DiscoTileGrid {
     folder.setAttribute("supportedsizes", "s,m,w");
     folder.folderChildren = children;
     folder.dataset.folderChildren = JSON.stringify(children);
+    folder.folderName = "";
+    folder.dataset.folderName = "";
+    const titleLayer = document.createElement("div");
+    titleLayer.className = "disco-element disco-home-inner-tile disco-folder-title-layer";
+    const title = document.createElement("p");
+    title.className = "disco-element disco-home-tile-title disco-folder-title";
+    titleLayer.append(title);
     if (matrix) {
       matrix.classList.remove("disco-folder-intent-preview");
       folder.append(matrix);
     }
+    folder.append(titleLayer);
 
     target.replaceWith(folder);
     delete target.gridstackNode;
