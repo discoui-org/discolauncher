@@ -23,6 +23,7 @@ const CONFIG = {
         TRANSITION: {
             BASE: 'app-transition',
             BACK: 'app-transition-back',
+            EXTERNAL_RESUME: 'app-transition-external-resume',
             RESUME: 'app-transition-on-resume',
             PAUSE: 'app-transition-on-pause',
             TILE_LIST: 'app-transition-tile-list',
@@ -37,6 +38,10 @@ const defaultSliderX = () => {
     const rtl = document.body.classList.contains("rtl");
     const hasTiles = DiscoBoard.backendMethods.homeConfiguration.hasTiles();
     return hasTiles ? (rtl ? -window.innerWidth : 0) : (rtl ? 0 : -window.innerWidth);
+};
+const isAppListPage = () => {
+    const page = window.scrollers.main_home_scroller.getCurrentPage().pageX;
+    return document.body.classList.contains("rtl") ? page === 0 : page === 1;
 };
 
 // Animation timing calculations
@@ -158,7 +163,11 @@ function setElementAnimationProperties(element, index, includePage = false) {
 const appTransition = {
     // Handle app pause state
     onPause: () => {
-        mainHomeSlider.classList.remove(CONFIG.CLASSES.TRANSITION.RESUME);
+        mainHomeSlider.classList.remove(
+            CONFIG.CLASSES.TRANSITION.RESUME,
+            CONFIG.CLASSES.TRANSITION.BACK,
+            CONFIG.CLASSES.TRANSITION.EXTERNAL_RESUME
+        );
         mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.PAUSE);
 
         clearTimeout(window.appTransitionLaunchError);
@@ -179,17 +188,24 @@ const appTransition = {
     },
 
     // Handle app resume state
-    onResume: (back = false, firstIntro = false) => {
+    onResume: (back = false, firstIntro = false, externalApp = false) => {
         mainHomeSlider.style.removeProperty('visibility');
         mainHomeSlider.classList.remove('visibility-hidden');
         clearTimeout(window.appTransitionLaunchError);
         scrollers.main_home_scroller.scrollTo(defaultSliderX(), 0);
         mainHomeSlider.classList.remove(CONFIG.CLASSES.TRANSITION.PAUSE);
         mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.RESUME);
+        mainHomeSlider.classList.toggle(
+            CONFIG.CLASSES.TRANSITION.BACK,
+            back
+        );
+        mainHomeSlider.classList.toggle(
+            CONFIG.CLASSES.TRANSITION.EXTERNAL_RESUME,
+            externalApp && !back
+        );
 
         startAnim();
 
-        if (back) mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.BACK);
         if (firstIntro) mainHomeSlider.style.removeProperty('visibility');
 
         setTimeout(removeAnimClasses, (CONFIG.ANIMATION.BASE_TIMEOUT) * DiscoBoard.backendMethods.animationDurationScale.get());
@@ -204,12 +220,12 @@ const appTransition = {
 
 // Start the animation sequence
 function startAnim() {
-    const page = window.scrollers.main_home_scroller.getCurrentPage().pageX;
-    indexElements(page);
+    const appListPage = isAppListPage();
+    indexElements(appListPage ? 1 : 0);
     mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.BASE);
 
-    const addClass = page ? CONFIG.CLASSES.TRANSITION.APP_LIST : CONFIG.CLASSES.TRANSITION.TILE_LIST;
-    const removeClass = page ? CONFIG.CLASSES.TRANSITION.TILE_LIST : CONFIG.CLASSES.TRANSITION.APP_LIST;
+    const addClass = appListPage ? CONFIG.CLASSES.TRANSITION.APP_LIST : CONFIG.CLASSES.TRANSITION.TILE_LIST;
+    const removeClass = appListPage ? CONFIG.CLASSES.TRANSITION.TILE_LIST : CONFIG.CLASSES.TRANSITION.APP_LIST;
 
     mainHomeSlider.classList.remove(removeClass);
     mainHomeSlider.classList.add(addClass);

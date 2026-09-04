@@ -49,10 +49,12 @@ public class SystemEvents {
                 // App installed
                 Uri data = intent.getData();
                 String packageName = data != null ? data.getSchemeSpecificPart() : null;
+                boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 // Handle the app install here
                 JSONObject argument = new JSONObject();
                 try {
                     argument.put("packagename", packageName);
+                    argument.put("replacing", replacing);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -62,10 +64,12 @@ public class SystemEvents {
                 // App uninstalled
                 Uri data = intent.getData();
                 String packageName = data != null ? data.getSchemeSpecificPart() : null;
+                boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 // Handle the app uninstall here
                 JSONObject argument = new JSONObject();
                 try {
                     argument.put("packagename", packageName);
+                    argument.put("replacing", replacing);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

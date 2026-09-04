@@ -780,7 +780,11 @@ const backendMethods = {
     if (!window.launchedInternalApps) window.launchedInternalApps = new Set();
     if (window.launchedInternalApps.has(packageName)) {
       document.querySelectorAll(`iframe.disco-element.disco-app-view[packageName="${packageName}"]`).forEach(e => e.remove())
-      appTransition.onResume(!homeBack)
+      const usesBackAnimation = !homeBack && [
+        "disco.internal.settings",
+        "disco.internal.tweaks"
+      ].includes(packageName)
+      appTransition.onResume(usesBackAnimation)
       window.launchedInternalApps.delete(packageName)
     } else {
       console.log("App is not open!")
@@ -1436,21 +1440,20 @@ window.addEventListener("homeButtonPress", function () {
   backendMethods.navigation.home();
 });
 
-var appUninstallLimbo = {}
 window.addEventListener("appInstall", function (e) {
-  if (appUninstallLimbo[e.detail.packagename]) {
-    clearTimeout(appUninstallLimbo[e.detail.packagename])
+  if (e.detail.replacing) {
     backendMethods.appUpdate(e.detail.packagename)
   } else {
     backendMethods.appInstall(e.detail.packagename)
   }
 });
 window.addEventListener("appUninstall", function (e) {
-  clearTimeout(appUninstallLimbo[e.detail.packagename])
-  appUninstallLimbo[e.detail.packagename] = setTimeout(() => {
-    backendMethods.appUninstall(e.detail.packagename)
-    clearOldAppPreferences()
-  }, 20000)
+  // Android emits PACKAGE_REMOVED during an in-place update too. In that
+  // case PACKAGE_ADDED with replacing=true follows, so keep the existing app
+  // visible and let the install event refresh it as an update.
+  if (e.detail.replacing) return
+  backendMethods.appUninstall(e.detail.packagename)
+  clearOldAppPreferences()
 });
 
 // Listen for tile preferences changes and refresh tiles

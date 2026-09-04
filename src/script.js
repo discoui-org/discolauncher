@@ -196,7 +196,9 @@ window.addEventListener("activityResume", () => {
     setTimeout(() => {
         //document.body.style.removeProperty("visibility")
 
-        appTransition.onResume()
+        // Returning from a normal Android app uses a restrained 2D entrance.
+        // Internal iframe apps keep their existing transition path.
+        appTransition.onResume(false, false, true)
 
     }, 200);
 })

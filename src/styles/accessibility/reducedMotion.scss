@@ -79,6 +79,11 @@ body.reduced-motion {
         animation-name: rd-innerTileListAppTransitionAnim0 !important;
     }
 
+    #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-external-resume:not(.app-transition-back) div.tile-list-inner-container>div.disco-home-tile,
+    #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-external-resume:not(.app-transition-back) div.app-page-icon-banner {
+        animation-name: rd-tileListExternalResume !important;
+    }
+
     #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-back div.tile-list-inner-container>div.disco-home-tile,
     #main-home-slider.app-transition.app-transition-tile-list.app-transition-on-resume.app-transition-back div.app-page-icon-banner {
         animation-name: rd-tileListAppTransitionAnim2 !important;
@@ -94,6 +99,18 @@ body.reduced-motion {
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #sticky-letter.app-transition-selected,
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #search-icon.app-transition-selected {
         animation-name: rd-appListAppTransitionAnim0 !important;
+    }
+
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume div.app-list-container>div.disco-app-tile,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume #sticky-letter,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume #search-icon {
+        animation-name: rd-appListAppTransitionAnim1 !important;
+    }
+
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back div.app-list-container>div.disco-app-tile,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back #sticky-letter,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back #search-icon {
+        animation-name: rd-appListAppTransitionAnim2 !important;
     }
 
     --app-intro-animation: rd-tileListAppTransitionAnim1;
@@ -169,6 +186,18 @@ body.reduced-motion {
         }
     }
 
+    @keyframes rd-tileListExternalResume {
+        from {
+            transform: none;
+            opacity: 0;
+        }
+
+        to {
+            transform: none;
+            opacity: 1;
+        }
+    }
+
     @keyframes rd-appListAppTransitionAnim0 {
         0% {
             transform: translateX(0);
@@ -177,6 +206,30 @@ body.reduced-motion {
         100% {
             transform: translateX(-200px);
             opacity: 0;
+        }
+    }
+
+    @keyframes rd-appListAppTransitionAnim1 {
+        0% {
+            transform: translateX(200px);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes rd-appListAppTransitionAnim2 {
+        0% {
+            transform: translateX(-200px);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
         }
     }
 
