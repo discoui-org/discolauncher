@@ -8,17 +8,30 @@ const appListSearch = $("input.app-list-search")
 const letterSelector = $("div.letter-selector")
 const stickyLetterTile = $("#sticky-letter")
 const appListElement = document.querySelector("div.app-list")
+const searchButton = document.querySelector("#search-icon")
 const workProfileButton = document.querySelector("#work-profile-icon")
 
 let workProfileState = { available: false, enabled: false, userSerial: -1 }
 
+function syncWorkProfileVisibility() {
+    workProfileButton.classList.toggle(
+        "shown",
+        workProfileState.available && searchButton.classList.contains("shown")
+    )
+}
+
 function applyWorkProfileState(state) {
     workProfileState = Object.assign({}, workProfileState, state)
     workProfileButton.hidden = !workProfileState.available
-    workProfileButton.classList.toggle("shown", workProfileState.available)
+    syncWorkProfileVisibility()
     workProfileButton.classList.toggle("work-profile-enabled", workProfileState.enabled)
     workProfileButton.setAttribute("aria-pressed", String(workProfileState.enabled))
 }
+
+new MutationObserver(syncWorkProfileVisibility).observe(searchButton, {
+    attributes: true,
+    attributeFilter: ["class"]
+})
 
 function refreshWorkProfileState(reloadApps = false) {
     try {
@@ -48,10 +61,20 @@ class VirtualAppList {
         this.visibleEntries = []
         this.letterEntries = []
         this.rendered = new Map()
+        this.staticNodes = Array.from(container.children).filter((node) =>
+            node.classList.contains("app-search-no-result")
+            || node.classList.contains("app-search-search-store")
+        )
         this.spacer = document.createElement("div")
         this.spacer.setAttribute("aria-hidden", "true")
-        Object.assign(this.spacer.style, { width: "1px", pointerEvents: "none" })
+        Object.assign(this.spacer.style, {
+            width: "1px",
+            flex: "0 0 auto",
+            pointerEvents: "none"
+        })
         this.active = false
+        this.searchMode = false
+        this.query = ""
         this.layoutDirty = false
         this.buffer = 8 * 64
         container.style.position = "relative"
@@ -63,32 +86,37 @@ class VirtualAppList {
         this.active = true
         this.rendered.clear()
         this.container.replaceChildren()
-        this.container.append(this.spacer)
-        this.setFilter("")
+        this.container.append(this.spacer, ...this.staticNodes)
+        this.searchMode = appListPage.hasClass("search-mode")
+        this.setFilter(this.searchMode ? appListSearch.val() : "")
     }
 
     setFilter(query) {
+        this.query = query || ""
         const normalizedQuery = window.normalizeDiacritics(query || "").toLocaleLowerCase("en")
         this.visibleEntries = this.entries.filter((entry) =>
-            entry.type === "letter" || !normalizedQuery || entry.searchTitle.includes(normalizedQuery)
+            entry.type === "letter"
+                ? !this.searchMode
+                : !normalizedQuery || entry.searchTitle.includes(normalizedQuery)
         )
-        // Letter headers without a matching app should not take a row in search.
-        if (normalizedQuery) {
-            this.visibleEntries = this.visibleEntries.filter((entry, index, all) =>
-                entry.type !== "letter" || all.slice(index + 1).some((next) => next.type === "app")
-            )
-        }
         this.relayout()
+    }
+
+    setSearchMode(enabled) {
+        this.searchMode = enabled
+        this.setFilter(enabled ? this.query : "")
     }
 
     relayout() {
         if (!this.active) return
         const styles = getComputedStyle(this.container)
-        const paddingLeft = parseFloat(styles.paddingLeft) || 0
-        const paddingRight = parseFloat(styles.paddingRight) || 0
+        const rtl = document.body.classList.contains("rtl")
+        // Search transitions animate the CSS padding. Use the destination
+        // values so virtual rows are not indexed at an in-between position.
+        const paddingLeft = this.searchMode ? 19 : rtl ? 19 : 81
+        const paddingRight = this.searchMode ? 19 : rtl ? 81 : 19
         const paddingTop = parseFloat(styles.paddingTop) || 0
-        const paddingBottom = parseFloat(styles.paddingBottom) || 0
-        const columns = window.innerWidth >= 700 ? 2 : 1
+        const columns = this.searchMode ? 1 : window.innerWidth >= 700 ? 2 : 1
         const width = Math.max(1, (this.container.clientWidth - paddingLeft - paddingRight) / columns)
         let top = paddingTop
         let column = 0
@@ -115,7 +143,11 @@ class VirtualAppList {
         // scrollHeight. A normal-flow spacer gives the custom scroller the
         // real extent of the virtual list instead of maxScrollY = 0.
         this.container.style.height = "auto"
-        this.spacer.style.height = `${top + paddingBottom}px`
+        // The spacer participates in normal flow, so the container already
+        // places it after padding-top and adds padding-bottom itself. Include
+        // only virtual row height here; counting the paddings again pushed
+        // search empty-state content far below the search field.
+        this.spacer.style.height = `${Math.max(0, top - paddingTop)}px`
         this.layoutDirty = true
         this.render()
         if (window.scrollers?.app_page_scroller) window.scrollers.app_page_scroller.refresh()
@@ -330,7 +362,7 @@ const searchModeSwitch = {
         // history.pushState("searchmodeon", document.title, location.href);
         appListPage.removeClass("no-search-result")
         $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").removeClass("search-hidden")
-        if (window.appListVirtualizer.active) window.appListVirtualizer.setFilter("")
+        if (window.appListVirtualizer.active) window.appListVirtualizer.setSearchMode(true)
         invalidateLetterTileLayout()
         scrollers.app_page_scroller.scrollTo(0, 0, 0, "linear")
         $("div.app-search-search-store").css("visibility", "hidden")
@@ -361,7 +393,7 @@ const searchModeSwitch = {
 
         appListPage.removeClass("no-search-result")
         $("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile)").removeClass("search-hidden")
-        if (window.appListVirtualizer.active) window.appListVirtualizer.setFilter("")
+        if (window.appListVirtualizer.active) window.appListVirtualizer.setSearchMode(false)
     }
 }
 const letterSelectorSwitch = {
@@ -411,6 +443,7 @@ const letterSelectorSwitch = {
 appListSearch.on("focus", function () {
     DiscoBoard.backendMethods.navigation.push("searchBarFocus", () => { }, () => {
         appListSearch.blur()
+        if (appListPage.hasClass("search-mode")) searchModeSwitch.off()
     })
 
 })
@@ -469,6 +502,7 @@ $(window).on("finishedLoading", () => {
 })
 appListSearch.on("input", _.debounce(function (e) {
     const search = window.normalizeDiacritics(this.value).toLocaleLowerCase("en")
+    $("div.app-search-no-result > span").text(this.value)
     if (search.length == 0) $("div.app-search-search-store").css("visibility", "hidden"); else $("div.app-search-search-store").css("visibility", "");
     if (window.appListVirtualizer.active) {
         window.appListVirtualizer.setFilter(search)
@@ -498,7 +532,6 @@ appListSearch.on("input", _.debounce(function (e) {
     })
     if ($("div.app-list-container > div.disco-app-tile:not(.disco-letter-tile):not(.search-hidden)").length == 0) {
         appListPage.addClass("no-search-result")
-        $("div.app-search-no-result > span").text(this.value)
 
     } else {
         appListPage.removeClass("no-search-result")

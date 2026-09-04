@@ -36,24 +36,14 @@ bs.on('beforeScrollStart', (e) => {
     scrollStartX = (-1 - bs.x / scrollWidth())
 })
 function handlePageAnim(index = 0, next = true, scroll = 0) {
-    document.querySelectorAll("div.innerApp > div.app-tabs > p").forEach(e => e.classList.remove("active-tab"))
-    document.querySelectorAll("div.innerApp > div.app-tabs > p")[index].classList.add("active-tab")
-    document.querySelectorAll("div.settings-pages-container > div.settings-page").forEach(e => e.classList.remove("active-page"))
-    document.querySelectorAll("div.settings-pages-container > div.settings-page")[index + 1].style.setProperty("--page-swipe-translate", (next ? scroll : -scroll) + "px")
-    document.querySelectorAll("div.settings-pages-container > div.settings-page")[index + 1].style.setProperty("--page-swipe-direction", (next ? 1 : -1))
-    document.querySelectorAll("div.settings-pages-container > div.settings-page")[index + 1].classList.add("active-page")
-    const maxIndex = document.querySelectorAll("div.settings-pages-container > div.settings-page").length - 1
-    if (index == 0) {
-        document.querySelectorAll("div.settings-pages-container > div.settings-page")[maxIndex].classList.add("active-page")
-        document.querySelectorAll("div.settings-pages-container > div.settings-page")[maxIndex].style.setProperty("--page-swipe-translate", (next ? scroll : -scroll) + "px")
-        document.querySelectorAll("div.settings-pages-container > div.settings-page")[maxIndex].style.setProperty("--page-swipe-direction", (next ? 1 : -1))
-    } else if (index == maxIndex - 2) {
-        document.querySelectorAll("div.settings-pages-container > div.settings-page")[0].classList.add("active-page")
-        document.querySelectorAll("div.settings-pages-container > div.settings-page")[0].style.setProperty("--page-swipe-translate", (next ? scroll : -scroll) + "px")
-        document.querySelectorAll("div.settings-pages-container > div.settings-page")[0].style.setProperty("--page-swipe-direction", (next ? 1 : -1))
-    }
+    allTabs.forEach(e => e.classList.remove("active-tab"))
+    allTabs[index].classList.add("active-tab")
+    allPages.forEach(e => e.classList.remove("active-page"))
+    allPages[index].style.setProperty("--page-swipe-translate", (next ? scroll : -scroll) + "px")
+    allPages[index].style.setProperty("--page-swipe-direction", (next ? 1 : -1))
+    allPages[index].classList.add("active-page")
 }
-const scrollWidth = () => { return Math.min(window.innerWidth, 768) }
+const scrollWidth = () => settingsPages.clientWidth || Math.min(window.innerWidth, 768)
 window.scrollWidth = scrollWidth
 window.addEventListener("pointermove", () => {
 })
@@ -78,6 +68,7 @@ window.bs = bs
 const targetElement = bs.wrapper
 // Event listeners for pointer events
 appTabs.addEventListener('pointerdown', (e) => {
+    bs.finishPendingSlide()
     appTabs.pointerDown = [e.x, e.y]
     appTabs.lastX = bs.x
     appTabs.lastPointerDown = [e.x, e.y]
@@ -88,7 +79,7 @@ appTabs.addEventListener('pointerdown', (e) => {
 appTabs.addEventListener('pointermove', (e) => {
     if (appTabs.pointerDown) {
         appTabs.lastPointerDown = [e.x, e.y]
-        bs.scrollTo(appTabs.lastX + appTabs.lastPointerDown[0] - appTabs.pointerDown[0], 0, 0)
+        bs.moveTo(appTabs.lastX + appTabs.lastPointerDown[0] - appTabs.pointerDown[0], 0)
     }
 });
 
@@ -102,7 +93,7 @@ window.addEventListener('pointerup', (e) => {
             }
         } else {
             var page = Math.round((appTabs.lastX + appTabs.lastPointerDown[0] - appTabs.pointerDown[0]) / -scrollWidth() - 1)
-            page = page < 0 ? appTabs.length - 1 : page > (appTabs.length - 1) ? 0 : page
+            page = page < 0 ? allTabs.length - 1 : page > (allTabs.length - 1) ? 0 : page
             page = page || 0
             bs.goToPage(page, 0)
             handlePageAnim(page)
@@ -175,7 +166,7 @@ window.scrollers = {
         scrollbar: false,
         eventPassthrough: "horizontal"
     }),
-    apps: new DiscoScroll("#apps-tab:nth-child(3)", {
+    apps: new DiscoScroll(allPages[1], {
         bounceTime: 300,
         swipeBounceTime: 200,
         outOfBoundaryDampingFactor: 1,

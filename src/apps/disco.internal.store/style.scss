@@ -253,11 +253,6 @@ div.app-tabs {
             opacity: 0;
             //overflow: hidden;
 
-            &:not(.original) {
-                visibility: hidden;
-                //opacity: 0 !important;
-            }
-
             &:not(.active-page) {
 
                 *,

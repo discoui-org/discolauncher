@@ -36,10 +36,13 @@ class DiscoScroller {
       hooks: this.scrollerHooks,
     };
     this.animationFrame = null;
+    this.animationTarget = null;
     this.positionFrame = null;
     this.pendingPosition = null;
     this.pointer = null;
+    this.loopEnabled = false;
     this.loopClones = false;
+    this.loopRecycling = false;
     this.pageCount = 0;
 
     this.wrapper.style.overflow = "hidden";
@@ -53,7 +56,7 @@ class DiscoScroller {
     if (this.isSlide) this.setupSlide();
     this.bindEvents();
     this.refresh();
-    const startX = Number.isFinite(this.options.startX) ? this.options.startX : this.isSlide && this.loopClones ? -this.wrapper.clientWidth : 0;
+    const startX = Number.isFinite(this.options.startX) ? this.options.startX : this.isSlide && this.loopEnabled ? -this.wrapper.clientWidth : 0;
     this.setPosition(startX, Number.isFinite(this.options.startY) ? this.options.startY : 0, false);
     requestAnimationFrame(() => this.refresh());
   }
@@ -65,12 +68,17 @@ class DiscoScroller {
     this.options.momentum = false;
     this.pageCount = this.content.children.length;
     if (this.options.slide?.loop && this.pageCount > 1) {
-      const first = this.content.firstElementChild.cloneNode(true);
-      const last = this.content.lastElementChild.cloneNode(true);
-      first.dataset.discoScrollClone = last.dataset.discoScrollClone = "true";
-      this.content.insertBefore(last, this.content.firstElementChild);
-      this.content.append(first);
-      this.loopClones = true;
+      this.loopEnabled = true;
+      if (this.options.slide.clone === true) {
+        const first = this.content.firstElementChild.cloneNode(true);
+        const last = this.content.lastElementChild.cloneNode(true);
+        first.dataset.discoScrollClone = last.dataset.discoScrollClone = "true";
+        this.content.insertBefore(last, this.content.firstElementChild);
+        this.content.append(first);
+        this.loopClones = true;
+      } else {
+        this.loopRecycling = true;
+      }
     }
   }
 
@@ -94,19 +102,21 @@ class DiscoScroller {
         page.style.flex = `0 0 ${width}px`;
         page.style.width = `${width}px`;
       });
+      if (this.loopRecycling) this.resetRecycledPages(width);
       this.content.style.display = "flex";
-      this.content.style.width = `${this.content.children.length * width}px`;
+      const renderedPageCount = this.loopRecycling ? this.pageCount + 2 : this.content.children.length;
+      this.content.style.width = `${renderedPageCount * width}px`;
     }
     // A slider's travel is defined by its pages, never by scrollWidth. Child
     // UI (the app-list search/input padding in particular) can overflow its
     // page and used to incorrectly add a horizontal "buffer" after page two.
     this.maxScrollX = this.isSlide
-      ? -Math.max(0, this.content.children.length - 1) * width
+      ? -Math.max(0, (this.loopRecycling ? this.pageCount + 2 : this.content.children.length) - 1) * width
       : this.options.scrollX ? Math.min(0, width - Math.max(this.content.scrollWidth, this.content.offsetWidth)) : 0;
     this.maxScrollY = this.options.scrollY ? Math.min(0, height - Math.max(this.content.scrollHeight, this.content.offsetHeight)) : 0;
     if (this.isSlide) {
       const page = this.getCurrentPage().pageX;
-      this.setPosition(-(page + (this.loopClones ? 1 : 0)) * width, 0, false);
+      this.setPosition(-(page + (this.loopEnabled ? 1 : 0)) * width, 0, false);
     } else {
       this.setPosition(clamp(this.x, this.maxScrollX, 0), clamp(this.y, this.maxScrollY, 0), false);
     }
@@ -163,13 +173,34 @@ class DiscoScroller {
   getCurrentPage() {
     const width = this.wrapper.clientWidth || 1;
     let pageX = Math.round(-this.x / width);
-    if (this.loopClones) pageX -= 1;
-    return { pageX: clamp(pageX, 0, Math.max(0, this.pageCount - 1)), pageY: 0 };
+    if (this.loopEnabled) {
+      pageX = ((pageX - 1) % this.pageCount + this.pageCount) % this.pageCount;
+    } else {
+      pageX = clamp(pageX, 0, Math.max(0, this.pageCount - 1));
+    }
+    return { pageX, pageY: 0 };
   }
 
   goToPage(pageX, pageY = 0, time = this.options.slide?.speed ?? 400) {
-    const page = clamp(pageX, 0, Math.max(0, this.pageCount - 1));
-    return this.scrollTo(-(page + (this.loopClones ? 1 : 0)) * this.wrapper.clientWidth, 0, time);
+    if (!this.pageCount) return this;
+    const requestedPage = Math.round(pageX);
+    const page = this.loopEnabled
+      ? ((requestedPage % this.pageCount) + this.pageCount) % this.pageCount
+      : clamp(requestedPage, 0, this.pageCount - 1);
+    let rawPage = page + (this.loopEnabled ? 1 : 0);
+
+    if (this.loopEnabled) {
+      const candidates = [rawPage];
+      if (page === 0) candidates.push(this.pageCount + 1);
+      if (page === this.pageCount - 1) candidates.push(0);
+      const currentRawPage = -this.x / (this.wrapper.clientWidth || 1);
+      rawPage = candidates.reduce((nearest, candidate) =>
+        Math.abs(candidate - currentRawPage) < Math.abs(nearest - currentRawPage) ? candidate : nearest
+      );
+    }
+
+    if (this.loopRecycling) this.prepareRecycledPage(rawPage);
+    return this.scrollTo(-rawPage * this.wrapper.clientWidth, 0, time);
   }
 
   snapToNearestPage(time = this.options.slide?.speed ?? 400) {
@@ -180,7 +211,21 @@ class DiscoScroller {
     this.cancelAnimation();
     const targetX = this.options.scrollX ? clamp(x, this.maxScrollX, 0) : 0;
     const targetY = this.options.scrollY ? clamp(y, this.maxScrollY, 0) : 0;
+    if (this.isSlide && this.loopRecycling) {
+      this.prepareRecycledPage(-targetX / (this.wrapper.clientWidth || 1));
+    }
     return this.animateTo(targetX, targetY, time);
+  }
+
+  moveTo(x = this.x, y = this.y) {
+    this.cancelAnimation();
+    const targetX = this.options.scrollX ? clamp(x, this.maxScrollX, 0) : 0;
+    const targetY = this.options.scrollY ? clamp(y, this.maxScrollY, 0) : 0;
+    if (this.isSlide && this.loopRecycling) {
+      this.prepareRecycledPage(-targetX / (this.wrapper.clientWidth || 1));
+    }
+    this.setPosition(targetX, targetY);
+    return this;
   }
 
   animateTo(targetX, targetY, time = 0, onComplete = null) {
@@ -196,6 +241,7 @@ class DiscoScroller {
     }
     const from = this.point();
     const startedAt = now();
+    this.animationTarget = { x: targetX, y: targetY };
     this.animaterHooks.emit("time", time);
     const tick = () => {
       const progress = clamp((now() - startedAt) / time, 0, 1);
@@ -204,6 +250,7 @@ class DiscoScroller {
       if (progress < 1) this.animationFrame = requestAnimationFrame(tick);
       else {
         this.animationFrame = null;
+        this.animationTarget = null;
         if (onComplete) onComplete();
         else {
           this.finishSlideLoop();
@@ -217,6 +264,7 @@ class DiscoScroller {
 
   onPointerDown(event) {
     if (!this.enabled || event.button !== 0) return;
+    this.finishPendingSlide();
     this.cancelAnimation();
     this.pointer = {
       id: event.pointerId,
@@ -266,6 +314,9 @@ class DiscoScroller {
     const x = this.options.scrollX ? this.dampen(this.pointer.startScrollX + dx, this.maxScrollX) : 0;
     const y = this.options.scrollY ? this.dampen(this.pointer.startScrollY + dy, this.maxScrollY) : 0;
     if (this.pointer.moved) event.preventDefault();
+    if (this.isSlide && this.loopRecycling) {
+      this.prepareRecycledPage(-x / (this.wrapper.clientWidth || 1));
+    }
     this.queuePosition(x, y);
   }
 
@@ -284,7 +335,16 @@ class DiscoScroller {
       return;
     }
     if (this.isSlide) {
-      const page = this.getCurrentPage().pageX + (wasFlick ? velocity < 0 ? 1 : -1 : 0);
+      const width = this.wrapper.clientWidth || 1;
+      let startPage = Math.round(-pointer.startScrollX / width);
+      if (this.loopEnabled) {
+        startPage = ((startPage - 1) % this.pageCount + this.pageCount) % this.pageCount;
+      } else {
+        startPage = clamp(startPage, 0, Math.max(0, this.pageCount - 1));
+      }
+      const page = wasFlick
+        ? startPage + (velocity < 0 ? 1 : -1)
+        : this.getCurrentPage().pageX;
       this.goToPage(page);
       return;
     }
@@ -402,18 +462,52 @@ class DiscoScroller {
 
   finishSlideLoop() {
     if (!this.isSlide) return;
-    if (this.loopClones) {
+    if (this.loopEnabled) {
       const width = this.wrapper.clientWidth;
-      const rawPage = Math.round(-this.x / width);
-      if (rawPage === 0) this.setPosition(-this.pageCount * width, 0, false);
-      if (rawPage === this.pageCount + 1) this.setPosition(-width, 0, false);
+      const rawPosition = -this.x / width;
+      const rawPage = Math.round(rawPosition);
+      if (Math.abs(rawPosition - rawPage) < 0.001) {
+        if (this.loopRecycling) this.resetRecycledPages(width);
+        if (rawPage === 0) this.setPosition(-this.pageCount * width, 0, false);
+        if (rawPage === this.pageCount + 1) this.setPosition(-width, 0, false);
+      }
     }
     this.emit("slideWillChange", { x: this.x, y: this.y, ...this.getCurrentPage() });
+  }
+
+  resetRecycledPages(width = this.wrapper.clientWidth) {
+    if (!this.loopRecycling) return;
+    [...this.content.children].forEach((page) => {
+      page.style.position = "relative";
+      page.style.left = `${width}px`;
+    });
+  }
+
+  prepareRecycledPage(rawPage) {
+    if (!this.loopRecycling) return;
+    const width = this.wrapper.clientWidth;
+    this.resetRecycledPages(width);
+    if (rawPage < 1) {
+      this.content.lastElementChild.style.left = `${-(this.pageCount - 1) * width}px`;
+    } else if (rawPage > this.pageCount) {
+      this.content.firstElementChild.style.left = `${(this.pageCount + 1) * width}px`;
+    }
+  }
+
+  finishPendingSlide() {
+    if (!this.isSlide || !this.animationFrame || !this.animationTarget) return false;
+    const target = this.animationTarget;
+    this.cancelAnimation();
+    this.setPosition(target.x, target.y);
+    this.finishSlideLoop();
+    this.emit("scrollEnd", this.point());
+    return true;
   }
 
   cancelAnimation() {
     if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
     this.animationFrame = null;
+    this.animationTarget = null;
   }
 }
 

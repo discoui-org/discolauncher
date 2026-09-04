@@ -182,7 +182,8 @@
                 div.app-list-container>div.disco-app-tile,
                 div.app-list-container>div.disco-letter-tile,
                 #sticky-letter,
-                #search-icon {
+                #search-icon,
+                #work-profile-icon {
                     transform-origin: var(--app-animation-distance) 50%;
 
                     &.disco-letter-tile {
@@ -223,7 +224,8 @@
                 div.app-list-container>div.disco-app-tile,
                 div.app-list-container>div.disco-letter-tile,
                 #sticky-letter,
-                #search-icon {
+                #search-icon,
+                #work-profile-icon {
                     transform-origin: var(--app-animation-distance) 50%;
                     opacity: 0;
 
@@ -250,7 +252,8 @@
                     div.app-list-container>div.disco-app-tile,
                     div.app-list-container>div.disco-letter-tile,
                     #sticky-letter,
-                    #search-icon {
+                    #search-icon,
+                    #work-profile-icon {
                         animation-name: appListAppTransitionAnim2;
 
                         &.disco-letter-tile {

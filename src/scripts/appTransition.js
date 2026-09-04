@@ -17,6 +17,7 @@ const CONFIG = {
         TILE_CONTAINER: 'div.tile-list-container',
         STICKY_LETTER: '#sticky-letter',
         SEARCH_ICON: '#search-icon',
+        WORK_PROFILE_ICON: '#work-profile-icon',
         ICON_BANNER: 'div.app-page-icon-banner'
     },
     CLASSES: {
@@ -142,8 +143,10 @@ function indexElements(page) {
         // Handle app page elements
         const stickyLetter = document.querySelector(CONFIG.SELECTORS.STICKY_LETTER);
         const searchIcon = document.querySelector(CONFIG.SELECTORS.SEARCH_ICON);
+        const workProfileIcon = document.querySelector(CONFIG.SELECTORS.WORK_PROFILE_ICON);
 
         if (stickyLetter) animationElements.unshift(stickyLetter);
+        if (workProfileIcon && !workProfileIcon.hidden) animationElements.unshift(workProfileIcon);
         if (searchIcon) animationElements.unshift(searchIcon);
 
         const maxAnimationIndex = Math.max(animationElements.length - 1, 1);

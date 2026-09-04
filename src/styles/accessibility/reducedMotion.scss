@@ -86,25 +86,29 @@ body.reduced-motion {
 
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause div.app-list-container>div.disco-app-tile,
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #sticky-letter,
-    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #search-icon {
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #search-icon,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #work-profile-icon {
         animation-name: rd-appListAppTransitionAnim0 !important;
     }
 
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause div.app-list-container>div.disco-app-tile.app-transition-selected,
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #sticky-letter.app-transition-selected,
-    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #search-icon.app-transition-selected {
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #search-icon.app-transition-selected,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-pause #work-profile-icon.app-transition-selected {
         animation-name: rd-appListAppTransitionAnim0 !important;
     }
 
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume div.app-list-container>div.disco-app-tile,
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume #sticky-letter,
-    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume #search-icon {
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume #search-icon,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume #work-profile-icon {
         animation-name: rd-appListAppTransitionAnim1 !important;
     }
 
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back div.app-list-container>div.disco-app-tile,
     #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back #sticky-letter,
-    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back #search-icon {
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back #search-icon,
+    #main-home-slider.app-transition.app-transition-app-list.app-transition-on-resume.app-transition-back #work-profile-icon {
         animation-name: rd-appListAppTransitionAnim2 !important;
     }
 

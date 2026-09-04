@@ -137,6 +137,7 @@ function refreshAppList(params) {
         }
 
     })
+    requestAnimationFrame(() => window.scrollers?.apps?.refresh())
 }
 refreshAppList()
 function getAppPreferences(packageName) {

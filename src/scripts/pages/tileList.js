@@ -768,7 +768,7 @@ function closeOpenFolder({ immediate = false, invalidateNavigation = true } = {}
 
 $("#app-page-icon").on("flowClick", function () {
   window.scrollers.main_home_scroller.scrollTo(-window.innerWidth, 0, 750);
-  $("#search-icon, #work-profile-icon").addClass("shown");
+  $("#search-icon").addClass("shown");
 });
 
 const resizeObserver = new ResizeObserver((entries) => {

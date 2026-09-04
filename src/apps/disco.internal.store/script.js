@@ -70,7 +70,7 @@ function handlePageAnim(index = 0, next = true, scroll = 0) {
     document.querySelectorAll("div.settings-pages-container > div.settings-page")[index + 1].style.setProperty("--page-swipe-direction", (next ? 1 : -1))
     document.querySelectorAll("div.settings-pages-container > div.settings-page")[index + 1].classList.add("active-page")
 }
-const scrollWidth = () => { return Math.min(window.innerWidth, 768) }
+const scrollWidth = () => settingsPages.clientWidth || Math.min(window.innerWidth, 768)
 window.scrollWidth = scrollWidth
 window.addEventListener("pointermove", () => {
     //  console.log(-window.asfasf - window.innerWidth - bs.x)
@@ -92,18 +92,13 @@ bs.on('touchEnd', (e) => {
 bs.on('scrollEnd', (e) => {
     //console.log("scroll", e.x)
 })
-allPages.forEach(e => e.classList.add("original"))
-document.querySelectorAll("div.settings-page:not(.original)").forEach(e => {
-    e.innerHTML = "";
-    e.removeAttribute("id")
-})
-
 window.bs = bs
 
 // Select the target element where you want to dispatch the events
 const targetElement = bs.wrapper
 // Event listeners for pointer events
 appTabs.addEventListener('pointerdown', (e) => {
+    bs.finishPendingSlide()
     appTabs.pointerDown = [e.x, e.y]
     appTabs.lastX = bs.x
     appTabs.lastPointerDown = [e.x, e.y]
@@ -114,7 +109,7 @@ appTabs.addEventListener('pointerdown', (e) => {
 appTabs.addEventListener('pointermove', (e) => {
     if (appTabs.pointerDown) {
         appTabs.lastPointerDown = [e.x, e.y]
-        bs.scrollTo(appTabs.lastX + appTabs.lastPointerDown[0] - appTabs.pointerDown[0],  0)
+        bs.moveTo(appTabs.lastX + appTabs.lastPointerDown[0] - appTabs.pointerDown[0], 0)
     }
 });
 
@@ -128,7 +123,7 @@ window.addEventListener('pointerup', (e) => {
             }
         } else {
             var page = Math.round((appTabs.lastX + appTabs.lastPointerDown[0] - appTabs.pointerDown[0]) / -scrollWidth() - 1)
-            page = page < 0 ? appTabs.length - 1 : page > (appTabs.length - 1) ? 0 : page
+            page = page < 0 ? allTabs.length - 1 : page > (allTabs.length - 1) ? 0 : page
             page = page || 0
             bs.goToPage(page, 0)
             handlePageAnim(page)
