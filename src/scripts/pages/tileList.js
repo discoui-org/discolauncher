@@ -23,6 +23,12 @@ grid.on('relocate', function () {
 });
 grid.on('change', function (event, items) {
 });
+grid.on("foldercreated", function () {
+  // Folder children stop being real home-tile elements as soon as the folder
+  // is created. Tear down their live-tile workers immediately so a pending
+  // redraw cannot target a tile that is no longer in the DOM.
+  DiscoBoard.boardMethods.liveTiles.refresh();
+});
 grid.on("dragstop", function (event, el) {
   setTimeout(() => {
     DiscoBoard.backendMethods.homeConfiguration.save()
@@ -692,6 +698,10 @@ function openFolder(folder) {
   };
   bindFolderContentGrid(openFolderState);
   updateFolderOpenLayout(openFolderState, false);
+  // The open panel creates the folder children as real home tiles. Register
+  // their providers only after those elements have been added to the grid so
+  // live-tile controllers can resolve and draw into them.
+  DiscoBoard.boardMethods.liveTiles.refresh();
   DiscoBoard.backendMethods.navigation.push(
     "homeFolderOpen",
     () => { },
@@ -740,6 +750,10 @@ function closeOpenFolder({ immediate = false, invalidateNavigation = true } = {}
 
   const cleanup = () => {
     state.panel.remove();
+    // Closed-folder thumbnails are intentionally static and have no live-tile
+    // surface. Stop workers belonging only to the panel after its exit
+    // animation has completed and the child elements have been removed.
+    DiscoBoard.boardMethods.liveTiles.refresh();
     if (state.folder.folderOpenVersion !== state.version) return;
     state.folder.classList.remove("folder-closing");
     state.folder.style.removeProperty("--folder-thumbnail-travel");

@@ -576,6 +576,9 @@ class tileController {
         clearTimeout(this.flipTimer);
         clearTimeout(this.flipCleanupTimer);
         clearTimeout(this.mediaTransitionTimer);
+        const observedContainer = this.observedTile?.querySelector('div.live-tile-container');
+        if (observedContainer) this.configureNativeWidgetTap(observedContainer, false);
+        this.resizeObserver.disconnect();
         document.querySelector(`div.disco-home-tile[packagename="${this.packageName}"] div.disco-home-inner-tile`)
             ?.classList.remove('flip-active');
         this.redrawTimer = null;
@@ -583,6 +586,8 @@ class tileController {
         this.flipTimer = null;
         this.flipCleanupTimer = null;
         this.mediaTransitionTimer = null;
+        this.observedTile = null;
+        this.nativeWidgetPointerStart = null;
         this.drawGeneration += 1;
     }
 

@@ -81,7 +81,6 @@ window.console.image = function (url, size = 100) {
             'background: url(' + url + ') no-repeat;',
             'background-size: contain;'
         ].join(' ');
-        console.log('%c ', style);
     } else {
         const image = new Image();
         image.src = url;
@@ -92,7 +91,6 @@ window.console.image = function (url, size = 100) {
                 'background: url(' + url + ') no-repeat;',
                 'background-size: contain;'
             ].join(' ');
-            console.log('%c ', style);
         };
     }
 };
@@ -420,12 +418,9 @@ await i18n.init()
 i18n.translateDOM()
 
 window.addEventListener("deepLink", (e) => {
-    console.log(e)
     const url = new URL(e.detail.url)
-    console.log("url", url)
     setTimeout(() => {
         if (url.protocol == "disco:") {
-            console.log("hoba")
             if (url.pathname == "settings") {
                 if (!window.doubleTapOverride) Disco.launchApp("disco.internal.settings")
                 return;
@@ -454,23 +449,16 @@ window.addEventListener("pointerdown", (e) => {
         })
         if (Disco.checkPermission("ACCESSIBILITY") === "true") {
             Disco.requestScreenLock()
-            console.log("double tap sleep")
         } else {
             Disco.requestPermission("ACCESSIBILITY")
             Disco.showToast("You need to enable the accessibility service to use this feature.")
-            console.log("requesting permission")
         }
 
     }
     lastTap = Date.now();
 })
 
-/*scrollers.main_home_scroller.scroller.animater.hooks.on(
-    "time",
-    (duration) => {
-        console.log("duration", duration, scrollers.main_home_scroller.x)
-    }
-);*/
+
 const slideContent = document.querySelector("#main-home-slider > div.slide-content");
 const mainHomeSlider = document.querySelector("#main-home-slider");
 let shadeOpacityLast = null;

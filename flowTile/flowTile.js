@@ -41,25 +41,20 @@ function tile(x, y, w, h, content) {
 const calculations = {
     redefine: (a, b) => (a == undefined) ? b : a,
     pad_margin: (...vals) => {
-        console.log("input", vals)
         if (typeof vals == "object" && vals["length"]) {
             if (vals.length == 2) {
-                console.log("sr", 0)
                 const val0 = calculations.redefine(vals[0], 10)
                 const val1 = calculations.redefine(vals[1], 10)
                 return [val0, val1, val0, val1]
             } else {
                 if (vals.length == 1) {
                     if (typeof vals[0] == "object" && vals[0]["length"]) {
-                        console.log("sr", 1)
                         return calculations.pad_margin(...vals[0])
                     } else {
-                        console.log("sr", 3)
                         const val = calculations.redefine(vals[0], 10)
                         return [val, val, val, val]
                     }
                 } else {
-                    console.log("sr", 2)
                     return [calculations.redefine(vals[0], 10), calculations.redefine(vals[1], 10), calculations.redefine(vals[2], 10), calculations.redefine(vals[3], 10)]
                 }
             }
@@ -83,17 +78,14 @@ function spaceDetector(tiles, cols) {
         space = new Array(rows * cols).fill(false)
         Array.from(tiles).slice(0, index).forEach(tile => {
             const pointer = tile.getPosition().x + tile.getPosition().y * cols
-            //console.log(pointer)
             for (let x = 0; x < tile.ft_w; x++) {
                 for (let y = 0; y < tile.ft_h; y++) {
                     const rpointer = pointer + x + pointer * cols
                     space[rpointer] = true
-                    //console.log("yüzery", x, y)
                 }
             }
         })
     }
-    //console.log("sspace", space)
     function isEmpty(x, y, w = 1, h = 1) {
         var result = true
         for (let ax = 0; ax < w; ax++) {
@@ -132,7 +124,6 @@ function spaceMatrix(radius) {
             result.push(last)
         }
     })
-    console.log("sideLength", sideLength)
     return result
 }
 window.spaceMatrix = spaceMatrix
@@ -148,7 +139,6 @@ function flowTile(container) {
 
         const size = [container.clientWidth, container.clientHeight]
         const safeArea = [size[0] - containerPadding[1] - containerPadding[3], size[1] - containerPadding[0] - containerPadding[2]]
-        // console.log("pad ", containerPadding)
         const baseSize = (safeArea[0] - tileMargin * (columns - 1)) / columns
         container.style.setProperty("--fl-tile-w-1", baseSize + "px")
         container.style.setProperty("--fl-tile-w-2", baseSize * 2 + tileMargin + "px")
@@ -203,16 +193,12 @@ function flowTile(container) {
             }
         })
         const sd = spaceDetector(tiles, columns)
-        // console.log(sd)
         tiles.forEach((tile, index) => {
             sd.calculateUntil(index)
             var pos;
-            //console.log("space", sd.space())
-
             if (sd.isEmpty(tile.ft_x, tile.ft_y, tile.ft_w, tile.ft_h)) {
                 pos = [tile.ft_x, tile.ft_y]
             }
-            //console.log(pos)
             if (pos) {
                 tile.setPosition(pos[0], pos[1])
                 tile.style.setProperty("left", containerPadding[3] + pos[0] * baseSize + pos[0] * tileMargin + "px")
@@ -228,8 +214,6 @@ function flowTile(container) {
             var pos
             var resolved = false
             sd.calculateUntil(Array.from(tiles).indexOf(left_out))
-            console.log("space")
-            console.log("calc until", Array.from(tiles).indexOf(left_out))
             while (!resolved) {
                 radius += 1
                 const matrix = spaceMatrix(radius)
@@ -248,13 +232,11 @@ function flowTile(container) {
             if (pos) {
                 left_out.setPosition(pos[0], pos[1])
                 left_out.style.setProperty("left", containerPadding[3] + pos[0] * baseSize + pos[0] * tileMargin + "px")
-                //console.log("pad", containerPadding[3] + pos[0] * baseSize)
                 left_out.style.setProperty("top", containerPadding[0] + pos[1] * baseSize + pos[1] * tileMargin + "px")
                 left_out.style.removeProperty("background")
                 left_out.ft_placed = true;
             }
         });
-        console.log("leftouts", left_outs.length)
         sd.calculate()
 
     }

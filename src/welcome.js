@@ -387,7 +387,6 @@ const welcomeTitle = document.querySelector("#page-welcome > div.setup-body > h1
 const firstWelcome = localStorage["lastVersion"] ? !localStorage.lastVersion == Disco.getAppVersion() : true
 const welcomeType = firstWelcome ? "welcome.welcome.install" : "welcome.welcome.update"
 
-console.log("updatedapp", updatedApp)
 window.firstWelcome = firstWelcome
 var welcomei = 0
 welcomeTitle.innerText = i18n.t(welcomeType)
@@ -559,7 +558,6 @@ if (firstWelcome && localStorage["welcomeLocalesDownloaded"] != "true") {
 
 }
 document.querySelectorAll("div.permission-group").forEach((e, index) => {
-    console.log(index)
     function interval() {
         const granted = Disco.checkPermission(allPermissions[index]) == "true"
         if (granted) {
@@ -588,7 +586,6 @@ document.querySelectorAll("div.permission-group").forEach((e, index) => {
         } else {
             Disco.requestPermission(allPermissions[index])
         }
-        console.log(index, allPermissions[index])
     })
     setInterval(interval, 1000)
     interval()

@@ -67,10 +67,12 @@ function wHomeTile(
   //if (!imageIcon)
   //homeTile.querySelector("p.disco-home-tile-icon").innerText = icon;
   //else 
-  homeTile.querySelector("img.disco-home-tile-imageicon").src = sizedAppIconURL(icon, 114);
-  homeTile.querySelector("p.disco-home-tile-title").innerText = title;
+  const imageIcon = homeTile.querySelector("img.disco-home-tile-imageicon");
+  const titleElement = homeTile.querySelector("p.disco-home-tile-title");
+  const iconBackground = homeTile.querySelector(".disco-home-tile-icon-background");
+  imageIcon.src = sizedAppIconURL(icon, 114);
+  titleElement.innerText = title;
   if (iconbg) {
-    const iconBackground = homeTile.querySelector(".disco-home-tile-icon-background")
     iconBackground.style.backgroundImage = `url('${sizedAppIconURL(iconbg, 114)}')`;
     if (iconbg.includes("data:image/svg+xml")) iconBackground.classList.add("svg-background");
 
@@ -80,15 +82,14 @@ function wHomeTile(
     const appPreference = DiscoBoard.backendMethods.getAppPreferences(packageName)
     colorContrastDetector.getAverageColor(iconbg).then((color) => {
       if (appPreference.textColor == "auto") {
-        homeTile.querySelector("p.disco-home-tile-title").style.color = colorContrastDetector.getTextColor(color);
+        titleElement.style.color = colorContrastDetector.getTextColor(color);
 
       }
-      const iconBackground = homeTile.querySelector(".disco-home-tile-icon-background")
       if (color.hasLightEdges) iconBackground.classList.add("has-light-edges")
       if (color.hasDarkEdges) iconBackground.classList.add("has-dark-edges")
     });
     if (appPreference.textColor != "auto") {
-      homeTile.querySelector("p.disco-home-tile-title").style.color = appPreference.textColor == "dark" ? "#000000" : "#FFFFFF";
+      titleElement.style.color = appPreference.textColor == "dark" ? "#000000" : "#FFFFFF";
     }
   })
   return homeTile;
@@ -382,16 +383,12 @@ function wAppBar(elements = []) {
   })
   try {
     elements.forEach(e => {
-      console.log("e", e)
       var item
       if (e["size"]) {
-        console.log("karar", 0)
         item = wAppBarItem(e.title, e.icon, e["size"], e["action"])
       } else if (e["action"]) {
-        console.log("karar", 1)
         item = wAppBarItem(e.title, e.icon, e["action"])
       } else {
-        console.log("karar", 2)
         item = wAppBarItem(e.title, e.icon)
       }
       appBar.append(item)

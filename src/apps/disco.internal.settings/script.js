@@ -43,7 +43,6 @@ function handlePageAnim(index = 0, next = true, scroll = 0) {
     document.querySelectorAll("div.settings-pages-container > div.settings-page")[index + 1].style.setProperty("--page-swipe-direction", (next ? 1 : -1))
     document.querySelectorAll("div.settings-pages-container > div.settings-page")[index + 1].classList.add("active-page")
     const maxIndex = document.querySelectorAll("div.settings-pages-container > div.settings-page").length - 1
-    console.log("handle page anim", index, maxIndex)
     if (index == 0) {
         document.querySelectorAll("div.settings-pages-container > div.settings-page")[maxIndex].classList.add("active-page")
         document.querySelectorAll("div.settings-pages-container > div.settings-page")[maxIndex].style.setProperty("--page-swipe-translate", (next ? scroll : -scroll) + "px")
@@ -57,7 +56,6 @@ function handlePageAnim(index = 0, next = true, scroll = 0) {
 const scrollWidth = () => { return Math.min(window.innerWidth, 768) }
 window.scrollWidth = scrollWidth
 window.addEventListener("pointermove", () => {
-    //  console.log(-window.asfasf - window.innerWidth - bs.x)
 })
 bs.on('flick', () => {
     const next = (-1 - bs.x / scrollWidth()) > scrollStartX
@@ -73,10 +71,6 @@ bs.on('touchEnd', (e) => {
         handlePageAnim(index, next, Math.abs(scrollStartX - (-1 - bs.x / scrollWidth())) * scrollWidth() * 2)
     }
 })
-bs.on('scrollEnd', (e) => {
-    //console.log("scroll", e.x)
-})
-
 
 window.bs = bs
 
@@ -155,9 +149,6 @@ function activeTabScroll() {
             } else {
 
             }
-
-
-            //console.log("scroll", scroll, allTabs.length)
             lastX = x
         }
     }
