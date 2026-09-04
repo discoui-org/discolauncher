@@ -1,4 +1,4 @@
-import"./chunks/script-VS4uBcIJ.js";function e(){if(document.body.classList.add(`mock-pointer`),document.querySelector(`div#m_pointer_0000HELLYEAH`))return document.querySelector(`div#m_pointer_0000HELLYEAH`);let e=document.createElement(`div`);return e.id=`m_pointer_0000HELLYEAH`,e.style.cssText=`
+import"./chunks/script-D4TYnkM_.js";function e(){if(document.body.classList.add(`mock-pointer`),document.querySelector(`div#m_pointer_0000HELLYEAH`))return document.querySelector(`div#m_pointer_0000HELLYEAH`);let e=document.createElement(`div`);return e.id=`m_pointer_0000HELLYEAH`,e.style.cssText=`
         position: fixed;
         transform: translate(-50%, -50%);
         z-index: 999999999;
