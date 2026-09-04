@@ -1,4 +1,5 @@
 import * as ITL from "isotolanguage";
+import DOMPurify from 'dompurify';
 import JSON5 from 'json5';
 window.ITL = ITL;
 class Locale {
@@ -430,7 +431,7 @@ class LocaleManager {
         }
       }
 
-      el.textContent = text;
+      this.setElementContent(el, text);
       el.removeAttribute('data-i18n-init');
       return;
     }
@@ -448,7 +449,19 @@ class LocaleManager {
           break;
       }
     }
-    el.textContent = translation
+    this.setElementContent(el, translation)
+  }
+
+  setElementContent(el, content) {
+    if (el.hasAttribute('data-i18n-html')) {
+      el.innerHTML = DOMPurify.sanitize(content, {
+        ALLOWED_TAGS: ['a', 'strong', 'em'],
+        ALLOWED_ATTR: []
+      });
+      return;
+    }
+
+    el.textContent = content;
   }
 
   async setLocale(locale, progressCallback = null) {

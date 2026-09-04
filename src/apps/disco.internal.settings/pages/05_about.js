@@ -1,4 +1,17 @@
 window.Disco = window.Disco || window.parent.Disco
+const licenseDescription = document.querySelector("#license-description")
+const licenseUrl = "https://github.com/discolauncher/DiscoLauncher?tab=MIT-1-ov-file"
+
+licenseDescription.addEventListener("click", (event) => {
+    if (event.target.closest("a")) event.preventDefault()
+})
+licenseDescription.addEventListener("flowClick", (event) => {
+    if (!event.target.closest("a")) return
+
+    event.preventDefault()
+    Disco.openURL(licenseUrl)
+})
+
 document.querySelector("#resetbtn").addEventListener("flowClick", () => {
 
     window.parent.DiscoBoard.alert(
