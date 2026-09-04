@@ -379,7 +379,11 @@ public final class GeckoBridgeServer extends NanoHTTPD {
             InputStream stream = activity.getAssets().open(assetPath);
             if (assetPath.endsWith(".html")) {
                 String document = new String(readAllBytes(stream), StandardCharsets.UTF_8);
+                // Load the bridge synchronously before any page script. Loading it through
+                // platform-bootstrap's document.write() can make Gecko reparse the document
+                // and run a module before its DOM has finished parsing.
                 String platformBootstrap = "<script>window.__DISCO_PLATFORM__=\"android-geckoview\";</script>"
+                        + "<script src=\"/gecko-bridge.js\"></script>"
                         + "<script src=\"/platform-bootstrap.js\"></script>";
                 document = document.replace("</head>", platformBootstrap + "</head>");
                 stream = new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8));

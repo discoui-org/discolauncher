@@ -81,22 +81,19 @@ window.goToPage = goToPage
 );*/
 //alert.querySelector("button").style.visibility = "hidden"
 
-const accessibility_scroller = new DiscoScroll("#page-access div.scroller", {
-    scrollbar: true
+const createWelcomeScroller = (selector) => {
+    const target = document.querySelector(selector);
+    if (!target) {
+        console.warn(`Welcome scroller target not found: ${selector}`);
+        return null;
+    }
+    return new DiscoScroll(target, { scrollbar: true });
+};
 
-})
-const accent_color_scroller = new DiscoScroll("div.accent-color-catalogue", {
-    scrollbar: true
-
-})
-const permissions_scroller = new DiscoScroll("#page-permissions div.scroller", {
-    scrollbar: true
-
-})
-const whats_new_scroller = new DiscoScroll("#page-readme div.scroller", {
-    scrollbar: true
-
-})
+const accessibility_scroller = createWelcomeScroller("#page-access div.scroller");
+const accent_color_scroller = createWelcomeScroller("div.accent-color-catalogue");
+const permissions_scroller = createWelcomeScroller("#page-permissions div.scroller");
+const whats_new_scroller = createWelcomeScroller("#page-readme div.scroller");
 DiscoBoard.backendMethods.setUIScale(1, true)
 Disco.appReady()
 $("div.accent-color-catalogue-item").on("flowClick", function () {
@@ -469,11 +466,16 @@ function updateLoaderText(string) {
     })
 }
 window.updateLoaderText = updateLoaderText
+let localeFinishScheduled = false;
 function finishLocale() {
+    if (localeFinishScheduled) return;
+    localeFinishScheduled = true;
     setTimeout(() => {
-        document.querySelector("#loader").classList.add("finished")
+        const loader = document.querySelector("#loader");
+        if (!loader) return;
+        loader.classList.add("finished")
         setTimeout(() => {
-            document.querySelector("#loader").remove()
+            loader.remove()
             startFlipping()
             document.body.classList.add("animate-intro")
         }, 500);
