@@ -239,13 +239,15 @@ public class ContentServer extends WebViewClientCompat {
                                 : workProfileManager.getAppIcon(
                                         iconPackageNameWithIntent, requestedUserSerial, false);
                         IconPack selectedIconPack = getSelectedIconPack(iconPackageName);
-                        boolean useIconPackBackground = selectedIconPack != null
-                                && selectedIconPack.hasIconForPackage(iconPackageName);
 
-                        // Explicit icon-pack art is served by icons-bg below, keeping the
-                        // adaptive-icon foreground transparent.
-                        if (useIconPackBackground) {
-                            return transparentImageResponse();
+                        // Icon-pack replacements are complete, single-layer icons. Keep them
+                        // in the foreground so the tile continues to own its background.
+                        if (selectedIconPack != null
+                                && selectedIconPack.hasIconForPackage(iconPackageName)) {
+                            Bitmap packIcon = selectedIconPack.getIconForPackage(iconPackageName, dra);
+                            if (packIcon != null) {
+                                dra = packIcon;
+                            }
                         }
 
                         if (dra != null) return cacheIconResponse(cacheKey, dra, requestedIconSize);
@@ -270,10 +272,7 @@ public class ContentServer extends WebViewClientCompat {
 
                         if (selectedIconPack != null
                                 && selectedIconPack.hasIconForPackage(iconPackageName)) {
-                            Bitmap packIcon = selectedIconPack.getIconForPackage(iconPackageName, dra);
-                            if (packIcon != null) {
-                                dra = packIcon;
-                            }
+                            return transparentImageResponse();
                         }
 
                         if (dra != null) return cacheIconResponse(cacheKey, dra, requestedIconSize);
