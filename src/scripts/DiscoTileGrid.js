@@ -157,7 +157,7 @@ class DiscoTileGrid {
     return changed;
   }
 
-  beginDrag(el, event) {
+  beginDrag(el, event, { tileStartX, tileStartY } = {}) {
     const pointerEvent = event?.originalEvent || event;
     if (!this.movable
       || this.drag
@@ -174,13 +174,17 @@ class DiscoTileGrid {
     const scaleY = containerRect.height && this.el.clientHeight
       ? this.el.clientHeight / containerRect.height
       : scaleX;
+    const cell = this.el.clientWidth / this.columnCount;
+    const hasTransferredPosition = Number.isFinite(tileStartX) && Number.isFinite(tileStartY);
+    const startX = hasTransferredPosition ? tileStartX : node.x * cell;
+    const startY = hasTransferredPosition ? tileStartY : node.y * cell;
     this.drag = {
       node,
       pointerId: Number.isFinite(pointerEvent.pointerId) ? pointerEvent.pointerId : null,
       pointerStartX: pointerEvent.clientX,
       pointerStartY: pointerEvent.clientY,
-      tileStartX: node.x * (this.el.clientWidth / this.columnCount),
-      tileStartY: node.y * (this.el.clientWidth / this.columnCount),
+      tileStartX: startX,
+      tileStartY: startY,
       scaleX,
       scaleY,
       targetX: node.x,
@@ -197,6 +201,10 @@ class DiscoTileGrid {
       }]))
     };
 
+    if (hasTransferredPosition) {
+      el.style.left = `${startX}px`;
+      el.style.top = `${startY}px`;
+    }
     el.classList.add("grid-dragging");
     try {
       el.setPointerCapture?.(pointerEvent.pointerId);

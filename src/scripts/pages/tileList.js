@@ -13,6 +13,9 @@ const grid = new DiscoTileGrid(tileListInnerContainer, { column: 4 });
 var isDragging
 grid.on("dragstart", function (event, el) {
   scrollers.tile_page_scroller.cancelScroll()
+  if (openFolderState && el !== openFolderState.folder) {
+    closeOpenFolder({ immediate: true });
+  }
   isDragging = true
 });
 grid.on('relocate', function () {
@@ -183,7 +186,7 @@ function selectHomeTileForEdit(tile) {
 let openFolderState = null;
 let folderOpenVersion = 0;
 const FOLDER_OPEN_STEP = 18;
-const FOLDER_OPEN_DELAY = 60;
+const FOLDER_OPEN_DELAY = 100;
 const FOLDER_OPEN_DURATION = 340;
 const FOLDER_EXIT_DELAY = 500;
 
@@ -371,11 +374,19 @@ function updateFolderOpenLayout(state, shiftRows = state.rowsShifted) {
   const cell = tileListGrid.el.clientWidth / tileListGrid.getColumn();
   const folderBottomRow = node.y + node.h;
   const previousTiles = state.shiftedTiles || [];
-  const shiftedTiles = tileListGrid.engine.nodes
-    .filter(candidate => candidate !== node && candidate.y >= node.y)
+  const followingNodes = tileListGrid.engine.nodes
+    .filter(candidate => candidate !== node && candidate.y >= node.y);
+  const occupiedFolderRows = followingNodes
+    .filter(candidate => candidate.y < folderBottomRow)
+    .map(candidate => candidate.y);
+  const firstOccupiedFolderRow = occupiedFolderRows.length
+    ? Math.min(...occupiedFolderRows)
+    : folderBottomRow;
+  const rowClearance = (folderBottomRow - firstOccupiedFolderRow) * cell;
+  const shiftedTiles = followingNodes
     .map(candidate => ({
       el: candidate.el,
-      offset: panelHeight + (candidate.y < folderBottomRow ? node.h * cell : 0),
+      offset: panelHeight + rowClearance,
       bottom: (candidate.y + candidate.h) * cell
     }));
   const shiftedElements = new Set(shiftedTiles.map(candidate => candidate.el));
@@ -439,10 +450,25 @@ function folderHomeDropPosition(state, tile, event) {
   };
 }
 
+function tilePositionWithinMainGrid(tile) {
+  let current = tile;
+  let tileStartX = 0;
+  let tileStartY = 0;
+
+  while (current && current !== tileListGrid.el) {
+    tileStartX += current.offsetLeft;
+    tileStartY += current.offsetTop;
+    current = current.offsetParent;
+  }
+
+  return current === tileListGrid.el ? { tileStartX, tileStartY } : null;
+}
+
 function extractFolderTile(state, tile, event, continueDrag) {
   if (!state || openFolderState !== state || state.extracting || !tile?.gridstackNode) return;
   state.extracting = true;
   if (state.exitDrag?.timer) clearTimeout(state.exitDrag.timer);
+  const transferredPosition = tilePositionWithinMainGrid(tile);
   if (state.folderGrid.drag) state.folderGrid.endDrag(event);
 
   const position = folderHomeDropPosition(state, tile, event);
@@ -462,7 +488,7 @@ function extractFolderTile(state, tile, event, continueDrag) {
   DiscoBoard.backendMethods.homeConfiguration.save();
 
   if (continueDrag && event.type !== "pointercancel") {
-    tileListGrid.beginDrag(tile, event);
+    tileListGrid.beginDrag(tile, event, transferredPosition || undefined);
   }
 }
 
@@ -707,6 +733,9 @@ $(window).on("flowClick", function (e) {
   ) {
     if (clickedTile.dataset.tapTarget === "native-widget") return;
     if ($("div.tile-list-page").hasClass("home-menu-back")) {
+      if (openFolderState && !clickedTile.classList.contains("disco-folder-open-item")) {
+        closeOpenFolder();
+      }
       $("div.disco-home-tile").removeClass("home-menu-selected");
       clickedTile.classList.add("home-menu-selected");
       DiscoBoard.boardMethods.createTileMenu(clickedTile);
@@ -761,14 +790,20 @@ $(window).on("pointerdown", function (e) {
     $("div.disco-home-menu").remove();
     window.homeTileMenuCreationFirstTimeout = setTimeout(() => {
       pressedTile.canClick = false;
+      if (isFolderChild) targetTile.style.scale = "1";
 
       homeTileEditSwitch.on(false, () => {
+        targetTile.style.removeProperty("scale");
         selectHomeTileForEdit(targetTile);
         generateShakeAnimations();
         targetTile.homeTileMenuState = true;
         (targetTile.tileGrid || tileListGrid).beginDrag(targetTile, e.originalEvent || e);
       }, { keepFolderOpen: isFolderChild });
       targetTile.classList.add("home-menu-selected");
+      if (isFolderChild) {
+        targetTile.offsetHeight;
+        requestAnimationFrame(() => targetTile.style.removeProperty("scale"));
+      }
     }, 500);
   } else if (
     isEditableHomeTile(targetTile) &&
