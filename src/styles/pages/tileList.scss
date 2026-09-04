@@ -1617,7 +1617,11 @@ div.disco-home-folder-tile {
 
     >div.disco-folder-matrix {
         position: absolute;
-        inset: 6px;
+        left: var(--tile-margin, 6px);
+        top: var(--tile-margin, 6px);
+        bottom: var(--tile-margin, 6px);
+        right: var(--tile-margin, 6px);
+        zoom: var(--tile-zoom);
         display: grid;
         grid-template-columns: repeat(var(--folder-grid-columns, 2), minmax(0, 1fr));
         grid-template-rows: repeat(var(--folder-grid-rows, 2), minmax(0, 1fr));
@@ -1832,18 +1836,12 @@ div.disco-folder-open-panel {
 
             >div.disco-home-inner-tile {
                 transition: transform var(--flow-touch-up-transition) ease-out;
-                transform: translateZ(0px)
-                    rotateZ(calc(var(--flow-rotate-y) * -1))
-                    rotateX(0deg)
-                    rotateZ(var(--flow-rotate-y));
+                transform: translateZ(0px) rotateZ(calc(var(--flow-rotate-y) * -1)) rotateX(0deg) rotateZ(var(--flow-rotate-y));
             }
 
             &.active>div.disco-home-inner-tile {
                 transition: transform var(--flow-touch-down-transition) ease-in-out !important;
-                transform: translateZ(var(--flow-touch-distance))
-                    rotateZ(calc(var(--flow-rotate-y) * -1))
-                    rotateX(calc(var(--flow-rotate-x) * var(--flow-rotate-scale)))
-                    rotateZ(var(--flow-rotate-y));
+                transform: translateZ(var(--flow-touch-distance)) rotateZ(calc(var(--flow-rotate-y) * -1)) rotateX(calc(var(--flow-rotate-x) * var(--flow-rotate-scale))) rotateZ(var(--flow-rotate-y));
             }
 
             &.grid-dragging {
@@ -1863,6 +1861,7 @@ div.disco-folder-open-panel {
     }
 
     &.folder-closing {
+
         div.disco-folder-open-bar,
         div.disco-folder-open-content>div.disco-folder-open-item {
             transition-delay: 0ms;
@@ -1890,6 +1889,7 @@ div.tile-list-page.home-menu-back div.disco-folder-open-panel {
 }
 
 body.reduced-motion {
+
     div.disco-folder-open-panel *,
     div.disco-home-folder-tile>div.disco-folder-title-layer>p.disco-folder-title,
     div.disco-home-folder-tile>div.disco-folder-matrix div.disco-folder-thumbnail,

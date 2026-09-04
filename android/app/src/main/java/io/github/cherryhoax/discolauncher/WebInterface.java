@@ -998,9 +998,9 @@ public class WebInterface {
 
     @JavascriptInterface
     public String getSystemAccentColor(String arg) {
-        if (arg == "supported") {
+        if ("supported".equals(arg)) {
             return String.valueOf(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S);
-        } else if (arg == "provider") {
+        } else if ("provider".equals(arg)) {
             return "Monet";
         } else {
             return String.format("#%06X",

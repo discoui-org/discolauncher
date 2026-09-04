@@ -131,34 +131,126 @@ public final class GeckoBridgeServer extends NanoHTTPD {
 
     private Object invokeDisco(String method, JSONArray arguments) throws Exception {
         switch (method) {
+            case "showToast":
+                legacyInterface.showToast(arguments.optString(0));
+                return null;
+            case "getNativeWidgetProviders":
+                return legacyInterface.getNativeWidgetProviders(arguments.optString(0));
+            case "getNativeWidgetSnapshot":
+                return legacyInterface.getNativeWidgetSnapshot(
+                        arguments.optString(0), arguments.optInt(1), arguments.optInt(2));
+            case "tapNativeWidget":
+                legacyInterface.tapNativeWidget(arguments.optString(0),
+                        (float) arguments.optDouble(1), (float) arguments.optDouble(2));
+                return null;
             case "retrieveApps":
                 return retrieveApps();
             case "getSystemInsets":
                 return new JSONObject().put("left", 0).put("top", 0).put("right", 0).put("bottom", 0).toString();
+            case "retrieveContacts":
+                return legacyInterface.retrieveContacts();
+            case "getAppLabel":
+                return legacyInterface.getAppLabel(arguments.optString(0));
+            case "launchApp":
+                return legacyInterface.launchApp(arguments.optString(0));
+            case "uninstallApp":
+                if (arguments.length() > 1) {
+                    return legacyInterface.uninstallApp(arguments.optString(0), arguments.optInt(1));
+                }
+                return legacyInterface.uninstallApp(arguments.optString(0));
+            case "launchAppInfo":
+                return legacyInterface.launchAppInfo(arguments.optString(0));
+            case "setStatusBarAppearance":
+                legacyInterface.setStatusBarAppearance(arguments.optString(0));
+                return null;
+            case "getStatusBarAppearance":
+                return legacyInterface.getStatusBarAppearance();
+            case "setNavigationBarAppearance":
+                legacyInterface.setNavigationBarAppearance(arguments.optString(0));
+                return null;
+            case "getNavigationBarAppearance":
+                return legacyInterface.getNavigationBarAppearance();
+            case "searchStore":
+                legacyInterface.searchStore(arguments.optString(0));
+                return null;
+            case "openURL":
+                legacyInterface.openURL(arguments.optString(0));
+                return null;
             case "getAppVersion":
                 return BuildConfig.VERSION_NAME;
             case "getWebViewVersion":
                 return "GeckoView";
+            case "isShizukuAvailable":
+                return legacyInterface.isShizukuAvailable();
+            case "isDeviceRooted":
+                return legacyInterface.isDeviceRooted();
+            case "getDefaultApps":
+                return legacyInterface.getDefaultApps();
+            case "writeClipboard":
+                return legacyInterface.writeClipboard(arguments.optString(0));
+            case "readClipboard":
+                return legacyInterface.readClipboard();
+            case "getDisplayOrientation":
+                return legacyInterface.getDisplayOrientation();
+            case "setDisplayOrientationLock":
+                legacyInterface.setDisplayOrientationLock(arguments.optString(0));
+                return null;
             case "getSystemLocale":
                 return activity.getResources().getConfiguration().getLocales().get(0).toString();
             case "getAnimationDurationScale":
                 return Settings.Global.getFloat(activity.getContentResolver(),
                         Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f);
+            case "getSystemAccentColor":
+                return legacyInterface.getSystemAccentColor(arguments.optString(0));
             case "checkPermission":
                 return legacyInterface.checkPermission(arguments.optString(0));
             case "getAppIconURL":
                 return legacyInterface.getAppIconURL(arguments.optString(0));
-            case "getAppLabel":
-                return legacyInterface.getAppLabel(arguments.optString(0));
             case "triggerHapticFeedback":
                 return legacyInterface.triggerHapticFeedback(arguments.optString(0));
             case "requestPermission":
                 legacyInterface.requestPermission(arguments.optString(0));
                 return null;
+            case "requestScreenLock":
+                return legacyInterface.requestScreenLock();
+            case "getLocation":
+                return legacyInterface.getLocation();
+            case "getNotificationExtra":
+                // StatusBarNotification instances cannot cross the JSON bridge.
+                // This mirrors the mock's safe empty result for serialized calls.
+                return "";
+            case "getIconPacks":
+                return legacyInterface.getIconPacks();
+            case "applyIconPack":
+                legacyInterface.applyIconPack(arguments.optString(0));
+                return null;
+            case "applyIconPackPerApp":
+                legacyInterface.applyIconPackPerApp(arguments.optString(0), arguments.optString(1));
+                return null;
+            case "getLastLogs":
+                return legacyInterface.getLastLogs();
+            case "getAPILevel":
+                return legacyInterface.getAPILevel();
+            case "supportsMonochromeIcons":
+                return legacyInterface.supportsMonochromeIcons();
+            case "setMonochromeIcons":
+                legacyInterface.setMonochromeIcons(arguments.optBoolean(0));
+                return null;
+            case "getMonochromeIcons":
+                return legacyInterface.getMonochromeIcons();
+            case "setAccentColor":
+                legacyInterface.setAccentColor(arguments.optString(0));
+                return null;
             case "getAppTilePreferences":
                 return legacyInterface.getAppTilePreferences(arguments.optString(0));
-            case "getNativeWidgetProviders":
-                return legacyInterface.getNativeWidgetProviders(arguments.optString(0));
+            case "setAppTilePreferences":
+                legacyInterface.setAppTilePreferences(arguments.optString(0), arguments.optString(1));
+                return null;
+            case "hasAppTilePreferences":
+                return legacyInterface.hasAppTilePreferences(arguments.optString(0));
+            case "removeAppTilePreferences":
+                legacyInterface.removeAppTilePreferences(arguments.optString(0));
+                return null;
             case "getContacts":
                 return legacyInterface.getContacts();
             case "getPhotos":
