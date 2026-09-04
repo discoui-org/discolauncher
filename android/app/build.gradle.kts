@@ -29,6 +29,7 @@ android {
 
     buildFeatures {
         buildConfig = true  // Enable BuildConfig generation 
+        aidl = true
     }
 
     defaultConfig {

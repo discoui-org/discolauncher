@@ -297,7 +297,7 @@ const searchModeSwitch = {
     off: () => {
         appListContainer.css("transition", "")
         DiscoBoard.backendMethods.navigation.invalidate("searchOn")
-        scrollers.main_home_scroller.enabled = true
+        scrollers.main_home_scroller.enable()
         $("div.disco-app-tile").off("flowClick", searchResultClick)
 
         appListPage.removeClass("search-mode")
@@ -350,7 +350,7 @@ const letterSelectorSwitch = {
     },
     off: () => {
         DiscoBoard.backendMethods.navigation.invalidate("letterSelectOn")
-        scrollers.main_home_scroller.enabled = true
+        scrollers.main_home_scroller.enable()
         Disco.setStatusBarAppearance("light")
         letterSelector.removeClass("shown").addClass("shown-animation").addClass("hidden")
         setTimeout(() => {
@@ -551,7 +551,7 @@ function appMenuClose() {
         appMenuClean()
         stickyLetter(-scrollers.app_page_scroller.y)
     }, 500);
-    scrollers.main_home_scroller.enabled = true
+    scrollers.main_home_scroller.enable()
 
 }
 function appMenuClean() {

@@ -17,6 +17,7 @@ import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
@@ -30,10 +31,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.IBinder;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcel;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.Settings;
@@ -68,29 +67,83 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import rikka.shizuku.Shizuku;
-import rikka.shizuku.ShizukuBinderWrapper;
 import io.github.cherryhoax.discolauncher2.IconPack.IconPack;
 
 public class WebInterface {
     private static final String PREFS_NAME = "DiscoLauncherPrefs";
     private static final long WEATHER_LOCATION_TIMEOUT_MS = 90_000L;
+    private static final long ROOT_CHECK_TIMEOUT_MS = 10_000L;
+    private static final long ROOT_COMMAND_TIMEOUT_MS = 30_000L;
     private final MainActivity mainActivity;
     private final DiscoWebView webView;
     private final NativeWidgetManager nativeWidgetManager;
+    private final ExecutorService shizukuExecutor = Executors.newSingleThreadExecutor();
+    private final ConcurrentLinkedQueue<ShizukuUninstallRequest> pendingShizukuUninstalls =
+            new ConcurrentLinkedQueue<>();
+    private final AtomicBoolean shizukuServiceBinding = new AtomicBoolean(false);
+    private final Shizuku.UserServiceArgs shizukuServiceArgs;
+    private volatile IShizukuPackageService shizukuPackageService;
     private volatile Location latestWeatherLocation;
     private volatile boolean weatherLocationRequestInFlight;
     private final List<LocationListener> weatherLocationListeners = new ArrayList<>();
+
+    private static final class ShizukuUninstallRequest {
+        final String packageName;
+        final int userId;
+
+        ShizukuUninstallRequest(String packageName, int userId) {
+            this.packageName = packageName;
+            this.userId = userId;
+        }
+    }
+
+    private final ServiceConnection shizukuServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, android.os.IBinder binder) {
+            shizukuPackageService = IShizukuPackageService.Stub.asInterface(binder);
+            shizukuServiceBinding.set(false);
+            drainShizukuUninstalls();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            shizukuPackageService = null;
+            shizukuServiceBinding.set(false);
+        }
+    };
 
     WebInterface(MainActivity mainActivity, DiscoWebView webView) {
         this.mainActivity = mainActivity;
         this.webView = webView;
         this.nativeWidgetManager = new NativeWidgetManager(mainActivity);
+        this.shizukuServiceArgs = new Shizuku.UserServiceArgs(
+                new ComponentName(mainActivity, ShizukuPackageService.class))
+                .daemon(false)
+                .processNameSuffix("package_manager")
+                .tag("disco_package_manager")
+                .version(1);
     }
 
     void destroy() {
         nativeWidgetManager.destroy();
+        pendingShizukuUninstalls.clear();
+        shizukuExecutor.shutdownNow();
+        if (shizukuPackageService != null || shizukuServiceBinding.get()) {
+            try {
+                Shizuku.unbindUserService(shizukuServiceArgs, shizukuServiceConnection, true);
+            } catch (RuntimeException error) {
+                Log.w(TAG, "Could not stop Shizuku package service", error);
+            }
+        }
+        shizukuPackageService = null;
+        shizukuServiceBinding.set(false);
     }
 
     public float getDevicePixelRatio() {
@@ -373,55 +426,110 @@ public class WebInterface {
     String TAG = "discolauncher";
 
     public boolean uninstallAppWithShizuku(String packageName) {
-        String command = "su pm uninstall " + packageName;
-        Log.d(TAG, "Uninstall command: " + command);
-        try {
-            ShizukuBinderWrapper binder = new ShizukuBinderWrapper(Shizuku.getBinder());
-            binder.transact(IBinder.FIRST_CALL_TRANSACTION, Parcel.obtain(), Parcel.obtain(), 0);
-            Process process = Runtime.getRuntime().exec(command);
+        if (packageName == null || !packageName.matches("[A-Za-z0-9._]+")) {
+            Log.e(TAG, "Invalid package name for Shizuku uninstall");
+            return false;
+        }
+        if (!Shizuku.pingBinder()
+                || Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "Shizuku is unavailable or permission is missing");
+            return false;
+        }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Log.d(TAG, "Command output: " + line);
-            }
+        // Android assigns each profile a range of 100,000 UIDs.
+        int userId = android.os.Process.myUid() / 100_000;
+        pendingShizukuUninstalls.add(new ShizukuUninstallRequest(packageName, userId));
 
-            int exitCode = process.waitFor();
-            Log.d(TAG, "Command exit code: " + exitCode);
-        } catch (RemoteException | IOException | InterruptedException e) {
-            Log.e(TAG, "Error executing uninstall command", e);
+        if (shizukuPackageService != null) {
+            drainShizukuUninstalls();
+            return true;
+        }
+
+        if (shizukuServiceBinding.compareAndSet(false, true)) {
+            mainActivity.runOnUiThread(() -> {
+                try {
+                    Shizuku.bindUserService(shizukuServiceArgs, shizukuServiceConnection);
+                } catch (RuntimeException error) {
+                    shizukuServiceBinding.set(false);
+                    pendingShizukuUninstalls.clear();
+                    reportShizukuUninstallFailure("Could not start Shizuku package service", error);
+                }
+            });
         }
         return true;
     }
 
+    private void drainShizukuUninstalls() {
+        if (shizukuExecutor.isShutdown()) return;
+        ShizukuUninstallRequest request;
+        while ((request = pendingShizukuUninstalls.poll()) != null) {
+            ShizukuUninstallRequest currentRequest = request;
+            shizukuExecutor.execute(() -> {
+                IShizukuPackageService service = shizukuPackageService;
+                if (service == null) {
+                    reportShizukuUninstallFailure("Shizuku package service disconnected", null);
+                    return;
+                }
+                try {
+                    if (!service.uninstall(currentRequest.packageName, currentRequest.userId)) {
+                        reportShizukuUninstallFailure(
+                                "Shizuku could not uninstall " + currentRequest.packageName, null);
+                    }
+                } catch (RemoteException error) {
+                    shizukuPackageService = null;
+                    reportShizukuUninstallFailure(
+                            "Shizuku package service failed for " + currentRequest.packageName, error);
+                }
+            });
+        }
+    }
+
+    private void reportShizukuUninstallFailure(String message, Throwable error) {
+        if (error == null) Log.e(TAG, message); else Log.e(TAG, message, error);
+        new Handler(Looper.getMainLooper()).post(() ->
+                Toast.makeText(mainActivity, message, Toast.LENGTH_LONG).show());
+    }
+
     public boolean uninstallAppWithRoot(String packageName) {
+        if (packageName == null || !packageName.matches("[A-Za-z0-9._]+")) {
+            Log.e("RootUninstall", "Invalid package name");
+            return false;
+        }
+
+        Process process = null;
         try {
-            // Run the uninstall command as root
-            Process process = Runtime.getRuntime().exec(new String[]{"pm uninstall " + packageName});
+            process = new ProcessBuilder("su", "-c", "pm uninstall " + packageName)
+                    .redirectErrorStream(true)
+                    .start();
+            process.getOutputStream().close();
 
-            // Optional: read output if you need to handle success or failure
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder output = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line);
+            if (!process.waitFor(ROOT_COMMAND_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                Log.e("RootUninstall", "Root uninstall timed out for " + packageName);
+                process.destroy();
+                return false;
             }
-            reader.close();
 
-            // Wait for the process to finish
-            process.waitFor();
+            StringBuilder output = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output.append(line).append('\n');
+                }
+            }
 
-            // Check for success (exit code 0 means success)
             if (process.exitValue() == 0) {
-                Log.d("RootUninstall", "Uninstall successful for " + packageName);
+                Log.d("RootUninstall", "Uninstall successful for " + packageName + ": " + output);
                 return true;
             } else {
-                Log.e("RootUninstall", "Uninstall failed for " + packageName);
+                Log.e("RootUninstall", "Uninstall failed for " + packageName + ": " + output);
             }
 
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            if (e instanceof InterruptedException) Thread.currentThread().interrupt();
             Log.e("RootUninstall", "Error executing root command: " + e.getMessage());
+        } finally {
+            if (process != null) process.destroy();
         }
         return false;
     }
@@ -688,16 +796,36 @@ public class WebInterface {
 
     @JavascriptInterface
     public boolean isDeviceRooted() {
+        Process process = null;
         try {
-            // Try executing 'su' command to check for root access
-            Process process = Runtime.getRuntime().exec("su");
-            // Wait for the process to complete
-            process.waitFor();
-            // If the exit value is 0, root access is available
-            return (process.exitValue() == 0);
-        } catch (Exception e) {
-            // Root access denied or unavailable
+            // Run a finite command instead of opening an interactive root
+            // shell, which never exits by itself and blocks the JS bridge.
+            process = new ProcessBuilder("su", "-c", "id")
+                    .redirectErrorStream(true)
+                    .start();
+            process.getOutputStream().close();
+
+            if (!process.waitFor(ROOT_CHECK_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                Log.w(TAG, "Root access check timed out");
+                process.destroy();
+                return false;
+            }
+
+            StringBuilder output = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) output.append(line).append('\n');
+            }
+            return process.exitValue() == 0 && output.toString().contains("uid=0");
+        } catch (IOException e) {
+            Log.w(TAG, "Root access is unavailable", e);
             return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        } finally {
+            if (process != null) process.destroy();
         }
     }
 

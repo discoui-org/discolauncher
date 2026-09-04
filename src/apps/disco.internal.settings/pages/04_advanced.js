@@ -1,29 +1,26 @@
 const pmtryagaian = {
     root: () => {
-        var firstanswer = Disco.isDeviceRooted()
-        setTimeout(() => {
-            var secondanswer = Disco.isDeviceRooted()
-            if (secondanswer === "true") {
-                parent.DiscoBoard.backendMethods.packageManagerProvider.set(1)
-            } else {
-                parent.DiscoBoard.alert(
-                    "Root Access Required",
-                    "Root access is required to perform this action. Please grant root access to continue.",
-                    [{
-                        title: "Try again", style: "default", inline: true, action: () => {
-                            pmtryagaian.root()
-                        }
-                    }, { title: window.i18n.t("common.actions.ok"), style: "default", inline: true, action: () => { } }]
-                );
-                document.getElementById("pm-chooser").selectOption(parent.DiscoBoard.backendMethods.packageManagerProvider.get())
-            }
-        }, 1000);
+        const answer = Disco.isDeviceRooted()
+        if (answer === true || answer === "true") {
+            parent.DiscoBoard.backendMethods.packageManagerProvider.set(1)
+        } else {
+            parent.DiscoBoard.alert(
+                "Root Access Required",
+                "Root access is required to perform this action. Please grant root access to continue.",
+                [{
+                    title: "Try again", style: "default", inline: true, action: () => {
+                        pmtryagaian.root()
+                    }
+                }, { title: window.i18n.t("common.actions.ok"), style: "default", inline: true, action: () => { } }]
+            );
+            document.getElementById("pm-chooser").selectOption(parent.DiscoBoard.backendMethods.packageManagerProvider.get())
+        }
     },
     shizuku: () => {
         var firstanswer = Disco.isShizukuAvailable()
         setTimeout(() => {
             var secondanswer = Disco.isShizukuAvailable()
-            if (secondanswer === "true") {
+            if (secondanswer === true || secondanswer === "true") {
                 parent.DiscoBoard.backendMethods.packageManagerProvider.set(2)
             } else {
                 parent.DiscoBoard.alert(

@@ -142,8 +142,21 @@ class DiscoScroller {
     this.scrollbarHideTimeout = setTimeout(() => { this.scrollbar.style.opacity = "0"; }, 500);
   }
 
-  enable() { this.enabled = true; this.wrapper.classList.remove("flow-scroll-disabled"); }
-  disable() { this.enabled = false; this.wrapper.classList.add("flow-scroll-disabled"); this.cancelAnimation(); }
+  enable() {
+    if (this.enableGuard && !this.enableGuard()) {
+      this.disable();
+      return this;
+    }
+    this.enabled = true;
+    this.wrapper.classList.remove("flow-scroll-disabled");
+    return this;
+  }
+  disable() {
+    this.enabled = false;
+    this.wrapper.classList.add("flow-scroll-disabled");
+    this.cancelAnimation();
+    return this;
+  }
   cancelScroll() { this.disable(); window.addEventListener("pointerup", () => this.enable(), { once: true }); }
   destroy() { this.cancelAnimation(); delete this.content.DiscoScroll; delete this.wrapper.DiscoScroll; }
 

@@ -33,6 +33,11 @@ const CONFIG = {
 
 // Cache frequently used DOM elements for better performance
 const mainHomeSlider = document.getElementById(CONFIG.SELECTORS.MAIN_SLIDER.slice(1));
+const defaultSliderX = () => {
+    const rtl = document.body.classList.contains("rtl");
+    const hasTiles = DiscoBoard.backendMethods.homeConfiguration.hasTiles();
+    return hasTiles ? (rtl ? -window.innerWidth : 0) : (rtl ? 0 : -window.innerWidth);
+};
 
 // Animation timing calculations
 const ANIMATION_TIMINGS = {
@@ -164,7 +169,7 @@ const appTransition = {
         startAnim();
 
         setTimeout(() => {
-            scrollers.main_home_scroller.scrollTo(0, 0);
+            scrollers.main_home_scroller.scrollTo(defaultSliderX(), 0);
             mainHomeSlider.style.visibility = 'hidden';
             mainHomeSlider.classList.add('visibility-hidden');
 
@@ -178,7 +183,7 @@ const appTransition = {
         mainHomeSlider.style.removeProperty('visibility');
         mainHomeSlider.classList.remove('visibility-hidden');
         clearTimeout(window.appTransitionLaunchError);
-        if (document.body.classList.contains("rtl")) scrollers.main_home_scroller.scrollTo(-window.innerWidth, 0); else scrollers.main_home_scroller.scrollTo(0, 0);
+        scrollers.main_home_scroller.scrollTo(defaultSliderX(), 0);
         mainHomeSlider.classList.remove(CONFIG.CLASSES.TRANSITION.PAUSE);
         mainHomeSlider.classList.add(CONFIG.CLASSES.TRANSITION.RESUME);
 

@@ -151,8 +151,8 @@ class DiscoMock {
         return versionName + " (code: " + versionCode + ")";
 
     }
-    isDeviceRooted() { return "false" }
-    isShizukuAvailable() { return "true" }
+    isDeviceRooted() { return false }
+    isShizukuAvailable() { return true }
     getDefaultApps() {
         return JSON.stringify({
             "phoneApp": "com.google.android.dialer",

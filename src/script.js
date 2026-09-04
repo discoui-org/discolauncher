@@ -71,6 +71,9 @@ const scrollers = {
     }),
 }
 window.scrollers = scrollers
+scrollers.main_home_scroller.enableGuard = () =>
+    DiscoBoard.backendMethods.homeConfiguration.hasTiles()
+DiscoBoard.backendMethods.homeConfiguration.syncPageAvailability()
 
 window.console.image = function (url, size = 100) {
     if (typeof url == "string") {
@@ -107,6 +110,13 @@ const appTransitionScale = () => window.innerHeight / 850 / 2 + .5
 $(":root").css({ "--window-width": window.innerWidth + "px", "--window-height": window.innerHeight + "px", "--window-hypotenuse": (Math.sqrt(Math.pow(window.innerWidth, 2) + Math.pow(window.innerHeight, 2))) + "px", "--app-transition-scale": appTransitionScale() })
 
 scrollers.main_home_scroller.on("slideWillChange", function (e) {
+    if (!DiscoBoard.backendMethods.homeConfiguration.hasTiles()) {
+        if (DiscoBoard.backendMethods.navigation.lastPush?.change == "appMenuOpened") {
+            DiscoBoard.backendMethods.navigation.back(false)
+        }
+        $("#search-icon").addClass("shown");
+        return
+    }
     if (e.pageX == document.body.classList.contains("rtl") ? 1 : 0) {
         if (DiscoBoard.backendMethods.navigation.lastPush.change == "appMenuOpened") {
             DiscoBoard.backendMethods.navigation.back()

@@ -120,7 +120,7 @@ const homeTileEditSwitch = {
     $("div.disco-home-tile").removeClass("home-menu-selected");
 
     $("div.tile-list-page").addClass("home-menu-back-outro");
-    scrollers.main_home_scroller.enabled = true;
+    scrollers.main_home_scroller.enable();
     homeTileEditEnabled = false;
     tileListGrid.enableMove(false);
     openFolderState?.folderGrid?.enableMove(false);

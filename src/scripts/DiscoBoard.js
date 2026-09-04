@@ -118,7 +118,9 @@ const boardMethods = {
     setTimeout(() => {
       loader.remove();
       appTransition.onResume(false, true);
-      if (document.body.classList.contains("rtl")) scrollers.main_home_scroller.scrollTo(-window.innerWidth, 0, 0)
+      if (document.body.classList.contains("rtl") && backendMethods.homeConfiguration.hasTiles()) {
+        scrollers.main_home_scroller.scrollTo(-window.innerWidth, 0, 0)
+      }
     }, 750);
   },
   createHomeTile: (size = [1, 1], options = {}, append = false) => {
@@ -157,6 +159,7 @@ const boardMethods = {
     // Apply tile preferences to home tile
     backendMethods.applyTilePreferences(widget, options.packageName);
 
+    backendMethods.homeConfiguration.syncPageAvailability();
     if (window.scrollers) window.scrollers.tile_page_scroller.refresh();
     return widget;
 
@@ -885,6 +888,7 @@ const backendMethods = {
       console.error("Invalid text direction!");
       return;
     }
+    backendMethods.homeConfiguration.syncPageAvailability()
     if (!doNotSave) localStorage.setItem("textDirection", direction)
   },
   packageManagerProvider: {
@@ -897,7 +901,27 @@ const backendMethods = {
     }
   },
   homeConfiguration: {
+    hasTiles: () => Boolean(
+      document.querySelector("div.tile-list-inner-container > div.disco-home-tile")
+    ),
+    syncPageAvailability: () => {
+      const hasTiles = backendMethods.homeConfiguration.hasTiles()
+      const wasEmpty = document.body.classList.contains("tile-list-empty")
+      document.body.classList.toggle("tile-list-empty", !hasTiles)
+
+      const slider = window.scrollers?.main_home_scroller
+      if (!slider) return
+      if (hasTiles) {
+        if (wasEmpty) slider.enable()
+        return
+      }
+
+      const appListX = document.body.classList.contains("rtl") ? 0 : -window.innerWidth
+      slider.scrollTo(appListX, 0, 0)
+      slider.disable()
+    },
     save: () => {
+      backendMethods.homeConfiguration.syncPageAvailability()
       try {
         boardMethods.liveTiles.refresh()
       } catch (error) {
@@ -1007,6 +1031,7 @@ const backendMethods = {
             window.tileListGrid.load(Object.values(loadData))*/
       window.tileListGrid.batchUpdate(false)
       window.cantSaveHomeConfig = false
+      backendMethods.homeConfiguration.syncPageAvailability()
     },
   },
   wallpaper: {
@@ -1147,6 +1172,7 @@ const backendMethods = {
     if (tileElem) {
       window.tileListGrid.removeWidget(tileElem)
       boardMethods.liveTiles.refresh()
+      backendMethods.homeConfiguration.save()
     }
     backendMethods.reloadApps()
   },
