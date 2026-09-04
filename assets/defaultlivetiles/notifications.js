@@ -144,6 +144,7 @@ function draw() {
         showAppTitle: !activeMedia,
         notificationCount: regularNotifications.length,
         mediaKey: activeMedia ? getMediaKey(activeMedia) : null,
+        surfaceFallback: activeMedia ? 'metro' : 'accent',
         duration: 7000
     });
 
