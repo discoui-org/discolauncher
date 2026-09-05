@@ -1,0 +1,159 @@
+{
+  "title": "Setări",
+  "tabs": {
+    "home": "Acasă",
+    "applications": "Aplicații"
+  },
+  "theme": {
+    "title": "Acasă+Temă",
+    "accent_color": "Culoare de evidențiere",
+    "background": "Fundal",
+    "home_background": "Fundal acasă",
+    "choose_photo": "Alegeți fotografia",
+    "show_more_tiles": "Afișați mai multe Dale",
+    "friendly_accent": "Modificați-vă fundalul dispozitivului și <span style='color: var(--accent-color)'>culoarea de evidențiere</span> pentru a fi în ton cu dispoziția de astăzi, de săptămâna aceasta sau pentru toată luna.",
+    "friendly_tiles": "Puteți schimba dimensiunea și numărul de dale disponibile în ecranul de acasă.",
+    "themes": {
+      "light": "Deschis",
+      "dark": "Închis",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "Rotire Ecran",
+    "auto_rotate": "Auto-rotire",
+    "rotation_lock": "Blocare rotație",
+    "friendly_rotation_lock": "Atunci când este activată funcția Blocare rotație, ecranul își va păstra orientarea curentă când vă rotiți dispozitivul."
+  },
+  "language": {
+    "title": "Limbă"
+  },
+  "ease_of_access": {
+    "title": "Simplificare Acces",
+    "description": "dimensiuni text, contrast ridicat și altele",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "Scalare",
+    "font": {
+      "title": "Font",
+      "choose": "Alegeți...",
+      "remove": "Eliminare Font"
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "Avansat",
+    "description": "manager de pachete și alte modificări",
+    "debugging": {
+      "title": "Debugging",
+      "dump_apps": "Exportare JSON de Aplicații Instalate"
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "Manager de pachete",
+      "title_experimental": "Manager de pachete (EXPERIMENTAL)",
+      "system": "Sistem",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "Resetați Lansatorul Groove?",
+      "message": "Acțiunea dată va reseta lansatorul dvs. la setările sale implicite. Toate personalizările vor fi pierdute."
+    },
+    "root": {
+      "title": "Acces Root Obligatoriu",
+      "message": "Accesul root este necesar pentru a efectua această operație. Vă rugăm să acordați acces root pentru a continua."
+    },
+    "shizuku": {
+      "title": "Permisiune Shizuku Obligatorie",
+      "message": "Permisiunea Shizuku este obligatorie pentru a efectua această operație. Vă rugăm să acordați permisiunea Shizuku pentru a continua."
+    },
+    "update_available": {
+      "title": "Actualizare Disponibilă!",
+      "message": "O nouă versiune <strong>({{version}})</strong> este disponibilă, de mărimea {{size}}. Doriți să o descărcați?",
+      "message2": "O nouă versiune <strong>({{version}})</strong> este disponibilă. Doriți să o descărcați?"
+    },
+    "update_check_failed": {
+      "title": "Verificare Actualizare A Eșuat!",
+      "message": "Nu este posibilă verificarea actualizărilor aplicației. Vă rugăm să încercați din nou mai târziu."
+    },
+    "up_to_date": {
+      "title": "La Zi!",
+      "message": "Aveți cea mai groove-zavă versiune a Lansatorului Groove."
+    },
+    "font_read_error": {
+      "title": "Format Fișier Neacceptat",
+      "message": "Fișierul de font nu este valid. Asigurați-vă că fișierul este de tip .ttf și încercați să îl încărcați din nou."
+    },
+    "font_load_error": {
+      "title": "Fontul nu poate fi încărcat",
+      "message": "Nu am putut citi fișierul de font. Se acceptă numai fonturi de tip .ttf. Vă rugăm să încercați un alt fișier."
+    },
+    "copy_failed": {
+      "title": "Copiere Eșuată!",
+      "message": "Nu este posibilă copierea listei de aplicații. Vă rugăm să încercați din nou."
+    },
+    "copy_success": {
+      "title": "Copiat în Clipboard!",
+      "message": "Aplicații instalate copiate cu succes în format JSON."
+    }
+  },
+  "about": {
+    "title": "Despre",
+    "description": "Lansator Groove",
+    "version": "Versiune: {{version}}",
+    "webview_version": "Versiune WebView: {{version}}",
+    "reset_launcher": "Resetați Lansatorul",
+    "check_updates": "Verificare Actualizări"
+  },
+  "apps": {
+    "uninstall_app": "Dezinstalați Aplicația",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "Echipa Groove",
+    "developer": "Dezvoltator",
+    "icon_design": "Design Pictograme",
+    "logo_design": "Design Logotipuri"
+  }
+}

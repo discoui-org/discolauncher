@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "다음",
+        "previous": "이전",
+        "pleaseWait": "잠시만 기다려 주세요..."
+    },
+    "welcome": {
+        "install": "환영합니다",
+        "update": "다시 오신 걸 환영합니다",
+        "appName": "Groove Launcher",
+        "setupIntro": "짧은 단계로 사용자 환경을 설정해 봅시다",
+        "warning": "경고: 이 앱은 사전 체험 소프트웨어이며 버그가 있을 수 있습니다."
+    },
+    "wizard": {
+        "title": "업데이트 마법사",
+        "description": "데이터가 안전하게 이동되었는지 확인해봅시다! 다음을 눌러서 계속하세요."
+    },
+    "access": {
+        "title": "접근성",
+        "description": "모든 것이 딱 맞게 느껴지도록 경험을 맞춤 설정하세요.",
+        "background": "배경",
+        "scaling": "확대"
+    },
+    "themes": {
+        "light": "라이트",
+        "dark": "다크"
+    },
+    "colors": {
+        "title": "색을 선택하세요",
+        "description": "당신의 기분에 맞는 색을 선택하세요."
+    },
+    "permissions": {
+        "title": "권한",
+        "groups": {
+            "contacts": {
+                "title": "연락처",
+                "description": "라이브 타일에 연락처를 표시하기 위해 연락처에 접근해야 합니다."
+            },
+            "photos": {
+                "title": "사진",
+                "description": "사진을 라이브 타일에 표시하기 위해 사진 접근 권한이 필요합니다."
+            },
+            "notifications": {
+                "title": "알림",
+                "description": "라이브 타일에 알림을 표시하기 위해 알림 접근 권한이 필요합니다."
+            },
+            "accessibility": {
+                "title": "접근성",
+                "description": "기기를 잠그기 위해 접근성 서비스를 활성화하세요."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "새로운 기능"
+    },
+    "finish": {
+        "title": "Groove를 준비하세요",
+        "description": "설정이 끝났습니다. 시작할 시간입니다!"
+    }
+}

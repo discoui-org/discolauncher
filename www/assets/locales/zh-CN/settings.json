@@ -1,0 +1,159 @@
+{
+  "title": "设置",
+  "tabs": {
+    "home": "主页",
+    "applications": "应用程序"
+  },
+  "theme": {
+    "title": "主页+主题",
+    "accent_color": "强调色",
+    "background": "背景",
+    "home_background": "主页背景",
+    "choose_photo": "选择照片",
+    "show_more_tiles": "显示更多磁贴",
+    "friendly_accent": "更改设备的背景和<span style='color: var(--accent-color)'>强调色</span>以匹配您的心情，无论是今天，这周，还是整个月份。",
+    "friendly_tiles": "您可以更改主页上可用磁贴的大小和数量。",
+    "themes": {
+      "light": "浅色",
+      "dark": "深色",
+      "auto": "自动"
+    }
+  },
+  "screen_rotation": {
+    "title": "屏幕旋转",
+    "auto_rotate": "自动旋转",
+    "rotation_lock": "旋转锁定",
+    "friendly_rotation_lock": "当旋转锁定开启时，旋转设备时主页将保持当前方向。"
+  },
+  "language": {
+    "title": "语言"
+  },
+  "ease_of_access": {
+    "title": "辅助功能",
+    "description": "文字大小，高对比度等",
+    "reduce_motion": {
+      "title": "减少动态效果",
+      "description": "减少动态效果，如视差和动画，以帮助防止晕动症。"
+    },
+    "high_contrast": {
+      "title": "高对比度",
+      "description": "更改某些功能的颜色，并隐藏其背景图像。"
+    },
+    "scaling": "缩放",
+    "font": {
+      "title": "字体",
+      "choose": "选择...",
+      "remove": "移除字体"
+    },
+    "haptic_feedback": {
+      "title": "触觉反馈",
+      "description": "启用与磁贴和控件交互时的振动反馈。"
+    },
+    "groups": {
+      "vision": "视觉",
+      "tactile": "触觉"
+    }
+  },
+  "advanced": {
+    "title": "高级",
+    "description": "包管理器和其他调整",
+    "debugging": {
+      "title": "调试",
+      "dump_apps": "导出已安装应用程序 JSON"
+    },
+    "data": {
+      "title": "数据",
+      "backup": "备份",
+      "restore": "恢复"
+    },
+    "package_manager": {
+      "title": "包管理器",
+      "title_experimental": "包管理器（实验性）",
+      "system": "系统",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "双击睡眠",
+    "alternative_wallpaper": "替代壁纸放置"
+  },
+  "alerts": {
+    "reset": {
+      "title": "重置 Groove Launcher？",
+      "message": "这将重置启动器为默认设置。所有自定义设置将丢失。"
+    },
+    "root": {
+      "title": "需要 Root 访问权限",
+      "message": "执行此操作需要 Root 访问权限。请授予 Root 访问权限以继续。"
+    },
+    "shizuku": {
+      "title": "需要 Shizuku 权限",
+      "message": "执行此操作需要 Shizuku 权限。请授予 Shizuku 权限以继续。"
+    },
+    "update_available": {
+      "title": "有更新可用！",
+      "message": "新版本 <strong>({{version}})</strong> 可用，大小为 {{size}}。您想下载吗？",
+      "message2": "新版本 <strong>({{version}})</strong> 可用。您想下载吗？"
+    },
+    "update_check_failed": {
+      "title": "更新检查失败！",
+      "message": "无法检查应用程序更新。请稍后再试。"
+    },
+    "up_to_date": {
+      "title": "已是最新！",
+      "message": "您拥有最新版本的 Groove Launcher。"
+    },
+    "font_read_error": {
+      "title": "不支持的文件格式",
+      "message": "字体文件无效。请确保它是 .ttf 文件并重试上传。"
+    },
+    "font_load_error": {
+      "title": "无法加载字体",
+      "message": "我们无法读取字体文件。仅支持 .ttf 字体。请尝试不同的文件。"
+    },
+    "copy_failed": {
+      "title": "复制失败！",
+      "message": "无法复制应用程序列表。请重试。"
+    },
+    "copy_success": {
+      "title": "已复制到剪贴板！",
+      "message": "已成功将已安装的应用程序复制为 JSON 格式。"
+    }
+  },
+  "about": {
+    "title": "关于",
+    "description": "Groove Launcher",
+    "version": "版本：{{version}}",
+    "webview_version": "WebView 版本：{{version}}",
+    "reset_launcher": "重置启动器",
+    "check_updates": "检查更新"
+  },
+  "apps": {
+    "uninstall_app": "卸载应用程序",
+    "show_in_app_list": "在应用程序列表中显示此应用程序",
+    "name": "名称",
+    "icon": "图标",
+    "icon_selections": {
+      "default": "默认",
+      "monochrome": "单色"
+    },
+    "background": "背景",
+    "background_selections": {
+      "default": "默认",
+      "transparent": "透明"
+    },
+    "text_color": "文字颜色",
+    "text_color_selections": {
+      "auto": "自动",
+      "dark": "深色",
+      "light": "浅色"
+    },
+    "live_tile": "动态磁贴",
+    "show_app": "在应用程序列表中显示"
+  },
+  "roles": {
+    "team_groove": "团队 Groove",
+    "developer": "开发者",
+    "icon_design": "图标设计",
+    "logo_design": "标志设计"
+  }
+}

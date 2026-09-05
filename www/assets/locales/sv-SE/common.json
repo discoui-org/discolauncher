@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Okej",
+    "yes": "Ja",
+    "no": "Nej",
+    "uninstall": "Avinstallera",
+    "cancel": "Avbryt",
+    "apply": "Använd",
+    "allow": "",
+    "try_again": "Försök igen",
+    "light": "Ljus",
+    "dark": "Mörk",
+    "remove": "Ta bort",
+    "on": "På",
+    "off": "Av",
+    "locked": "Låst",
+    "unlocked": "Upplåst",
+    "dismiss": "",
+    "read_more": ""
+  },
+  "search": {
+    "title": "Sök",
+    "no_results": "Inga resultat för {{query}}",
+    "search_store": "sök i Store"
+  },
+  "errors": {
+    "webview_old": "WebView är för gammal!",
+    "home_reset": "Hemskärmen återställdes på grund av ett allvarligt fel :( vänligen rapportera:",
+    "launch_timeout": "Systemstarten tog för lång tid"
+  },
+  "app_menu": {
+    "pin_to_home": "Fäst på hemskärmen",
+    "app_info": "",
+    "uninstall": "Avinstallera"
+  },
+  "alerts": {
+    "default": {
+      "title": "Varning!",
+      "message": "Meddelande"
+    },
+    "uninstall": {
+      "title": "Avinstallera app?",
+      "message": "Den här appen, samt eventuell information den innehåller, kommer att tas bort från enheten."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

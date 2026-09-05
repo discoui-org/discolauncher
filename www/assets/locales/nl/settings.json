@@ -1,0 +1,159 @@
+{
+  "title": "Instellingen",
+  "tabs": {
+    "home": "Thuis",
+    "applications": "Applicaties"
+  },
+  "theme": {
+    "title": "Thuis+Thema",
+    "accent_color": "Accentkleur",
+    "background": "Achtergrond",
+    "home_background": "Achtergrond voor thuisscherm",
+    "choose_photo": "Foto kiezen",
+    "show_more_tiles": "Meer tegels weergeven",
+    "friendly_accent": "Pas de achtergrond en <span style='color: var(--accent-color)'>accentkleur</span> van uw apparaat aan op basis van hoe u zich vandaag, deze week of de hele maand voelt.",
+    "friendly_tiles": "U kunt de grootte van de tegels en het aantal tegels op uw thuisscherm wijzigen.",
+    "themes": {
+      "light": "Wit",
+      "dark": "Zwart",
+      "auto": "Automatisch"
+    }
+  },
+  "screen_rotation": {
+    "title": "Schermrotatie",
+    "auto_rotate": "Automatisch draaien",
+    "rotation_lock": "Draaivergrendeling",
+    "friendly_rotation_lock": "Wanneer Draaivergrendeling is ingeschakeld, blijft de huidige stand van uw scherm behouden wanneer u uw telefoon draait."
+  },
+  "language": {
+    "title": "Taal"
+  },
+  "ease_of_access": {
+    "title": "Toegankelijkheid",
+    "description": "lettergrootte, hoog contrast en meer",
+    "reduce_motion": {
+      "title": "Verminder beweging",
+      "description": "Verminder bewegingseffecten, zoals parallax en animaties, om bewegingsziekte te voorkomen."
+    },
+    "high_contrast": {
+      "title": "Hoog contrast",
+      "description": "Verandert de kleuren voor sommige functies, en verbergt een aantal van hun achtergrondafbeeldingen."
+    },
+    "scaling": "Schalen",
+    "font": {
+      "title": "Lettertype",
+      "choose": "Kies...",
+      "remove": "Verwijder Lettertype"
+    },
+    "haptic_feedback": {
+      "title": "Haptische feedback",
+      "description": "Trillen inschakelen bij interactie met tegels en bedieningselementen."
+    },
+    "groups": {
+      "vision": "Visueel",
+      "tactile": "Tactiel"
+    }
+  },
+  "advanced": {
+    "title": "Geavanceerd",
+    "description": "pakketbeheer en andere aanpassingen",
+    "debugging": {
+      "title": "Debuggen",
+      "dump_apps": "Dump Geïnstalleerde Apps JSON"
+    },
+    "data": {
+      "title": "Data",
+      "backup": "Back-up",
+      "restore": "Herstellen"
+    },
+    "package_manager": {
+      "title": "Pakketbeheer",
+      "title_experimental": "Pakketbeheer (EXPERIMENTEEL)",
+      "system": "Systeem",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Dubbel-tik om te slapen",
+    "alternative_wallpaper": "Alternatieve achtergrond plaatsen"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Groove Launcher Resetten?",
+      "message": "Dit zet uw launcher terug naar fabrieksinstellingen. Alle aanpassingen raken verloren."
+    },
+    "root": {
+      "title": "Root Toegang Vereist",
+      "message": "Root toegang is vereist om deze actie uit te voeren. Geef root access om door te gaan."
+    },
+    "shizuku": {
+      "title": "Shizuku Toestemming Vereist",
+      "message": "Shizuku toestemming is vereist om deze actie uit te voeren. Geef Shizuku toestemming om door te gaan."
+    },
+    "update_available": {
+      "title": "Update Beschikbaar!",
+      "message": "Een nieuwe versie <strong>({{version}})</strong> is verkrijgbaar, formaat op {{size}}. Wil je het downloaden?",
+      "message2": "Een nieuwe versie <strong>({{version}})</strong> is verkrijgbaar. Wil je het downloaden?"
+    },
+    "update_check_failed": {
+      "title": "Update Controle Mislukt!",
+      "message": "Kan momenteel geen updates vinden, probeer het later opnieuw."
+    },
+    "up_to_date": {
+      "title": "Helemaal bij!",
+      "message": "Je hebt de grooviest versie van Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Niet ondersteund bestandsformaat",
+      "message": "Het font bestand is ongeldig. Zorg ervoor dat het een .tff bestand is en probeer het opnieuw te uploaden."
+    },
+    "font_load_error": {
+      "title": "Kan font niet laden",
+      "message": "We kunnen het lettertype bestand niet lezen. Alleen .ttf lettertype worden ondersteund. Probeer een ander bestand."
+    },
+    "copy_failed": {
+      "title": "Kopie Mislukt!",
+      "message": "Kan app lijst niet kopiëren. Probeer het opnieuw."
+    },
+    "copy_success": {
+      "title": "Gekopieerd naar Klembord!",
+      "message": "Geïnstalleerde apps met succes naar JSON formaat gekopieerd."
+    }
+  },
+  "about": {
+    "title": "Over",
+    "description": "Groove Launcher",
+    "version": "Versie: {{version}}",
+    "webview_version": "WebView Versie: {{version}}",
+    "reset_launcher": "Reset launcher",
+    "check_updates": "Controleer updates"
+  },
+  "apps": {
+    "uninstall_app": "Verwijder App",
+    "show_in_app_list": "Deze app weergeven in de App Lijst",
+    "name": "Naam",
+    "icon": "Icoon",
+    "icon_selections": {
+      "default": "Standaard",
+      "monochrome": "Monochroom"
+    },
+    "background": "Achtergrond",
+    "background_selections": {
+      "default": "Standaard",
+      "transparent": "Transparant"
+    },
+    "text_color": "Tekstkleur",
+    "text_color_selections": {
+      "auto": "Automatisch",
+      "dark": "donker",
+      "light": "licht"
+    },
+    "live_tile": "Live tegel",
+    "show_app": "Weergeven in de lijst met apps"
+  },
+  "roles": {
+    "team_groove": "Team Groove",
+    "developer": "Ontwikkelaar",
+    "icon_design": "Iconografie Ontwerp",
+    "logo_design": "Logo Ontwerp"
+  }
+}

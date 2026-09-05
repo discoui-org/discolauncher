@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong>は、カスタマイズ可能で洗練されたユーザー体験を提供するメトロスタイルのランチャーです。ユーザーはタイルのサイズを調整したり、タイルの位置を変更したり、カラーテーマをカスタマイズしたり、お気に入りの壁紙を設定したりして、ランチャーを個別にパーソナライズできます。",
+    "title_features": "特徴",
+    "list_featuers_0": "<strong>メトロスタイルインターフェース:</strong> Windows Phone 8にインスパイアされたクリーンでモダンなデザイン。",
+    "list_featuers_1": "<strong>カスタマイズ可能なタイル:</strong> タイルをドラッグ＆ドロップしてサイズを調整し、独自のスタイルに合わせて移動できます。",
+    "list_featuers_2": "<strong>テーマのカスタマイズ:</strong> 気分や美的感覚に合わせてランチャーの色を変更できます。",
+    "list_featuers_3": "<strong>壁紙のパーソナライズ:</strong> 自分の壁紙を選んで設定し、完全にパーソナライズされたセットアップを作成できます。",
+    "title_contributing": "貢献",
+    "paragraph_contributing_0": "貢献は大歓迎です！<strong>Groove Launcher</strong>の改善に役立つ問題やプルリクエストを自由に提出してください。",
+    "list_paragraph_contributing_0": "リポジトリをフォークします。",
+    "list_paragraph_contributing_1": "機能やバグ修正のための新しいブランチを作成します。",
+    "list_paragraph_contributing_2": "コードが準備できたらプルリクエストを提出します。",
+    "title_license": "ライセンス",
+    "paragraph_license": "このプロジェクトはMITライセンスの下でライセンスされています。詳細については、<a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a>ファイルを参照してください。",
+    "title_contact": "連絡先",
+    "paragraph_contact_0": "お問い合わせやフィードバックがありましたら、お気軽にご連絡ください！"
+}

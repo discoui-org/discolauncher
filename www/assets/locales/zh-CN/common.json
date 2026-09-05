@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "确定",
+    "okay": "好的",
+    "yes": "是",
+    "no": "否",
+    "uninstall": "卸载",
+    "cancel": "取消",
+    "apply": "应用",
+    "allow": "允许",
+    "try_again": "重试",
+    "light": "浅色",
+    "dark": "深色",
+    "remove": "移除",
+    "on": "开",
+    "off": "关",
+    "locked": "已锁定",
+    "unlocked": "未锁定",
+    "dismiss": "忽略",
+    "read_more": "阅读更多"
+  },
+  "search": {
+    "title": "搜索",
+    "no_results": "没有找到与 {{query}} 相关的结果",
+    "search_store": "搜索商店"
+  },
+  "errors": {
+    "webview_old": "WebView 版本太旧！",
+    "home_reset": "由于致命错误，您的主屏幕已重置 :( 请报告此问题：",
+    "launch_timeout": "系统启动时间过长"
+  },
+  "app_menu": {
+    "pin_to_home": "固定到主屏幕",
+    "app_info": "应用信息",
+    "uninstall": "卸载"
+  },
+  "alerts": {
+    "default": {
+      "title": "警报！",
+      "message": "消息"
+    },
+    "uninstall": {
+      "title": "卸载此应用？",
+      "message": "此应用及其包含的任何信息将从您的设备中删除。"
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

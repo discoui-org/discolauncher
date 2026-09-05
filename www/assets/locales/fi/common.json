@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Okei",
+    "yes": "Kyllä",
+    "no": "Ei",
+    "uninstall": "Poista",
+    "cancel": "Peruuta",
+    "apply": "Käytä",
+    "allow": "Salli",
+    "try_again": "Yritä uudelleen",
+    "light": "Vaalea",
+    "dark": "Tumma",
+    "remove": "Poista",
+    "on": "Käytössä",
+    "off": "Ei käytössä",
+    "locked": "Lukittu",
+    "unlocked": "Ei lukittu",
+    "dismiss": "Hylkää",
+    "read_more": "Lue lisää"
+  },
+  "search": {
+    "title": "Haku",
+    "no_results": "Ei tuloksia haulle {{query}}",
+    "search_store": "hae Kaupasta"
+  },
+  "errors": {
+    "webview_old": "WebView versio on liian vanha!",
+    "home_reset": "Aloitusnäyttösi nollattiin kriittisen virheen vuoksi :( Ilmoita tästä virheestä:",
+    "launch_timeout": "Järjestelmällä kesti liian kauan käynnistyä"
+  },
+  "app_menu": {
+    "pin_to_home": "Kiinnitä aloitusnäyttöön",
+    "app_info": "Sovellustiedot",
+    "uninstall": "Poista"
+  },
+  "alerts": {
+    "default": {
+      "title": "Varoitus!",
+      "message": "Viesti"
+    },
+    "uninstall": {
+      "title": "Poistetaanko tämä sovellus?",
+      "message": "Tämä sovellus ja sen tiedot poistetaan laitteeltasi."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}} %",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

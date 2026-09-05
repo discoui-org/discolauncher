@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "확인",
+    "okay": "알겠습니다",
+    "yes": "네",
+    "no": "아니요",
+    "uninstall": "제거",
+    "cancel": "취소",
+    "apply": "적용",
+    "allow": "허용",
+    "try_again": "다시 시도",
+    "light": "라이트",
+    "dark": "다크",
+    "remove": "삭제",
+    "on": "켬",
+    "off": "끔",
+    "locked": "고정됨",
+    "unlocked": "해제됨",
+    "dismiss": "닫기",
+    "read_more": "더 읽기"
+  },
+  "search": {
+    "title": "검색",
+    "no_results": "{{query}}에 대한 검색결과 없음",
+    "search_store": "스토어 검색하기"
+  },
+  "errors": {
+    "webview_old": "Webview가 너무 오래되었습니다!",
+    "home_reset": "치명적인 오류로 인해 홈 화면이 재설정되었습니다 :(\n이 문제를 보고해 주세요:",
+    "launch_timeout": "시스템에서 실행이 너무 오래 걸립니다"
+  },
+  "app_menu": {
+    "pin_to_home": "홈 화면에 고정하기",
+    "app_info": "앱 정보",
+    "uninstall": "제거"
+  },
+  "alerts": {
+    "default": {
+      "title": "알림!",
+      "message": "메시지"
+    },
+    "uninstall": {
+      "title": "이 앱을 제거하시겠습니까?",
+      "message": "이 앱과 앱의 모든 정보가 이 기기에서 제거됩니다."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

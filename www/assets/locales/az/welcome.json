@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "növbəti",
+        "previous": "əvvəlki",
+        "pleaseWait": "Zəhmət olmasa gözləyin..."
+    },
+    "welcome": {
+        "install": "Xoş gəldiniz",
+        "update": "Yenidən xoş gəldiniz",
+        "appName": "Groove Launcher",
+        "setupIntro": "Gəlin təcrübənizi qısa addımlarla quraşdıraq.",
+        "warning": "Xəbərdarlıq: Bu, buraxılışdan əvvəl proqramdır və səhvlər ola bilər."
+    },
+    "wizard": {
+        "title": "Yeniləmə Sihirbazı",
+        "description": "Gəlin məlumatlarınızın təhlükəsiz şəkildə daşınmasını təmin edək! Davam etmək üçün \"növbəti\" düyməsini basın."
+    },
+    "access": {
+        "title": "Giriş Asanlığı",
+        "description": "Təcrübənizi fərdiləşdirməklə hər şeyin tam olaraq istədiyiniz kimi olduğundan əmin olun.",
+        "background": "Fondakı şəkil",
+        "scaling": "Miqyaslama"
+    },
+    "themes": {
+        "light": "Açıq",
+        "dark": "Tünd"
+    },
+    "colors": {
+        "title": "Rənginizi seçin",
+        "description": "Əhvalınıza uyğun bir rəng seçin."
+    },
+    "permissions": {
+        "title": "İcazələr",
+        "groups": {
+            "contacts": {
+                "title": "Əlaqələr",
+                "description": "Əlaqələrinizin canlı plitəsini göstərmək üçün əlaqələrə giriş lazımdır."
+            },
+            "photos": {
+                "title": "Şəkillər",
+                "description": "Şəkillərinizin canlı plitəsini göstərmək üçün şəkillərə giriş lazımdır."
+            },
+            "notifications": {
+                "title": "Bildirişlər",
+                "description": "Bildirişlərinizin canlı plitəsini göstərmək üçün bildirişlərə giriş lazımdır."
+            },
+            "accessibility": {
+                "title": "Giriş Asanlığı",
+                "description": "Cihazı kilidləmək üçün giriş asanlığını aktiv edin."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Nələr Yeni?"
+    },
+    "finish": {
+        "title": "Groove'a hazır olun",
+        "description": "Quraşdırmanız tamamlandı. Gəlin başlayaq!"
+    }
+}

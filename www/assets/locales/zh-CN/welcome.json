@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "下一步",
+        "previous": "上一步",
+        "pleaseWait": "请稍候..."
+    },
+    "welcome": {
+        "install": "欢迎",
+        "update": "欢迎回来",
+        "appName": "Groove 启动器",
+        "setupIntro": "让我们在几个简单的步骤中设置您的体验。",
+        "warning": "警告：这是预发布软件，可能包含错误。"
+    },
+    "wizard": {
+        "title": "更新向导",
+        "description": "让我们确保您的数据安全迁移！点击下一步继续。"
+    },
+    "access": {
+        "title": "轻松访问",
+        "description": "自定义您的体验，以确保一切都感觉恰到好处。",
+        "background": "背景",
+        "scaling": "缩放"
+    },
+    "themes": {
+        "light": "浅色",
+        "dark": "深色"
+    },
+    "colors": {
+        "title": "选择您的颜色",
+        "description": "选择一种符合您心情的颜色。"
+    },
+    "permissions": {
+        "title": "权限",
+        "groups": {
+            "contacts": {
+                "title": "联系人",
+                "description": "需要访问联系人以显示您的联系人实时磁贴。"
+            },
+            "photos": {
+                "title": "照片",
+                "description": "需要访问照片以显示您的照片实时磁贴。"
+            },
+            "notifications": {
+                "title": "通知",
+                "description": "需要访问通知以显示您的通知实时磁贴。"
+            },
+            "accessibility": {
+                "title": "辅助功能",
+                "description": "启用辅助功能以锁定设备。"
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "新功能"
+    },
+    "finish": {
+        "title": "准备好开始 Groove",
+        "description": "您的设置已完成。是时候开始了！"
+    }
+}

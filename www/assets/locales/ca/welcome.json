@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "següent",
+        "previous": "enrere",
+        "pleaseWait": "Espereu, si us plau..."
+    },
+    "welcome": {
+        "install": "Benvingut",
+        "update": "Benvingut de nou",
+        "appName": "Groove Launcher",
+        "setupIntro": "Configurem la teva experiència en uns curts passos.",
+        "warning": "Advertència: Això és software prellançament i pot contenir errors."
+    },
+    "wizard": {
+        "title": "Actualitzacions",
+        "description": "Assegurem que les teves dades es moguin correctament! Fes clic en següent per continuar."
+    },
+    "access": {
+        "title": "Accessibilitat",
+        "description": "Personalitza la teva experiència perquè tot estigui bé.",
+        "background": "Fons",
+        "scaling": "Escala"
+    },
+    "themes": {
+        "light": "Clar",
+        "dark": "Fosc"
+    },
+    "colors": {
+        "title": "Escull el teu color",
+        "description": "Escull un color que combini amb com estiguis."
+    },
+    "permissions": {
+        "title": "Permisos",
+        "groups": {
+            "contacts": {
+                "title": "Contactes",
+                "description": "L'accés als contactes és necessari per mostrar la cel·la de contactes en viu."
+            },
+            "photos": {
+                "title": "Fotos",
+                "description": "L'accés a les fotos és necessari per mostrar la cel·la de fotos en viu."
+            },
+            "notifications": {
+                "title": "Notificacions",
+                "description": "L'accés a les notificacions és necessari per mostrar la cel·la de notificacions en viu."
+            },
+            "accessibility": {
+                "title": "Accessibilitat",
+                "description": "Permeteu l'accés a l'accessibilitat per apagar el dispositiu."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Què hi ha de nou?"
+    },
+    "finish": {
+        "title": "Prepara't per Groove",
+        "description": "La configuració ha acabat. Podeu començar!"
+    }
+}

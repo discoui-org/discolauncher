@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Được",
+    "okay": "Đồng ý",
+    "yes": "Có",
+    "no": "Không",
+    "uninstall": "Dỡ cài đặt",
+    "cancel": "Huỷ",
+    "apply": "Áp dụng",
+    "allow": "Cho phép",
+    "try_again": "Thử lại",
+    "light": "Sáng",
+    "dark": "Tối",
+    "remove": "Gỡ bỏ",
+    "on": "Bật",
+    "off": "Tắt",
+    "locked": "Đã khóa",
+    "unlocked": "Đã mở khóa",
+    "dismiss": "Bỏ qua",
+    "read_more": "Đọc thêm"
+  },
+  "search": {
+    "title": "Tìm kiếm",
+    "no_results": "Không có kết quả nào cho {{query}}",
+    "search_store": "tìm kiếm trong Cửa hàng"
+  },
+  "errors": {
+    "webview_old": "Bản WebView này quá cũ!",
+    "home_reset": "Màn hình chính của bạn bị đặt lại bởi một lỗi nghiêm trọng :( Hãy báo cáo lại:",
+    "launch_timeout": "Hệ thống mất quá nhiều thời gian để khởi chạy"
+  },
+  "app_menu": {
+    "pin_to_home": "Ghim vào màn hình bắt đầu",
+    "app_info": "Thông tin ứng dụng",
+    "uninstall": "Dỡ cài đặt"
+  },
+  "alerts": {
+    "default": {
+      "title": "Cảnh báo!",
+      "message": "Thông điệp"
+    },
+    "uninstall": {
+      "title": "Dỡ cài đặt ứng dụng này?",
+      "message": "Ứng dụng này, cùng với mọi thông tin trong đó sẽ bị xóa khỏi thiết bị của bạn."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

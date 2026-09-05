@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> is a metro-styled launcher designed for a customisable and sleek user experience. Users can personalise their launcher by adjusting tile sizes, changing tile positions, customising the colour theme, and setting their favourite wallpapers.",
+    "title_features": "Features",
+    "list_featuers_0": "<strong>Metro-Style Interface:</strong> A clean & modern design inspired by Windows Phone 8.",
+    "list_featuers_1": "<strong>Customisable Tiles:</strong> Drag and drop tiles, adjust their sizes, and move them around to fit your unique style.",
+    "list_featuers_2": "<strong>Theme Customisation:</strong> Change the colour of the launcher to match your mood or aesthetic.",
+    "list_featuers_3": "<strong>Wallpaper Personalisation:</strong> Choose and set your own wallpapers to create a fully personalised setup.",
+    "title_contributing": "Contributing",
+    "paragraph_contributing_0": "Contributions are most welcome! Feel free to submit issues and pull requests to help improve <strong>Groove Launcher</strong>.",
+    "list_paragraph_contributing_0": "Fork the repository.",
+    "list_paragraph_contributing_1": "Create a new branch for your feature or bugfix.",
+    "list_paragraph_contributing_2": "Submit a pull request when your code is ready.",
+    "title_license": "Licence",
+    "paragraph_license": "This project is licensed under the MIT Licence - see the <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENCE</a> file for details.",
+    "title_contact": "Contact",
+    "paragraph_contact_0": "For any enquiries or feedback, feel free to reach out!"
+}

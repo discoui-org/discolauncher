@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "следно",
+        "previous": "претходно",
+        "pleaseWait": "Ве молам чекај..."
+    },
+    "welcome": {
+        "install": "Добредојдовте",
+        "update": "Добредојдовте назад",
+        "appName": "Groove Launcher",
+        "setupIntro": "Може на наместиме во неколку мали чекори.",
+        "warning": "Вниманието: Ова е незавршено софтвер е и има не достатоци!"
+    },
+    "wizard": {
+        "title": "Местење нова верзија",
+        "description": "Ние ке ги место меѓу твоите информации везбедно! Прицни натаму да продолжиш."
+    },
+    "access": {
+        "title": "Лесен пристап",
+        "description": "Можеш да направиш се како што сакаш.",
+        "background": "Заднина",
+        "scaling": "Големина"
+    },
+    "themes": {
+        "light": "Светла",
+        "dark": "Темна"
+    },
+    "colors": {
+        "title": "Одбери го бојата",
+        "description": "Одбери боја."
+    },
+    "permissions": {
+        "title": "",
+        "groups": {
+            "contacts": {
+                "title": "",
+                "description": ""
+            },
+            "photos": {
+                "title": "",
+                "description": ""
+            },
+            "notifications": {
+                "title": "",
+                "description": ""
+            },
+            "accessibility": {
+                "title": "",
+                "description": ""
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Што е ново?"
+    },
+    "finish": {
+        "title": "Спреми се да Groove",
+        "description": "Сме завршени!"
+    }
+}

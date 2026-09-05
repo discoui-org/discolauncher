@@ -1,0 +1,159 @@
+{
+  "title": "Beállítások",
+  "tabs": {
+    "home": "Kezdőlap",
+    "applications": "Alkalmazások"
+  },
+  "theme": {
+    "title": "Kezdőlap+Téma",
+    "accent_color": "Kiemelt szín",
+    "background": "Háttér",
+    "home_background": "Kezdőlap háttér",
+    "choose_photo": "Fotó választás",
+    "show_more_tiles": "Több csempe",
+    "friendly_accent": "Változtassa meg készüléke hátterét és <span style='color: var(--accent-color)'>kiemelt színét</span>, hogy igazodjon kedvéhez ma, holnap, vagy akár egész hónapban.",
+    "friendly_tiles": "Megváltoztathatja a kezdőlapon elérhető csempék méretét és számát.",
+    "themes": {
+      "light": "Világos",
+      "dark": "Sötét",
+      "auto": "Automatikus"
+    }
+  },
+  "screen_rotation": {
+    "title": "Képernyő elforgatás",
+    "auto_rotate": "Automatikus elforgatás",
+    "rotation_lock": "Elforgatás tiltása",
+    "friendly_rotation_lock": "Amikor az elforgatás tiltva van, a kezdőlap a jelenlegi orientációban marad a készüléket forgatva is."
+  },
+  "language": {
+    "title": "Nyelv"
+  },
+  "ease_of_access": {
+    "title": "Akadálymentesítés",
+    "description": "szöveg méret, magas kontraszt és továbbiak",
+    "reduce_motion": {
+      "title": "Animációk korlátozása",
+      "description": "A térbeli és egyéb animációk korlátozása, a mozgásbetegség elkerülése érdekében."
+    },
+    "high_contrast": {
+      "title": "Kontrasztos megjelenítés",
+      "description": "Megváltoztatja bizonyos elemek színét, és néhol eltűnteti a háttérképeket."
+    },
+    "scaling": "Méretarány",
+    "font": {
+      "title": "Betűtípus",
+      "choose": "Tallózás...",
+      "remove": "Betűtípus eltávolítása"
+    },
+    "haptic_feedback": {
+      "title": "Érintésalapú visszajelzés",
+      "description": "Rezgéses vizzajelzés bekapcsolása a csempék és gombok használata során."
+    },
+    "groups": {
+      "vision": "Látás",
+      "tactile": "Érzékelés"
+    }
+  },
+  "advanced": {
+    "title": "Haladó",
+    "description": "csomagkezelő és további trükkök",
+    "debugging": {
+      "title": "Hibakeresés",
+      "dump_apps": "Telepített alkalmazások írása JSON fájlba"
+    },
+    "data": {
+      "title": "Adatok",
+      "backup": "Biztonsági mentés",
+      "restore": "Visszaállítás"
+    },
+    "package_manager": {
+      "title": "Csomagkezelő",
+      "title_experimental": "Csomagkezelő (fejlesztés alatt)",
+      "system": "Rendszer",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Dupla érintés alváshoz",
+    "alternative_wallpaper": "Alternatív háttérkép elhelyezés"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Visszaállítja a Groove Launcher-t?",
+      "message": "Ez a művelet visszaállítja az alapbeállításokat. Minden testreszabás el fog veszni."
+    },
+    "root": {
+      "title": "Root jogosultság szükséges",
+      "message": "Ehhez a művelethez root jogosultság szükséges. Adja meg a jogosultságot a folytatáshoz."
+    },
+    "shizuku": {
+      "title": "Shizuku jogosultság szükséges",
+      "message": "Ehhez a művelethez Shizuku jogosultság szükséges. Adja meg a jogosultságot a folytatáshoz."
+    },
+    "update_available": {
+      "title": "Frissítés elérhető!",
+      "message": "Új verzió érhető el: <strong>({{version}})</strong>, mérete {{size}}. Szeretné letölteni?",
+      "message2": "Új verzió érhető el: <strong>({{version}})</strong>. Szeretné letölteni?"
+    },
+    "update_check_failed": {
+      "title": "Frissítés keresése sikertelen!",
+      "message": "Frissítés keresése sikertelen! Próbálja újra később."
+    },
+    "up_to_date": {
+      "title": "Naprakész.",
+      "message": "Ön a Groove Launcher legújabb verziójával rendelkezik."
+    },
+    "font_read_error": {
+      "title": "Ismeretlen fájlformátum",
+      "message": "A fájl nem megfelelő. Győződjön meg, hogy .ttf fájlt használ, majd próbálja meg feltölteni újra."
+    },
+    "font_load_error": {
+      "title": "A betűtípus betöltése sikertelen",
+      "message": "A betűtípus betöltése sikertelen. Csak .tff formátum támogatott."
+    },
+    "copy_failed": {
+      "title": "Másolás sikertelen!",
+      "message": "Az alkalmazások listájának másolása sikertelen."
+    },
+    "copy_success": {
+      "title": "Vágólapra másolva!",
+      "message": "A telepített alkalmazások sikeresen JSON formátumba másolva."
+    }
+  },
+  "about": {
+    "title": "Megszakít",
+    "description": "Groove Launcher",
+    "version": "Verzió: {{version}}",
+    "webview_version": "WebView verziója: {{version}}",
+    "reset_launcher": "Launcer visszaállítása",
+    "check_updates": "Frissítések keresése"
+  },
+  "apps": {
+    "uninstall_app": "Alkalmazás eltávolítása",
+    "show_in_app_list": "Mutasd az alkalmazáslistában",
+    "name": "Név",
+    "icon": "Ikon",
+    "icon_selections": {
+      "default": "Alapértelmezett",
+      "monochrome": "Fekete/fehér"
+    },
+    "background": "Háttérszín",
+    "background_selections": {
+      "default": "Alapértelmezett",
+      "transparent": "Átlátszó"
+    },
+    "text_color": "Szövegszín",
+    "text_color_selections": {
+      "auto": "Automatikus",
+      "dark": "sötét",
+      "light": "világos"
+    },
+    "live_tile": "Élő csempe",
+    "show_app": "Mutasd az alkalmazáslistában"
+  },
+  "roles": {
+    "team_groove": "Groove csapat",
+    "developer": "Fejlesztő",
+    "icon_design": "Ikon dizájn",
+    "logo_design": "Logó dizájn"
+  }
+}

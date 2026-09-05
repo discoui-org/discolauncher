@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> là một launcher thiết kế theo giao diện Metro - dễ tiếp cận, dễ tùy chỉnh và đẹp. Người dùng có thể cá nhân hoá trình chạy bằng cách chỉnh kích cỡ ô, di chuyển chúng, đổi màu chủ đề, đặt hình nền yêu thích.",
+    "title_features": "Các tính năng",
+    "list_featuers_0": "<strong>Giao diện Metro:</strong> Thiết kế hiện đại và gọn gàng đến từ Windows Phone 8.",
+    "list_featuers_1": "<strong>Tile tùy chỉnh được:</strong> Mỗi ứng dụng trong màn hình chính được đặt trong một tile - hay \"lát gạch\". Kéo thả, chỉnh kích cỡ là hoàn toàn khả thi.",
+    "list_featuers_2": "<strong>Tùy biến màu sắc:</strong> Đổi màu hợp với trạng thái - cảm xúc của bạn.",
+    "list_featuers_3": "<strong>Đổi hình nền (đương nhiên):</strong> Chọn và đặt hình nền riêng để tạo một setup hoàn toàn mang tính cá nhân.",
+    "title_contributing": "Đóng góp",
+    "paragraph_contributing_0": "Các đóng góp đều được chào đón tại đây! Thoải mái tạo những Issue và Pull Request mới để cải thiện <strong>Groove Launcher</strong>.",
+    "list_paragraph_contributing_0": "Fork kho lưu trữ.",
+    "list_paragraph_contributing_1": "Tạo một nhánh mới cho các tính năng hoặc vá lỗi.",
+    "list_paragraph_contributing_2": "Tạo một Pull Request khi bạn đã sẵn sàng.",
+    "title_license": "Giấy phép",
+    "paragraph_license": "Dự án này sử dụng giấy phép MIT - đọc file <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> để biết thêm chi tiết.",
+    "title_contact": "Liên hệ",
+    "paragraph_contact_0": "Mọi câu hỏi hoặc phản hồi, cứ thoải mái liên hệ!"
+}

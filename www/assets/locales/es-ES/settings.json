@@ -1,0 +1,159 @@
+{
+  "title": "Configuración",
+  "tabs": {
+    "home": "Menú inicio",
+    "applications": "Aplicaciones"
+  },
+  "theme": {
+    "title": "Inicio+Tema",
+    "accent_color": "Color del acento",
+    "background": "Fondo",
+    "home_background": "Fondo de inicio",
+    "choose_photo": "Elegir foto",
+    "show_more_tiles": "Mostrar más azulejos",
+    "friendly_accent": "Cambia el fondo y <span style='color: var(--accent-color)'>el color</span> de tu dispositivo para que coincidan con tu ánimo de hoy, de la semana o del mes.",
+    "friendly_tiles": "Puedes cambiar el tamaño y el número de mosaicos disponibles en tu menú inicio.",
+    "themes": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "Rotación de pantalla",
+    "auto_rotate": "Rotación automática",
+    "rotation_lock": "Bloqueo de rotación",
+    "friendly_rotation_lock": "Cuando la rotación esté bloqueada, se mantendrá en la orientación actual al girar el dispositivo."
+  },
+  "language": {
+    "title": "Idioma"
+  },
+  "ease_of_access": {
+    "title": "Accesibilidad",
+    "description": "tamaño de fuente, alto contraste y más",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "Escalado",
+    "font": {
+      "title": "Fuente",
+      "choose": "Elige...",
+      "remove": "Eliminar fuente"
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "Avanzado",
+    "description": "administrador de paquetes y otros ajustes",
+    "debugging": {
+      "title": "Depuración",
+      "dump_apps": "Exportar aplicaciones instaladas en formato JSON"
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "Administrador de paquetes",
+      "title_experimental": "Administrador de paquetes (EXPERIMENTAL)",
+      "system": "Sistema",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "¿Restablecer Groove Launcher?",
+      "message": "Esto restablecerá tu launcher a su configuración predeterminada. Se borrará toda la configuración."
+    },
+    "root": {
+      "title": "Se requiere acceso a root",
+      "message": "El acceso a root es requerido para realizar esta acción. Por favor, conceda el acceso de root para continuar."
+    },
+    "shizuku": {
+      "title": "Permiso de Shizuku requerido",
+      "message": "El permiso de Shizuku es requerido para realizar esta acción. Por favor, conceda el permiso de Shizuku para continuar."
+    },
+    "update_available": {
+      "title": "¡Actualización disponible!",
+      "message": "Una nueva versión ({{version}}) está disponible, pesa {{size}}. ¿Te gustaría descargarla?",
+      "message2": "Una nueva versión <strong>({{version}})</strong> está disponible. ¿Te gustaría descargarla?"
+    },
+    "update_check_failed": {
+      "title": "¡Comprobación de actualizaciones fallida!",
+      "message": "No es posible comprobar actualizaciones. Por favor, inténtelo de nuevo más tarde."
+    },
+    "up_to_date": {
+      "title": "¡Todo actualizado!",
+      "message": "Tienes la versión más actual de Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Tipo de archivo no soportado",
+      "message": "El archivo de fuente no es válido. Asegúrate de que sea un archivo .ttf y vuelve a intentarlo."
+    },
+    "font_load_error": {
+      "title": "No se pudo cargar la fuente",
+      "message": "No pudimos leer la fuente. Solo se soportan archivos .ttf. Por favor, pruebe con otro archivo."
+    },
+    "copy_failed": {
+      "title": "¡Error al copiar!",
+      "message": "No es posible copiar la lista de aplicaciones. Por favor intente nuevamente."
+    },
+    "copy_success": {
+      "title": "¡Copiado al portapapeles!",
+      "message": "Las aplicaciones instaladas se han copiado a formato JSON."
+    }
+  },
+  "about": {
+    "title": "Acerca de",
+    "description": "Groove Launcher",
+    "version": "Version: {{version}}",
+    "webview_version": "Versión de WebView: {{version}}",
+    "reset_launcher": "Restablecer el launcher",
+    "check_updates": "Comprobar actualizaciones"
+  },
+  "apps": {
+    "uninstall_app": "Desinstalar aplicación",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "Equipo de Groove",
+    "developer": "Desarrollador",
+    "icon_design": "Diseño de iconos",
+    "logo_design": "Diseño de logos"
+  }
+}

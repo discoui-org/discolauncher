@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ookiez!",
+    "okay": "Oki dokiz!",
+    "yes": "Yeshhh!",
+    "no": "Nuuuu!",
+    "uninstall": "Shoo app go bye-bye!",
+    "cancel": "Naw, nebermindz!",
+    "apply": "Makez it happenz!",
+    "allow": "Letz do it!",
+    "try_again": "Tryz 'gain, meow!",
+    "light": "Shinyz mode!",
+    "dark": "Spoopy darkz!",
+    "remove": "Shoo-shooz!",
+    "on": "Onny-onz!",
+    "off": "Offy-offz!",
+    "locked": "Locky-lockz!",
+    "unlocked": "Freeeeeee!",
+    "dismiss": "Nopez!",
+    "read_more": "Readz moar!"
+  },
+  "search": {
+    "title": "Findy-findz!",
+    "no_results": "Nu findz fur {{query}}, sad meow :(",
+    "search_store": "Poke da Storez!"
+  },
+  "errors": {
+    "webview_old": "Oh noez! WebView iz OWWWWLD!!",
+    "home_reset": "Ur homey-home brokeded :( Report dis paw-lease:",
+    "launch_timeout": "Too sloooow... system napz 2 longz!"
+  },
+  "app_menu": {
+    "pin_to_home": "Stick it to homez!",
+    "app_info": "Appy deets!",
+    "uninstall": "Bye-bye appy!"
+  },
+  "alerts": {
+    "default": {
+      "title": "UH-OH!!",
+      "message": "Iz messag fur u!"
+    },
+    "uninstall": {
+      "title": "Make dis appy go bye-bye?",
+      "message": "Dis appy an all da stuffs insidez will poof frum ur gadget!"
+    }
+  },
+  "numbers": {
+    "percent": "{{value}} paw-cent!",
+    "decimal": "{{whole}} an a lil' bit {{decimal}}",
+    "bytes": {
+      "b": "{{size}} teeny B!",
+      "kb": "{{size}} kitty-bytez!",
+      "mb": "{{size}} meowy-bytez!",
+      "gb": "{{size}} GIGA-MEOWZ!",
+      "tb": "{{size}} TERRA-PAWZ!"
+    }
+  }
+}

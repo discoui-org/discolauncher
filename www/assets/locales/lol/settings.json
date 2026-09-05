@@ -1,0 +1,159 @@
+{
+  "title": "Settinz!",
+  "tabs": {
+    "home": "Hoom!",
+    "applications": "Appy-thingz!"
+  },
+  "theme": {
+    "title": "Hoom+Themez!",
+    "accent_color": "Fancy Colorz!",
+    "background": "Backy-groundz!",
+    "home_background": "Hoom backy-groundz!",
+    "choose_photo": "Pickz a pic!",
+    "show_more_tiles": "Moar tilez, meow!",
+    "friendly_accent": "Make ur gadgetz look fancy-schmancy matchy-match mood, today, diz week, or foreberz!",
+    "friendly_tiles": "Resizez an choos da tilez how u likez on ur hoom screenz!",
+    "themes": {
+      "light": "Shiny Modez!",
+      "dark": "Spoopy Modez!",
+      "auto": "Autoz"
+    }
+  },
+  "screen_rotation": {
+    "title": "Spinz Da Screen!",
+    "auto_rotate": "Spinny-spin!",
+    "rotation_lock": "No spinz!",
+    "friendly_rotation_lock": "When no spinz iz on, ur hoom stayz how it iz, no matter u turnz ur gadgetz!"
+  },
+  "language": {
+    "title": "Talky Talkz!"
+  },
+  "ease_of_access": {
+    "title": "Eazy-Peazy Use!",
+    "description": "texty-sizez, contrasty, and moar stuffz!",
+    "reduce_motion": {
+      "title": "Less Wigglez!",
+      "description": "Reduces wigglez efex, an liek parallax n animashuns, fur no motion pukiez."
+    },
+    "high_contrast": {
+      "title": "Hiz kontrast iz high",
+      "description": "Chngz teh colurz fur sum feechurz, n hidz sum bakgrund pics."
+    },
+    "scaling": "Zoomy-zoom!",
+    "font": {
+      "title": "Letter Stylez!",
+      "choose": "Pickz one!",
+      "remove": "Buh-byez Font!"
+    },
+    "haptic_feedback": {
+      "title": "Ticklez Fedback",
+      "description": "Turn on vibz fedback wen playin wif tiles n contruls."
+    },
+    "groups": {
+      "vision": "Vishun!",
+      "tactile": "Tactilez"
+    }
+  },
+  "advanced": {
+    "title": "Pro Stuffz!",
+    "description": "Tweaky-tweaks an secret magicz!",
+    "debugging": {
+      "title": "Debuggy Timez!",
+      "dump_apps": "Make appy-listz JSON!"
+    },
+    "data": {
+      "title": "Dataz",
+      "backup": "Bakup",
+      "restore": "Reschore"
+    },
+    "package_manager": {
+      "title": "Appy-Packagez!",
+      "title_experimental": "Dangerous Packagez (EXPERIMENTAL!)",
+      "system": "Systemz!",
+      "root": "Rootz!",
+      "shizuku": "Shizuku Powerz!"
+    },
+    "double_tap_to_sleep": "Dubble tap 4 napz",
+    "alternative_wallpaper": "Alturnatif wallpaper movy"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Reset Groovy Launchy?",
+      "message": "Dis gon make Groovy all fresh, no customz left :("
+    },
+    "root": {
+      "title": "Root Magicz Needz!",
+      "message": "Root iz needed 2 do diz thingy. Pwease gibs rootz!"
+    },
+    "shizuku": {
+      "title": "Shizuku Permission Needz!",
+      "message": "Gib Shizuku okayz 2 do dis actionz!"
+    },
+    "update_available": {
+      "title": "New Version Alertz!",
+      "message": "Ooh newz vershun <strong>({{version}})</strong>, size {{size}}! Wanna getz it?",
+      "message2": "Ooh new vershun <strong>({{version}})</strong>! Get nowz?"
+    },
+    "update_check_failed": {
+      "title": "Updatez Brokeded!",
+      "message": "Couldn’t check fur new appy. Tryz 'gain later!"
+    },
+    "up_to_date": {
+      "title": "Up-to-date Meow!",
+      "message": "You haz da grooviest Groove Launchy!"
+    },
+    "font_read_error": {
+      "title": "Font iz Badz!",
+      "message": "Dis font iz wrongy-wrong! Only .ttf iz okayz. Tryz 'gain!"
+    },
+    "font_load_error": {
+      "title": "Font Failz!",
+      "message": "Oopsiez, couldn’t loadz fonty. Only .ttf iz good. Tryz another one!"
+    },
+    "copy_failed": {
+      "title": "Copy Went Boom!",
+      "message": "Appy-list no copy! Tryz 'gain!"
+    },
+    "copy_success": {
+      "title": "Copied, Meow!",
+      "message": "Ur installed appy-list iz now JSON!"
+    }
+  },
+  "about": {
+    "title": "Abouty-Stuffz!",
+    "description": "Groovy Launchy Info!",
+    "version": "Vershun: {{version}}",
+    "webview_version": "WebView Vershun: {{version}}",
+    "reset_launcher": "Reset Launchy!",
+    "check_updates": "Check 4 Updatez!"
+  },
+  "apps": {
+    "uninstall_app": "Make Appy Go Bye-Bye!",
+    "show_in_app_list": "Showz da appz in da appy-list!",
+    "name": "Naym!",
+    "icon": "Pikchez!",
+    "icon_selections": {
+      "default": "Nermal!",
+      "monochrome": "1 shadz"
+    },
+    "background": "Backy-groundz!",
+    "background_selections": {
+      "default": "Nermal!",
+      "transparent": "Tranzy-parentz!"
+    },
+    "text_color": "Texty Colorz!",
+    "text_color_selections": {
+      "auto": "Autoz",
+      "dark": "Spoopy Modez!",
+      "light": "Shiny Modez!"
+    },
+    "live_tile": "Live tilez",
+    "show_app": "Showz in da appy-list!"
+  },
+  "roles": {
+    "team_groove": "Team Groovy!",
+    "developer": "Code Wizard!",
+    "icon_design": "Piccy Makerz!",
+    "logo_design": "Fancy Logo Makerz!"
+  }
+}

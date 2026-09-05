@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "następny",
+        "previous": "poprzedni",
+        "pleaseWait": "Proszę czekać..."
+    },
+    "welcome": {
+        "install": "Witaj",
+        "update": "Witaj ponownie",
+        "appName": "Groove Launcher",
+        "setupIntro": "Skonfigurujmy twoje doświadczenie w paru krótkich krokach.",
+        "warning": "Uwaga: To jest wydanie przedpremierowe i może zawierać błędy."
+    },
+    "wizard": {
+        "title": "Asystent Aktualizacji",
+        "description": "Plik czcionki jest nieprawidłowy. Upewnij się że to jest plik z rozszerzeniem. ttf i spróbuj. wysłać ponownie."
+    },
+    "access": {
+        "title": "Ułatwienia dostępu",
+        "description": "Dostosuj swoje doświadczenia, aby upewnić się, że, wszystko pasuje.",
+        "background": "Tło",
+        "scaling": "Skalowanie"
+    },
+    "themes": {
+        "light": "Jasny",
+        "dark": "Ciemny"
+    },
+    "colors": {
+        "title": "Wybierz swój kolor",
+        "description": "Wybierz kolor, który odpowiada twojemu nastrojowi."
+    },
+    "permissions": {
+        "title": "Uprawnienia",
+        "groups": {
+            "contacts": {
+                "title": "Kontakty",
+                "description": "Dostęp do kontaktów jest potrzebny, aby wyświetlać je w żywym kafelku."
+            },
+            "photos": {
+                "title": "Zdjęcia",
+                "description": "Dostęp do zdjęć jest potrzebny, aby wyświetlać je w żywym kafelku."
+            },
+            "notifications": {
+                "title": "Powiadomienia",
+                "description": "Dostęp do powiadomień jest potrzebny, aby, wyświetlać je w żywych kafelkach."
+            },
+            "accessibility": {
+                "title": "Ułatwienia dostępu",
+                "description": "Włącz uprawnienia, aby móc blokować urządzenie."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Co nowego?"
+    },
+    "finish": {
+        "title": "Get ready to Groove",
+        "description": "Wszystko gotowe!"
+    }
+}

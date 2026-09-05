@@ -1,0 +1,159 @@
+{
+  "title": "Configuració",
+  "tabs": {
+    "home": "Inici",
+    "applications": "Aplicacions"
+  },
+  "theme": {
+    "title": "Inici+Tema",
+    "accent_color": "Color d'èmfasi",
+    "background": "Fons",
+    "home_background": "Fons d'Inici",
+    "choose_photo": "Tria una foto",
+    "show_more_tiles": "Mostra més Teulades",
+    "friendly_accent": "Canvia el fons de pantalla i <span style='color: var(--accent-color)'>color d'èmfasi</span> del vostre dispositiu perquè combini amb com et sents avui, aquesta setmana o el mes sencer.",
+    "friendly_tiles": "Pots canviar la mida i nombre de teulades disponibles a la teva pantalla d'inici.",
+    "themes": {
+      "light": "Clar",
+      "dark": "Fosc",
+      "auto": "Automàtic"
+    }
+  },
+  "screen_rotation": {
+    "title": "Rotació de Pantalla",
+    "auto_rotate": "Autorotació",
+    "rotation_lock": "Bloqueig de Rotació",
+    "friendly_rotation_lock": "Quan el Bloqueig de Rotació està actiu, el menú d'inici mantindrà la seva orientació quan roteu el dispositiu."
+  },
+  "language": {
+    "title": "Llengua"
+  },
+  "ease_of_access": {
+    "title": "Accessibilitat",
+    "description": "mida del text, contrast alt i més",
+    "reduce_motion": {
+      "title": "Redueix el moviment",
+      "description": "Redueix els efectes de moviment, com ara el «parallax» i les animacions, per prevenir els marejos."
+    },
+    "high_contrast": {
+      "title": "Alt contrast",
+      "description": "Canvia els colors d'algunes característiques, i oculta algunes de les imatges de fons."
+    },
+    "scaling": "Escala",
+    "font": {
+      "title": "Tipus de lletra",
+      "choose": "Tria...",
+      "remove": "Quita la Font"
+    },
+    "haptic_feedback": {
+      "title": "Resposta Hàptica",
+      "description": "Habilita la resposta hàptica en interactuar amb les teulades i controls."
+    },
+    "groups": {
+      "vision": "Visibilitat",
+      "tactile": "Tàctil"
+    }
+  },
+  "advanced": {
+    "title": "Avançat",
+    "description": "administrador de paquets i altres configuracions",
+    "debugging": {
+      "title": "Depuració",
+      "dump_apps": "Exportar JSON de les aplicacions instalades"
+    },
+    "data": {
+      "title": "Dades",
+      "backup": "Còpia de seguretat",
+      "restore": "Restaura"
+    },
+    "package_manager": {
+      "title": "Administrador de paquets",
+      "title_experimental": "Administrador de paquets (EXPERIMENTAL)",
+      "system": "Sistema",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Doble toc per suspendre",
+    "alternative_wallpaper": "Posició alternativa del fons de pantalla"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Reiniciar Groove Launcher?",
+      "message": "Això reiniciarà el llançador a les seves configuracions per defecte. Tota la personalització serà eliminada.."
+    },
+    "root": {
+      "title": "Accés a l'Arrel Requerit",
+      "message": "Es necessita accés a l'Arrel del dispositiu per continuar. Permeteu l'accés a l'arrel per continuar."
+    },
+    "shizuku": {
+      "title": "Accés a Shizuku Requerit",
+      "message": "Es necessita accés a Shizuku per continuar. Permeteu accés a Shizuku per continuar."
+    },
+    "update_available": {
+      "title": "Actualització disponible!",
+      "message": "Una nova versió <strong>{{version}}</strong> ja és disponible, amb una mida de {{size}}. Voleu descarregar-la?",
+      "message2": "Una nova versió<strong>{{version}}</strong> ja és disponible. Voleu descarregar-la?"
+    },
+    "update_check_failed": {
+      "title": "Error en Cercar Actualitzacions!",
+      "message": "No s'ha pogut comprovar si hi ha actualitzacions. Intenta-ho de nou més tard."
+    },
+    "up_to_date": {
+      "title": "Tens l'última versió!",
+      "message": "Tens l'última versió de Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Format d'arxiu no compatible",
+      "message": "L'arxiu de font no és vàlid. Assegura't que sigui un arxiu .ttf i intenta-ho de nou."
+    },
+    "font_load_error": {
+      "title": "No es pot carregar la font",
+      "message": "No hem pogut llegir l'arxiu de font. Només es pot fer servir fonts .ttf. Fes servir un altre arxiu."
+    },
+    "copy_failed": {
+      "title": "Error en Copiar!",
+      "message": "No s'ha pogut copiar la llista d'apps. Intenta-ho de nou."
+    },
+    "copy_success": {
+      "title": "S'ha Copiat al Porta-Retalls!",
+      "message": "S'ha copiat la llista d'aplicacions en format JSON amb èxit."
+    }
+  },
+  "about": {
+    "title": "Quant a",
+    "description": "Groove Launcher",
+    "version": "Versió: {{version}}",
+    "webview_version": "Versió del WebView: {{version}}",
+    "reset_launcher": "Reinicia el Llençador",
+    "check_updates": "Comprova "
+  },
+  "apps": {
+    "uninstall_app": "Desinstal·la l'aplicació",
+    "show_in_app_list": "Mostra aquesta aplicació a la llista d'aplicacions",
+    "name": "Nom",
+    "icon": "Icona",
+    "icon_selections": {
+      "default": "Per defecte",
+      "monochrome": "Monocrom"
+    },
+    "background": "Fons",
+    "background_selections": {
+      "default": "Per defecte",
+      "transparent": "Transparent"
+    },
+    "text_color": "Color del text",
+    "text_color_selections": {
+      "auto": "Automàtic",
+      "dark": "fosc",
+      "light": "clar"
+    },
+    "live_tile": "Teulada en viu",
+    "show_app": "Mostra a la llista d'aplicacions"
+  },
+  "roles": {
+    "team_groove": "Equip Groove",
+    "developer": "Desenvolupador",
+    "icon_design": "Disseny d'Icones",
+    "logo_design": "Disseny del Logotipus"
+  }
+}

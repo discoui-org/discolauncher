@@ -1,0 +1,159 @@
+{
+  "title": "Paramètres",
+  "tabs": {
+    "home": "Écran D'accueil",
+    "applications": "Applications"
+  },
+  "theme": {
+    "title": "Écran D'accueil+Thème",
+    "accent_color": "Couleur d’accentuation",
+    "background": "Arrière-plan",
+    "home_background": "Arrière-plan de l'écran d'accueil",
+    "choose_photo": "Choisir une photo",
+    "show_more_tiles": "Afficher plus de vignettes",
+    "friendly_accent": "Changez l’arrière-plan et la <span style='color: var(--accent-color)'>couleur d’accentuation</span> de votre appareil en fonction de votre humeur du jour, de la semaine ou du mois.",
+    "friendly_tiles": "Vous pouvez modifier la taille et le nombre des vignettes disponibles sur votre écran d'accueil.",
+    "themes": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "auto": "Auto"
+    }
+  },
+  "screen_rotation": {
+    "title": "Rotation écran",
+    "auto_rotate": "Rotation auto",
+    "rotation_lock": "Verrouillage de la rotation",
+    "friendly_rotation_lock": "Lorsque le verrouillage de la rotation est activé, votre écran conserve son orientation actuelle lorsque vous tournez votre appareil."
+  },
+  "language": {
+    "title": "Langue"
+  },
+  "ease_of_access": {
+    "title": "Options D'ergonomie",
+    "description": "taille du texte, contraste, etc",
+    "reduce_motion": {
+      "title": "Réduire les mouvements",
+      "description": "Réduisez les effets de mouvement, tels que la parallaxe et les animations, pour aider à prévenir le mal des transports."
+    },
+    "high_contrast": {
+      "title": "Contraste élevé",
+      "description": "Modifie les couleurs de certaines fonctionnalités et masque certaines de leurs images d'arrière-plan."
+    },
+    "scaling": "Mise à l'échelle",
+    "font": {
+      "title": "Police",
+      "choose": "Choisir...",
+      "remove": "Supprimer La Police"
+    },
+    "haptic_feedback": {
+      "title": "Retour haptique",
+      "description": "Activez le retour par vibration lors de l'interaction avec les vignettes et les contrôles."
+    },
+    "groups": {
+      "vision": "Vision",
+      "tactile": "Tactile"
+    }
+  },
+  "advanced": {
+    "title": "Avancé",
+    "description": "gestionnaire de paquets et autres modifications",
+    "debugging": {
+      "title": "Débogage",
+      "dump_apps": "Vider les applications installées dans JSON"
+    },
+    "data": {
+      "title": "Données",
+      "backup": "Sauvegarde",
+      "restore": "Restaurer"
+    },
+    "package_manager": {
+      "title": "Gestionnaire de paquets",
+      "title_experimental": "Gestionnaire de paquets (EXPÉRIMENTAL)",
+      "system": "Système",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Double tap pour dormir",
+    "alternative_wallpaper": "Placement alternatif du fond d'écran"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Réinitialiser Groove Launcher?",
+      "message": "Cela réinitialisera votre lanceur à ses paramètres par défaut. Toutes les personnalisations seront perdues."
+    },
+    "root": {
+      "title": "Accès Root Requis",
+      "message": "L'accès root est nécessaire pour effectuer cette action. Veuillez accorder l'accès root pour continuer."
+    },
+    "shizuku": {
+      "title": "Permission De Shizuku Requise",
+      "message": "La permission Shizuku est requise pour effectuer cette action. Veuillez accorder la permission à Shizuku pour continuer."
+    },
+    "update_available": {
+      "title": "Mise À Jour Disponible!",
+      "message": "Une nouvelle version <strong>({{version}})</strong> est disponible, dimensionnée à {{size}}. Voulez-vous la télécharger ?",
+      "message2": "Une nouvelle version <strong>({{version}})</strong> est disponible. Voulez-vous la télécharger ?"
+    },
+    "update_check_failed": {
+      "title": "Échec de la vérification de la mise à jour !",
+      "message": "Impossible de vérifier les mises à jour de l'application. Veuillez réessayer plus tard."
+    },
+    "up_to_date": {
+      "title": "À jour !",
+      "message": "Vous disposez de la dernière version de Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Format de fichier non pris en charge",
+      "message": "Le fichier de police n'est pas valide. Assurez-vous qu'il s'agit d'un fichier .ttf et essayez de télécharger à nouveau."
+    },
+    "font_load_error": {
+      "title": "Impossible de charger la police",
+      "message": "Nous n'avons pas pu lire le fichier de police. Seules les polices .ttf sont prises en charge. Veuillez essayer un autre fichier."
+    },
+    "copy_failed": {
+      "title": "Échec de la copie !",
+      "message": "Impossible de copier la liste des applications. Veuillez réessayer."
+    },
+    "copy_success": {
+      "title": "Copié dans le presse-papier!",
+      "message": "Applications installées copiées au format JSON avec succès."
+    }
+  },
+  "about": {
+    "title": "À propos de",
+    "description": "Groove Launcher",
+    "version": "Version : {{version}}",
+    "webview_version": "Version de WebView : {{version}}",
+    "reset_launcher": "Réinitialiser le lanceur",
+    "check_updates": "Vérifier l’existence de mises à jour"
+  },
+  "apps": {
+    "uninstall_app": "Désinstaller l'application",
+    "show_in_app_list": "Afficher cette application dans la liste des applications",
+    "name": "Nom",
+    "icon": "Icône",
+    "icon_selections": {
+      "default": "Par défaut",
+      "monochrome": "Monochrome"
+    },
+    "background": "Arrière-plan",
+    "background_selections": {
+      "default": "Par défaut",
+      "transparent": "Transparent"
+    },
+    "text_color": "Couleur du texte",
+    "text_color_selections": {
+      "auto": "Auto",
+      "dark": "Sombre",
+      "light": "Clair"
+    },
+    "live_tile": "Vignette dynamique",
+    "show_app": "Afficher dans la liste des applications"
+  },
+  "roles": {
+    "team_groove": "L'équipe Groove",
+    "developer": "Développeur",
+    "icon_design": "Conception d'icônes",
+    "logo_design": "Conception du logo"
+  }
+}

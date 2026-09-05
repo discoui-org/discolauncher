@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Okay",
+    "yes": "Ja",
+    "no": "Nej",
+    "uninstall": "Afinstaller",
+    "cancel": "Annuller",
+    "apply": "Anvend",
+    "allow": "Tillad",
+    "try_again": "Prøv igen",
+    "light": "Lys",
+    "dark": "Mørk",
+    "remove": "Fjern",
+    "on": "Til",
+    "off": "Fra",
+    "locked": "Låst",
+    "unlocked": "Oplåst",
+    "dismiss": "Afvis",
+    "read_more": "Læs mere"
+  },
+  "search": {
+    "title": "Søg",
+    "no_results": "Ingen resultater for {{query}}",
+    "search_store": "søg Butik"
+  },
+  "errors": {
+    "webview_old": "WebView er for gammelt!",
+    "home_reset": "Hjemskærmen blev nulstillet grundet en alvorlig fejl :( Anmeld den til os:",
+    "launch_timeout": "Systemet tog for lang tid til at starte"
+  },
+  "app_menu": {
+    "pin_to_home": "Fastgør til hjem",
+    "app_info": "App info",
+    "uninstall": "Afinstaller"
+  },
+  "alerts": {
+    "default": {
+      "title": "Advarsel!",
+      "message": "Besked"
+    },
+    "uninstall": {
+      "title": "Afinstaller denne app?",
+      "message": "Denne app, inklusiv alt information den indeholder, vil blive fjernet fra din enhed."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

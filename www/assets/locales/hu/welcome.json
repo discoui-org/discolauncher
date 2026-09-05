@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "következő",
+        "previous": "előző",
+        "pleaseWait": "Kérem várjon..."
+    },
+    "welcome": {
+        "install": "Üdvözöljük",
+        "update": "Üdv újra",
+        "appName": "Groove Launcher",
+        "setupIntro": "Kezdjük pár rövid lépéssel!",
+        "warning": "Figyelem: Ez az alkalmazás fejlesztés alatt áll és tartalmazhat hibákat."
+    },
+    "wizard": {
+        "title": "Frissítés",
+        "description": "Győződjünk meg róla, hogy az adatok biztonságban maradnak. Koppintson a folytatásra!"
+    },
+    "access": {
+        "title": "Akadálymentesítés",
+        "description": "Szabja személyre a felületet kedvére!",
+        "background": "Háttér",
+        "scaling": "Méretarány"
+    },
+    "themes": {
+        "light": "Világos",
+        "dark": "Sötét"
+    },
+    "colors": {
+        "title": "Válasszon színt",
+        "description": "Válasszon hangulatának megfelelő színt."
+    },
+    "permissions": {
+        "title": "Engedélyek",
+        "groups": {
+            "contacts": {
+                "title": "Névjegyek",
+                "description": "Névjegyzék hozzáférés szükséges az élő névjegyzék csempéhez."
+            },
+            "photos": {
+                "title": "Fotók",
+                "description": "Galéria hozzáférés szükséges az élő galéria csempéhez."
+            },
+            "notifications": {
+                "title": "Értesítések",
+                "description": "Értesítés hozzáférés szükséges ahhoz, hogy megjelenjenek az élő csempéken."
+            },
+            "accessibility": {
+                "title": "Kisegítő lehetőségek",
+                "description": "Engedélyezd a kisegítő lehetőséget az ezköz zárolásához."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Újdonságok"
+    },
+    "finish": {
+        "title": "Kezdjünk bele",
+        "description": "A beállításai elkészültek. Vágjunk is neki!"
+    }
+}

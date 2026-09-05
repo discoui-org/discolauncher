@@ -1,0 +1,159 @@
+{
+  "title": "الإعدادات",
+  "tabs": {
+    "home": "الصفحة الرئيسية",
+    "applications": "التطبيقات"
+  },
+  "theme": {
+    "title": "الرئيسية+التخصيص",
+    "accent_color": "اللون الثانوي",
+    "background": "الخلفية",
+    "home_background": "الخلفية الرئيسية",
+    "choose_photo": "اختيار صورة",
+    "show_more_tiles": "إظهار المزيد من البرامج",
+    "friendly_accent": "قم بتغيير خلفية جهازك و <span style='color: var(--accent-color)'>لون الثانوي</span> لتطابق مزاجك اليوم، هذا الأسبوع، أو طوال الشهر.",
+    "friendly_tiles": "يمكنك تغيير حجم وعدد البرامج المتاحة على شاشتك الرئيسية.",
+    "themes": {
+      "light": "فاتح",
+      "dark": "غامق",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "استدارة الشاشة",
+    "auto_rotate": "دوران تلقائي",
+    "rotation_lock": "قفل الدوران",
+    "friendly_rotation_lock": "عندما يكون قفل الدوران علي قيد التشغيل، سوف يبقى منزلك في الاتجاه الحالي عندما تقوم بتدوير جهازك."
+  },
+  "language": {
+    "title": "اللغة"
+  },
+  "ease_of_access": {
+    "title": "سهولة الوصول",
+    "description": "حجم النص, تباين عالي, ومزيد",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "القياس",
+    "font": {
+      "title": "الخط",
+      "choose": "اختر...",
+      "remove": "أزلة الخط"
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "إعدادات متقدمة",
+    "description": "مدير الحُزْمَات وتعديلات أخرى",
+    "debugging": {
+      "title": "تصحيح الأخطاء",
+      "dump_apps": "تفريغ التطبيقات المثبتة JSON"
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "مدير الحزمات",
+      "title_experimental": "مدير الحزمة (تجريبي)",
+      "system": "النظام",
+      "root": "الروت",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "إعادة تعيين مشغل جروفي؟",
+      "message": "سيؤدي هذا إلى إعادة تعيين المشغل إلى إعداداته الافتراضية. سيتم فقدان جميع التخصيصات."
+    },
+    "root": {
+      "title": "مطلوب الروت",
+      "message": "مطلوب روت لتنفيذ هذا الإجراء. الرجاء منح صلاحيات الروت للمتابعة."
+    },
+    "shizuku": {
+      "title": "مطلوب إذن Shizuku",
+      "message": "إذن Shizuku مطلوب لتنفيذ هذا الإجراء. يرجى منح إذن Shizuku للمتابعة."
+    },
+    "update_available": {
+      "title": "تحديث متوفر!",
+      "message": "يتوفر إصدار جديد <strong>({{version}})</strong> بحجم {{size}}. هل ترغب في تحميله؟",
+      "message2": "يتوفر إصدار جديد <strong>({{version}})</strong> هل ترغب في تحميله؟"
+    },
+    "update_check_failed": {
+      "title": "فشل في التحقق من التحديث!",
+      "message": "غير قادر على التحقق من وجود تحديثات التطبيق. الرجاء المحاولة مرة أخرى لاحقاً."
+    },
+    "up_to_date": {
+      "title": "آخر إصدار!",
+      "message": "لديك الإصدار الاخير من جروفي."
+    },
+    "font_read_error": {
+      "title": "تنسيق الملف غير مدعوم",
+      "message": "ملف الخط غير صالح. تأكد من أنه ملف .ttf وحاول التحميل مرة أخرى."
+    },
+    "font_load_error": {
+      "title": "يتعذر تحميل الخط",
+      "message": "لم نتمكن من قراءة ملف الخط. فقط خطوط .ttf مدعومة. الرجاء محاولة ملف مختلف."
+    },
+    "copy_failed": {
+      "title": "فشل في النسخ!",
+      "message": "غير قادر على نسخ قائمة التطبيقات. الرجاء المحاولة مرة أخرى."
+    },
+    "copy_success": {
+      "title": "نسخ إلى الحافظة!",
+      "message": "تم نسخ التطبيقات المثبتة إلى تنسيق JSON بنجاح."
+    }
+  },
+  "about": {
+    "title": "حول التطبيق",
+    "description": "مشغل جروفي",
+    "version": "الإصدار: {{version}}",
+    "webview_version": "إصدار WebView {{version}}",
+    "reset_launcher": "إعادة ضبط المشغل",
+    "check_updates": "تحقق من التحديثات"
+  },
+  "apps": {
+    "uninstall_app": "إلغاء تثبيت التطبيق",
+    "show_in_app_list": "إظهار هذا التطبيق في قائمة التطبيقات",
+    "name": "الإسم",
+    "icon": "ايقونة",
+    "icon_selections": {
+      "default": "القياسي",
+      "monochrome": "أحادي"
+    },
+    "background": "الخلفية",
+    "background_selections": {
+      "default": "القياسي",
+      "transparent": "شفاف"
+    },
+    "text_color": "لون النص",
+    "text_color_selections": {
+      "auto": "تلقائي",
+      "dark": "داكن",
+      "light": "فاتح"
+    },
+    "live_tile": "مربع حي",
+    "show_app": "إظهار في قائمة التطبيقات"
+  },
+  "roles": {
+    "team_groove": "فريق جروفي",
+    "developer": "المطور",
+    "icon_design": "تصميم الأيقونة",
+    "logo_design": "تصميم الشعار"
+  }
+}

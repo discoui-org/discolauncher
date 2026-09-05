@@ -1,0 +1,23 @@
+{
+    "lime": "酸橙",
+    "green": "绿色",
+    "emerald": "翡翠",
+    "teal": "水鸭色",
+    "cyan": "青色",
+    "cobalt": "钴蓝",
+    "indigo": "靛蓝",
+    "violet": "紫罗兰",
+    "pink": "粉色",
+    "magenta": "洋红",
+    "crimson": "深红",
+    "red": "红色",
+    "orange": "橙色",
+    "amber": "琥珀色",
+    "yellow": "黄色",
+    "brown": "棕色",
+    "olive": "橄榄色",
+    "steel": "钢色",
+    "mauve": "淡紫色",
+    "taupe": "灰褐色",
+    "custom_color": "自定义颜色"
+}

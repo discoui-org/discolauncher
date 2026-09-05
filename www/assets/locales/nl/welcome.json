@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "volgende",
+        "previous": "vorige",
+        "pleaseWait": "Even wachten..."
+    },
+    "welcome": {
+        "install": "Welkom",
+        "update": "Welkom terug",
+        "appName": "Groove Launcher",
+        "setupIntro": "Laten we jouw ervaring in een paar stappen instellen.",
+        "warning": "Waarschuwing: Dit is pre-release software en kan bugs bevatten."
+    },
+    "wizard": {
+        "title": "Updatewizard",
+        "description": "Laten we ervoor zorgen dat uw gegevens veilig worden verplaatst! Klik op Volgende om door te gaan."
+    },
+    "access": {
+        "title": "Toegankelijkheid",
+        "description": "Verander jouw ervaring om er zeker van te zijn dat alles juist voelt.",
+        "background": "Achtergrond",
+        "scaling": "Schalen"
+    },
+    "themes": {
+        "light": "Wit",
+        "dark": "Zwart"
+    },
+    "colors": {
+        "title": "Kies jouw kleur",
+        "description": "Kies een kleur dat bij jouw stemming past."
+    },
+    "permissions": {
+        "title": "Toestemmingen",
+        "groups": {
+            "contacts": {
+                "title": "Contacten",
+                "description": "Toegang tot contacten is nodig om live tegels van uw contacten weer te geven."
+            },
+            "photos": {
+                "title": "Foto's",
+                "description": "Toegang tot foto's is nodig om live tegels van uw foto's weer te geven."
+            },
+            "notifications": {
+                "title": "Meldingen",
+                "description": "Toegang tot meldingen is nodig om live tegels van uw meldingen weer te geven."
+            },
+            "accessibility": {
+                "title": "Toegankelijkheid",
+                "description": "Toegankelijkheid inschakelen om apparaat te vergrendelen."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Wat is nieuw?"
+    },
+    "finish": {
+        "title": "Wees gereed om te Grooven",
+        "description": "Je installatie is klaar. Tijd om in te duiken!"
+    }
+}

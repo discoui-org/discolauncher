@@ -1,0 +1,159 @@
+{
+  "title": "Definições",
+  "tabs": {
+    "home": "Ecrã Inicial",
+    "applications": "Aplicações"
+  },
+  "theme": {
+    "title": "Ecrã Inicial e Temas",
+    "accent_color": "Cor de destaque",
+    "background": "Fundo",
+    "home_background": "Fundo do ecrã inicial",
+    "choose_photo": "Escolher fotografia",
+    "show_more_tiles": "Mostrar mais blocos",
+    "friendly_accent": "Altera o fundo do dispositivo e <span style='color: var(--accent-color)'><span style='color: var(--accent-color)'> a cor </span> para combinar com o teu humor hoje, esta semana ou todo o mês.",
+    "friendly_tiles": "Podes alterar o tamanho e número de blocos disponíveis no ecrã inicial.",
+    "themes": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "auto": "Automático"
+    }
+  },
+  "screen_rotation": {
+    "title": "Rotação do ecrã",
+    "auto_rotate": "Rotação automática",
+    "rotation_lock": "Bloqueio de rotação",
+    "friendly_rotation_lock": "Quando o \"Bloqueio de Rotação\" estiver ativo, o ecrã inicial ficará fixo na orientação atual quando rodares o teu dispositivo."
+  },
+  "language": {
+    "title": "Idioma"
+  },
+  "ease_of_access": {
+    "title": "Facilidade de acesso",
+    "description": "Tamanho do texto, Alto contraste e mais",
+    "reduce_motion": {
+      "title": "Redução de movimento",
+      "description": "Reduzir os efeitos de movimento, como paralaxe e animações, para ajudar a prevenir doenças de movimento."
+    },
+    "high_contrast": {
+      "title": "Alto contraste",
+      "description": "Altera as cores de alguns recursos e oculta algumas das tuas imagens de fundo."
+    },
+    "scaling": "Escalar",
+    "font": {
+      "title": "Fonte",
+      "choose": "Escolher...",
+      "remove": "Remover fonte"
+    },
+    "haptic_feedback": {
+      "title": "Retorno tátil",
+      "description": "Ativar feedback de vibração ao interagir com blocos e controlos."
+    },
+    "groups": {
+      "vision": "Visão",
+      "tactile": "Tátil"
+    }
+  },
+  "advanced": {
+    "title": "Avançado",
+    "description": "Gestor de pacotes e outros ajustes",
+    "debugging": {
+      "title": "Depuração",
+      "dump_apps": "Dump de aplicações JSON instaladas."
+    },
+    "data": {
+      "title": "Dados",
+      "backup": "Cópia",
+      "restore": "Restaurar"
+    },
+    "package_manager": {
+      "title": "Gestor de pacotes",
+      "title_experimental": "Gestor de pacotes (EXPERIMENTAL)",
+      "system": "Sistema",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Toque duplo para desligar o ecrã",
+    "alternative_wallpaper": "Colocar plano de fundo alternativo"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Reiniciar o Groove Launcher?",
+      "message": "Isto irá redefinir as definições do launcher para o padrão. Todas as tuas customizações serão perdidas."
+    },
+    "root": {
+      "title": "Acesso ao root é necessário",
+      "message": "É necessário o acesso root para executar esta ação. Por favor, conceda acesso root para continuar."
+    },
+    "shizuku": {
+      "title": "Permissão Shizuku exigida",
+      "message": "A permissão Shizuku é necessária para executar esta ação. Por favor, concede permissão ao Shizuku para continuar."
+    },
+    "update_available": {
+      "title": "Atualização disponível!",
+      "message": "Uma nova versão <strong>({{version}})</strong> está disponível, com o tamanho de {{size}}. Gostaria de instalar?",
+      "message2": "Uma nova versão <strong>({{version}})</strong> está disponível. Deseja instalar?"
+    },
+    "update_check_failed": {
+      "title": "Verificação de Atualização Falhou!",
+      "message": "Impossível verificar atualizações da aplicação. Tente novamente mais tarde."
+    },
+    "up_to_date": {
+      "title": "Já está atualizado!",
+      "message": "Tens a versão mais recente do Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Formato de ficheiro não suportado",
+      "message": "O ficheiro fonte é inválido. Tenha a certeza de que é um .ttf e tente enviar novamente."
+    },
+    "font_load_error": {
+      "title": "Não foi possível carregar fonte",
+      "message": "Não conseguimos ler o ficheiro de fonte. Apenas fontes com o formato .ttf são suportadas. Por favor, tenta novamente com um ficheiro diferente."
+    },
+    "copy_failed": {
+      "title": "Falha ao Copiar!",
+      "message": "Não foi possível copiar lista de aplicações. Por favor, tenta novamente."
+    },
+    "copy_success": {
+      "title": "Copiado para a área de transferência!",
+      "message": "Aplicações instaladas copiadas para o formato JSON com sucesso."
+    }
+  },
+  "about": {
+    "title": "Acerca",
+    "description": "Groove Launcher",
+    "version": "Versão: {{version}}",
+    "webview_version": "Versão WebView : {{version}}",
+    "reset_launcher": "Redefinir o Launcher",
+    "check_updates": "Verificar Atualizações"
+  },
+  "apps": {
+    "uninstall_app": "Desinstalar aplicação",
+    "show_in_app_list": "Mostrar esta aplicação na Lista de Apps",
+    "name": "Nome",
+    "icon": "Ícone",
+    "icon_selections": {
+      "default": "Predefinição",
+      "monochrome": "Monocromático"
+    },
+    "background": "Fundo",
+    "background_selections": {
+      "default": "Predefinição",
+      "transparent": "Transparente"
+    },
+    "text_color": "Cor do texto",
+    "text_color_selections": {
+      "auto": "Automático",
+      "dark": "escuro",
+      "light": "claro"
+    },
+    "live_tile": "Bloco Vivo",
+    "show_app": "Exibir na lista de aplicações"
+  },
+  "roles": {
+    "team_groove": "Equipa Groove",
+    "developer": "Desenvolvedor",
+    "icon_design": "Design do Ícone",
+    "logo_design": "Design do logotipo"
+  }
+}

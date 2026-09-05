@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "下一步",
+        "previous": "上一步",
+        "pleaseWait": "請稍後……"
+    },
+    "welcome": {
+        "install": "歡迎",
+        "update": "歡迎回來",
+        "appName": "Groove Launcher",
+        "setupIntro": "讓我們透過幾個簡短步驟來設定您的體驗。",
+        "warning": "警告：這是預先發佈的軟體，可能包含錯誤。"
+    },
+    "wizard": {
+        "title": "更新精靈",
+        "description": "讓我們確保您的資料能安全轉移！請點擊「下一步」以繼續。"
+    },
+    "access": {
+        "title": "協助工具",
+        "description": "Customize your experience to ensure that everything feels just right.",
+        "background": "背景色",
+        "scaling": "縮放"
+    },
+    "themes": {
+        "light": "淺色",
+        "dark": "深色"
+    },
+    "colors": {
+        "title": "選擇您的色彩",
+        "description": "選擇一個符合您心情的色彩。"
+    },
+    "permissions": {
+        "title": "權限",
+        "groups": {
+            "contacts": {
+                "title": "聯絡人",
+                "description": "需要存取聯絡人以顯示您的聯絡人即時磁貼。"
+            },
+            "photos": {
+                "title": "相簿",
+                "description": "需要存取相片以顯示您的相片即時磁貼。"
+            },
+            "notifications": {
+                "title": "通知",
+                "description": "需要存取通知以顯示您的通知即時磁貼。"
+            },
+            "accessibility": {
+                "title": "協助工具",
+                "description": "啟用協助工具以鎖定裝置。"
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "這次有哪些新鮮事？"
+    },
+    "finish": {
+        "title": "準備好開始使用 Groove",
+        "description": "您的設定已完成，準備開始體驗吧！"
+    }
+}

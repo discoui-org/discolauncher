@@ -1,0 +1,23 @@
+{
+    "lime": "라임색",
+    "green": "초록색",
+    "emerald": "에메랄드색",
+    "teal": "청록색",
+    "cyan": "청록색",
+    "cobalt": "코발트",
+    "indigo": "인디고",
+    "violet": "보라색",
+    "pink": "분홍색",
+    "magenta": "자홍색",
+    "crimson": "진홍색",
+    "red": "빨간색",
+    "orange": "주황색",
+    "amber": "호박색",
+    "yellow": "노란색",
+    "brown": "갈색",
+    "olive": "올리브색",
+    "steel": "강철색",
+    "mauve": "연한 보라색",
+    "taupe": "회갈색",
+    "custom_color": "사용자 지정 색상"
+}

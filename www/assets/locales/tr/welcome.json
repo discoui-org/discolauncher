@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "ileri",
+        "previous": "geri",
+        "pleaseWait": "Lütfen bekleyiniz..."
+    },
+    "welcome": {
+        "install": "Hoş geldiniz",
+        "update": "Tekrar hoş geldiniz",
+        "appName": "Groove Launcher",
+        "setupIntro": "Deneyiminizi hazırlamayı birkaç kısa adımda tamamlayalım.",
+        "warning": "Uyarı: Bu bir ön sürüm yazılımıdır ve hatalar içerebilir."
+    },
+    "wizard": {
+        "title": "Güncelleme Sihirbazı",
+        "description": "Verilerinizin güvenli bir şekilde taşınmasını sağlayalım! Devam etmek için ileri'ye tıklayın."
+    },
+    "access": {
+        "title": "Erişim Kolaylığı",
+        "description": "Deneyiminizi kişiselleştirerek her şeyin tam istediğiniz gibi olmasını sağlayın.",
+        "background": "Arka plan",
+        "scaling": "Ölçekleme"
+    },
+    "themes": {
+        "light": "Açık",
+        "dark": "Koyu"
+    },
+    "colors": {
+        "title": "Renginizi seçin",
+        "description": "Ruh halinize uygun bir renk seçin."
+    },
+    "permissions": {
+        "title": "İzinler",
+        "groups": {
+            "contacts": {
+                "title": "Kişiler",
+                "description": "Kişiler canlı kutucuğunu görüntülemek için kişilere erişim gereklidir."
+            },
+            "photos": {
+                "title": "Fotoğraflar",
+                "description": "Fotoğraflar canlı kutucuğunu görüntülemek için fotoğraflara erişim gereklidir."
+            },
+            "notifications": {
+                "title": "Bildirimler",
+                "description": "Bildirimler canlı kutucuğunu görüntülemek için bildirimlere erişim gereklidir."
+            },
+            "accessibility": {
+                "title": "Erişilebilirlik",
+                "description": "Cihazı uyutmak için erişilebilirlik izni gereklidir."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Neler Yeni?"
+    },
+    "finish": {
+        "title": "Groove'a hazır olun",
+        "description": "Kurulumunuz tamamlandı. Haydi başlayalım!"
+    }
+}

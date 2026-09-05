@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "selanjutnya",
+        "previous": "sebelumnya",
+        "pleaseWait": "Mohon tunggu..."
+    },
+    "welcome": {
+        "install": "Selamat datang",
+        "update": "Selamat datang kembali",
+        "appName": "Groove Launcher",
+        "setupIntro": "Mari siapkan pengalaman Anda dengan melakukan tahap-tahap berikut ini.",
+        "warning": "Perhatian: perangkat lunak ini masih dalam tahap prarilis dan mungkin masih mengandung kecacatan."
+    },
+    "wizard": {
+        "title": "Pembaruan",
+        "description": "Pastikan data anda telah terpindah dengan aman. Tekan selanjutnya."
+    },
+    "access": {
+        "title": "Kemudahan Akses",
+        "description": "Sesuaikan pengalaman anda sehingga semuanya terasa sempurna.",
+        "background": "Background",
+        "scaling": "Skala"
+    },
+    "themes": {
+        "light": "Terang",
+        "dark": "Gelap"
+    },
+    "colors": {
+        "title": "Pilih warna anda",
+        "description": "Pilihlah warna sesuka hati Anda."
+    },
+    "permissions": {
+        "title": "Perizinan",
+        "groups": {
+            "contacts": {
+                "title": "Kontak",
+                "description": "Memerlukan akses ke kontak untuk menunjukkan live tile kontak."
+            },
+            "photos": {
+                "title": "Foto",
+                "description": "Memerlukan akses ke foto untuk menunjukkan live tile foto."
+            },
+            "notifications": {
+                "title": "Pemberitahuan",
+                "description": "Memerlukan akses ke pemberitahuan untuk menunjukkan live tile pemberitahuan."
+            },
+            "accessibility": {
+                "title": "Aksesibilitas",
+                "description": "Nyalakan aksesibilitas untuk mengunci perangkat anda."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Apa yang Baru?"
+    },
+    "finish": {
+        "title": "Bersiaplah 'tuk Groove",
+        "description": "Semua sudah siap. Saatnya meluncur!"
+    }
+}

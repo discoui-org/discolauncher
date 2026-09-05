@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Bine",
+    "yes": "Da",
+    "no": "Nu",
+    "uninstall": "Dezinstalați",
+    "cancel": "Anulare",
+    "apply": "Aplicare",
+    "allow": "Permiteți",
+    "try_again": "Încercați din nou",
+    "light": "Deschis",
+    "dark": "Închis",
+    "remove": "Ștergeți",
+    "on": "Activat",
+    "off": "Dezactivat",
+    "locked": "Blocat",
+    "unlocked": "Deblocat",
+    "dismiss": "Ignorați",
+    "read_more": "Citiți mai mult"
+  },
+  "search": {
+    "title": "Căutare",
+    "no_results": "Niciun rezultat pentru {{query}}",
+    "search_store": "căutați în Magazin"
+  },
+  "errors": {
+    "webview_old": "WebView este prea vechi!",
+    "home_reset": "Ecranul dvs. de acasă a fost resetat din cauza unei erori fatale :( Vă rugăm să o raportați:",
+    "launch_timeout": "Lansarea sistemului a durat prea mult timp"
+  },
+  "app_menu": {
+    "pin_to_home": "Fixați pe ecranul acasă",
+    "app_info": "Informații aplicație",
+    "uninstall": "Dezinstalați"
+  },
+  "alerts": {
+    "default": {
+      "title": "Atenție!",
+      "message": "Mesaj"
+    },
+    "uninstall": {
+      "title": "Dezinstalați această aplicație?",
+      "message": "Această aplicație, plus orice informație pe care o conține, va fi ștearsă de pe dispozitivul dvs."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

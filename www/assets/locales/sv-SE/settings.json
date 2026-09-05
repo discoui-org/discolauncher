@@ -1,0 +1,159 @@
+{
+  "title": "Inställningar",
+  "tabs": {
+    "home": "Hemskärm",
+    "applications": "Program"
+  },
+  "theme": {
+    "title": "Hemskärm+Tema",
+    "accent_color": "Accentfärg",
+    "background": "Bakgrund",
+    "home_background": "Hemskärmsbakgrund",
+    "choose_photo": "Välj foto",
+    "show_more_tiles": "Visa fler paneler",
+    "friendly_accent": "Ändra enhetens bakgrund och <span style='color: var(--accent-color)'>accentfärg</span> efter ditt humör för dagen, veckan eller hela månaden.",
+    "friendly_tiles": "Du kan ändra storleken och antalet paneler som ska finnas på startskärmen.",
+    "themes": {
+      "light": "Ljus",
+      "dark": "Mörk",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "Skärmrotation",
+    "auto_rotate": "Auto-rotera",
+    "rotation_lock": "Rotationslås",
+    "friendly_rotation_lock": "När rotationslåset är aktiverat behålls samma orientering för skärmen när du roterar enheten."
+  },
+  "language": {
+    "title": "Språk"
+  },
+  "ease_of_access": {
+    "title": "Hjälpmedel",
+    "description": "textstorlek, hög kontrast med mera",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "Skalning",
+    "font": {
+      "title": "Typsnitt",
+      "choose": "Välj...",
+      "remove": "Ta bort teckensnittet"
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "Avancerat",
+    "description": "pakethanterare och andra justeringar",
+    "debugging": {
+      "title": "Felsökning",
+      "dump_apps": "Dumpa installerade appar i JSON"
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "Pakethanterare",
+      "title_experimental": "Pakethanterare (EXPERIMENTELL)",
+      "system": "System",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "Återställa Groove Launcher?",
+      "message": "Detta kommer att återställa startprogrammet till dess standardinställningar. Alla anpassningar kommer att gå förlorade."
+    },
+    "root": {
+      "title": "Root-åtkomst krävs",
+      "message": "Rotåtkomst krävs för att utföra denna åtgärd. Vänligen ge root-åtkomst för att fortsätta."
+    },
+    "shizuku": {
+      "title": "Shizuku-tillstånd krävs",
+      "message": "Shizuku-tillstånd krävs för att utföra denna åtgärd. Vänligen ge Shizuku tillåtelse att fortsätta."
+    },
+    "update_available": {
+      "title": "Uppdatering tillgänglig!",
+      "message": "En ny version <strong>({{version}})</strong> är tillgänglig, storleken {{size}}. Vill du ladda ner den?",
+      "message2": "En ny version <strong>({{version}})</strong> är tillgänglig. Vill du ladda ner den?"
+    },
+    "update_check_failed": {
+      "title": "Uppdateringskontrollen misslyckades!",
+      "message": "Det går inte att söka efter appuppdateringar. Försök igen senare."
+    },
+    "up_to_date": {
+      "title": "Uppdaterad!",
+      "message": "Du har den bästa versionen av Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Filformat som inte stöds",
+      "message": "Teckensnittsfilen är inte giltig. Se till att det är en .ttf-fil och försök ladda upp igen."
+    },
+    "font_load_error": {
+      "title": "Det går inte att ladda teckensnittet",
+      "message": "Vi kunde inte läsa teckensnittsfilen. Endast .ttf-teckensnitt stöds. Försök med en annan fil."
+    },
+    "copy_failed": {
+      "title": "Kopiering misslyckades!",
+      "message": "Det går inte att kopiera applistan. Försök igen."
+    },
+    "copy_success": {
+      "title": "Kopierat till Urklipp!",
+      "message": "Installerade appar har kopierats till JSON-format."
+    }
+  },
+  "about": {
+    "title": "Om",
+    "description": "Groove Launcher",
+    "version": "Version: {{version}}",
+    "webview_version": "WebView-version: {{version}}",
+    "reset_launcher": "Återställ Launcher",
+    "check_updates": "Kontrollera uppdateringar"
+  },
+  "apps": {
+    "uninstall_app": "Avinstallera app",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "Team Groove",
+    "developer": "Utvecklare",
+    "icon_design": "Ikon-design",
+    "logo_design": "Logotyp-design"
+  }
+}

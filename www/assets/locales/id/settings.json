@@ -1,0 +1,159 @@
+{
+  "title": "Pengaturan",
+  "tabs": {
+    "home": "Beranda",
+    "applications": "Aplikasi"
+  },
+  "theme": {
+    "title": "Beranda+Tema",
+    "accent_color": "Aksen warna",
+    "background": "Background",
+    "home_background": "Background beranda",
+    "choose_photo": "Pilih foto",
+    "show_more_tiles": "Tunjukkan semua tiles",
+    "friendly_accent": "Ganti background dan <span style='color: var(--accent-color)'>aksen warna</span> gawai sesuka Anda.",
+    "friendly_tiles": "Anda bisa ubah ukuran dan jumlah tiles yang ada di layar depan.",
+    "themes": {
+      "light": "Terang",
+      "dark": "Gelap",
+      "auto": "Otomatis"
+    }
+  },
+  "screen_rotation": {
+    "title": "Rotasi Layar",
+    "auto_rotate": "Putar otomatis",
+    "rotation_lock": "Kunci rotasi",
+    "friendly_rotation_lock": "Ketika Kunci rotasi dinyalakan, layar beranda akan tetap berada di orientasi yang sudah ditetapkan saat gawai Anda diputar."
+  },
+  "language": {
+    "title": "Bahasa"
+  },
+  "ease_of_access": {
+    "title": "Kemudahan Akses",
+    "description": "ukuran teks, kontras tinggi, dan lain-lain.",
+    "reduce_motion": {
+      "title": "Kurangi gerakan",
+      "description": "Kurangi efek gerakan seperti paralaks dan animasi untuk menghindari mabuk gerakan."
+    },
+    "high_contrast": {
+      "title": "Kontras tinggi",
+      "description": "Ubah warna fitur tertentu dan sembunyikan beberapa gambar yang ada."
+    },
+    "scaling": "Skala",
+    "font": {
+      "title": "Font",
+      "choose": "Pilih...",
+      "remove": "Hapus Font"
+    },
+    "haptic_feedback": {
+      "title": "Umpan balik haptik",
+      "description": "Nyalakan getaran ketika berinteraksi dengan tiles dan beberapa kontrol."
+    },
+    "groups": {
+      "vision": "Penglihatan",
+      "tactile": "Perabaan"
+    }
+  },
+  "advanced": {
+    "title": "Opsi Selengkapnya",
+    "description": "manajemen paket dan opsi penyempurnaan lainnya",
+    "debugging": {
+      "title": "Debug",
+      "dump_apps": "Hapus aplikasi JSON yang terinstal"
+    },
+    "data": {
+      "title": "Data",
+      "backup": "Cadangan",
+      "restore": "Pemulihan"
+    },
+    "package_manager": {
+      "title": "Manajemen paket",
+      "title_experimental": "Manajemen paket (EKSPERIMENTAL)",
+      "system": "Sistem",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Ketuk dua kali untuk tidur",
+    "alternative_wallpaper": "Penempatan wallpaper alternatif"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Muat ulang Groove Launcher?",
+      "message": "Launcher akan dimuat ulang ke pengaturan awal. Semua kustomisasi akan kembali ke semula."
+    },
+    "root": {
+      "title": "Akses Root Dibutuhkan",
+      "message": "Akses root dibutuhkan untuk melakukan aksi ini. Mohon berikan akses root untuk lanjut."
+    },
+    "shizuku": {
+      "title": "Izin Shizuku Dibutuhkan",
+      "message": "Perizinan Shizuku dibutuhkan untuk melakukan aksis ini. Mohon berikan izin Shizuku untuk lanjut."
+    },
+    "update_available": {
+      "title": "Pembaruan Tersedia!",
+      "message": "Versi <strong>({{version}})</strong> telah tersedia, dengan ukuran {{size}}. Unduh sekarang?",
+      "message2": "Versi <strong>({{version}})</strong> telah tersedia. Unduh sekarang?"
+    },
+    "update_check_failed": {
+      "title": "Pemeriksaan Gagal!",
+      "message": "Tidak dapat memerika pembaruan aplikasi. Coba lagi nanti."
+    },
+    "up_to_date": {
+      "title": "Versi Terkini!",
+      "message": "Anda menggunakan versi terkini Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Format file tidak didukung",
+      "message": "Format file font tidak valid. Pastikan format yang digunakan adalah .ttf dan coba unggah lagi."
+    },
+    "font_load_error": {
+      "title": "Tidak bisa memuat font",
+      "message": "Tidak bisa memuat file font. Hanya format .ttf yang bisa didukung. Coba gunakan file lain."
+    },
+    "copy_failed": {
+      "title": "Gagal Menyalin!",
+      "message": "Tidak bisa menyalin daftar aplikasi. Coba lagi."
+    },
+    "copy_success": {
+      "title": "Tersalin ke papan klip!",
+      "message": "Sukses menyalin daftar aplikasi terinstal ke JSON."
+    }
+  },
+  "about": {
+    "title": "Tentang",
+    "description": "Groove Launcher",
+    "version": "Versi: {{version}}",
+    "webview_version": "Versi WebView: {{version}}",
+    "reset_launcher": "Reset Launcher",
+    "check_updates": "Periksa Pembaruan"
+  },
+  "apps": {
+    "uninstall_app": "Hapus Aplikasi",
+    "show_in_app_list": "Tunjukkan aplikasi ini ke Daftar Aplikasi",
+    "name": "Nama",
+    "icon": "Ikon",
+    "icon_selections": {
+      "default": "Default",
+      "monochrome": "Monokrom"
+    },
+    "background": "Background",
+    "background_selections": {
+      "default": "Default",
+      "transparent": "Transparan"
+    },
+    "text_color": "Warna teks",
+    "text_color_selections": {
+      "auto": "Otomatis",
+      "dark": "gelap",
+      "light": "terang"
+    },
+    "live_tile": "Live tile",
+    "show_app": "Tunjukkan di dalam daftar aplikasi"
+  },
+  "roles": {
+    "team_groove": "Tim Groove",
+    "developer": "Pengembang",
+    "icon_design": "Desain Ikon",
+    "logo_design": "Desain Logo"
+  }
+}

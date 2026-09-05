@@ -1,0 +1,159 @@
+{
+  "title": "",
+  "tabs": {
+    "home": "",
+    "applications": ""
+  },
+  "theme": {
+    "title": "",
+    "accent_color": "",
+    "background": "",
+    "home_background": "",
+    "choose_photo": "",
+    "show_more_tiles": "",
+    "friendly_accent": "",
+    "friendly_tiles": "",
+    "themes": {
+      "light": "",
+      "dark": "",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "",
+    "auto_rotate": "",
+    "rotation_lock": "",
+    "friendly_rotation_lock": ""
+  },
+  "language": {
+    "title": ""
+  },
+  "ease_of_access": {
+    "title": "",
+    "description": "",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "",
+    "font": {
+      "title": "",
+      "choose": "",
+      "remove": ""
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "",
+    "description": "",
+    "debugging": {
+      "title": "",
+      "dump_apps": ""
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "",
+      "title_experimental": "",
+      "system": "",
+      "root": "",
+      "shizuku": ""
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "",
+      "message": ""
+    },
+    "root": {
+      "title": "",
+      "message": ""
+    },
+    "shizuku": {
+      "title": "",
+      "message": ""
+    },
+    "update_available": {
+      "title": "",
+      "message": "",
+      "message2": ""
+    },
+    "update_check_failed": {
+      "title": "",
+      "message": ""
+    },
+    "up_to_date": {
+      "title": "",
+      "message": ""
+    },
+    "font_read_error": {
+      "title": "",
+      "message": ""
+    },
+    "font_load_error": {
+      "title": "",
+      "message": ""
+    },
+    "copy_failed": {
+      "title": "",
+      "message": ""
+    },
+    "copy_success": {
+      "title": "",
+      "message": ""
+    }
+  },
+  "about": {
+    "title": "",
+    "description": "",
+    "version": "",
+    "webview_version": "",
+    "reset_launcher": "",
+    "check_updates": ""
+  },
+  "apps": {
+    "uninstall_app": "",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "",
+    "developer": "",
+    "icon_design": "",
+    "logo_design": ""
+  }
+}

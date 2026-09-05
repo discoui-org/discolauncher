@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "tiếp",
+        "previous": "quay lại",
+        "pleaseWait": "Vui lòng chờ..."
+    },
+    "welcome": {
+        "install": "Chào mừng",
+        "update": "Chào mừng trở lại",
+        "appName": "Groove Launcher",
+        "setupIntro": "Bắt đầu cho trải nghiệm của bạn với vài bước ngắn.",
+        "warning": "Cảnh báo: Đây là phần mềm thử nghiệm và sẽ có lỗi."
+    },
+    "wizard": {
+        "title": "Trình cập nhật",
+        "description": "Chắc chắn rằng dữ liệu của bạn được chuyển một cách an toàn! Click \"tiếp\" để tiếp tục."
+    },
+    "access": {
+        "title": "Hỗ trợ tiếp cận",
+        "description": "Tùy chỉnh cho trải nghiệm của bạn là tốt nhất.",
+        "background": "Nền",
+        "scaling": "Cỡ phóng"
+    },
+    "themes": {
+        "light": "Sáng",
+        "dark": "Tối"
+    },
+    "colors": {
+        "title": "Chọn một màu",
+        "description": "Chọn màu hợp mood của bạn."
+    },
+    "permissions": {
+        "title": "",
+        "groups": {
+            "contacts": {
+                "title": "",
+                "description": ""
+            },
+            "photos": {
+                "title": "",
+                "description": ""
+            },
+            "notifications": {
+                "title": "",
+                "description": ""
+            },
+            "accessibility": {
+                "title": "",
+                "description": ""
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Có gì mới?"
+    },
+    "finish": {
+        "title": "Sẵn sàng đến với Groove",
+        "description": "Cài đặt đã hoàn thiện. Đến lúc trải nghiệm rồi!"
+    }
+}

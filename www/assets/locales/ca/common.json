@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "D'acord",
+    "okay": "D'acord",
+    "yes": "Sí",
+    "no": "No",
+    "uninstall": "Desinstal·la",
+    "cancel": "Cancel·la",
+    "apply": "Aplica",
+    "allow": "Permet",
+    "try_again": "Torna-ho a provar",
+    "light": "Clar",
+    "dark": "Fosc",
+    "remove": "Treu",
+    "on": "Activat",
+    "off": "Desactivat",
+    "locked": "Bloquejat",
+    "unlocked": "Desbloquejat",
+    "dismiss": "Descarta",
+    "read_more": "Llegir més"
+  },
+  "search": {
+    "title": "Cerca",
+    "no_results": "Sense resultats per a {{query}}",
+    "search_store": "cerca a la Botiga"
+  },
+  "errors": {
+    "webview_old": "El WebView és massa antic!",
+    "home_reset": "El vostre menú d'inici ha sigut reiniciat a causa d'un error fatal :( Reporteu això:",
+    "launch_timeout": "El sistema ha trigat massa a inicialitzar-se"
+  },
+  "app_menu": {
+    "pin_to_home": "Afegeix a inici",
+    "app_info": "Quant a",
+    "uninstall": "Desinstal·la"
+  },
+  "alerts": {
+    "default": {
+      "title": "Alerta!",
+      "message": "Missatge"
+    },
+    "uninstall": {
+      "title": "Desinstal·lar aquesta aplicació",
+      "message": "Aquesta aplicació, i qualsevol informació que tingui, serà eliminada del vostre dispositiu."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "title": "Asetukset",
+  "tabs": {
+    "home": "Aloitusnäyttö",
+    "applications": "Sovellukset"
+  },
+  "theme": {
+    "title": "Aloitusnäyttö+Teema",
+    "accent_color": "Korostusväri",
+    "background": "Tausta",
+    "home_background": "Aloitusnäytön tausta",
+    "choose_photo": "Valitse valokuva",
+    "show_more_tiles": "Näytä lisää ruutuja",
+    "friendly_accent": "Voit vaihtaa laitteesi taustaväriä ja <span style='color: var(--accent-color)'>korostusväriä</span> mielesi mukaan vaikka päivittäin, viikoittain tai kuukausittain.",
+    "friendly_tiles": "Voit vaihtaa aloitusnäytön ruutujen määrää ja kokoa.",
+    "themes": {
+      "light": "Vaalea",
+      "dark": "Tumma",
+      "auto": "Automaattinen"
+    }
+  },
+  "screen_rotation": {
+    "title": "Näytön kääntyminen",
+    "auto_rotate": "Käännä automaattisesti",
+    "rotation_lock": "Näytön suunnan lukitus",
+    "friendly_rotation_lock": "Kun näytön suunnan lukitus on käytössä, näyttö pysyy samassa suunnassa, vaikka käännät laitetta."
+  },
+  "language": {
+    "title": "Kieli"
+  },
+  "ease_of_access": {
+    "title": "Aputoiminnot",
+    "description": "tekstikoko, suuri kontrasti ja muut ominaisuudet",
+    "reduce_motion": {
+      "title": "Vähennä liikettä",
+      "description": "Vähennä liiketehosteita, kuten parallaksia ja animaatioita, estääksesi pahoinvointia."
+    },
+    "high_contrast": {
+      "title": "Suuri kontrasti",
+      "description": "Vaihtaa joidenkin toimintojen väriä ja piilottaa joidenkin toimintojen taustakuvat."
+    },
+    "scaling": "Skaalaus",
+    "font": {
+      "title": "Fontti",
+      "choose": "Selaa...",
+      "remove": "Poista fontti"
+    },
+    "haptic_feedback": {
+      "title": "Haptinen palaute",
+      "description": "Ota käyttöön värinäpalaute, kun muokkaat asetuksia ja ruutuja."
+    },
+    "groups": {
+      "vision": "Näkö",
+      "tactile": "Kosketus"
+    }
+  },
+  "advanced": {
+    "title": "Lisäasetukset",
+    "description": "paketin hallinta ja muita säätöjä",
+    "debugging": {
+      "title": "Debuggaus",
+      "dump_apps": "Vie asennetut sovellukset JSON -tiedostoon"
+    },
+    "data": {
+      "title": "Tiedot",
+      "backup": "Varmuuskopioi",
+      "restore": "Palauta"
+    },
+    "package_manager": {
+      "title": "Paketin hallinta",
+      "title_experimental": "Paketin hallinta (KOKEELLINEN)",
+      "system": "Järjestelmä",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Sammuta näyttö kaksoisnapauttamalla",
+    "alternative_wallpaper": "Vaihtoehtoinen aloitusnäytön taustan sijoitus"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Nollataanko Groove Launcher?",
+      "message": "Launcherin oletusasetusten palauttaminen poistaa kaikki tekemäsi muutokset."
+    },
+    "root": {
+      "title": "Root pääsy vaaditaan",
+      "message": "Root pääsy vaaditaan tämän toiminnon suorittamiseksi."
+    },
+    "shizuku": {
+      "title": "Shizuku lupa vaaditaan",
+      "message": "Shizuku lupa vaaditaan tämän toiminnon suorittamiseksi."
+    },
+    "update_available": {
+      "title": "Päivitys saatavilla!",
+      "message": "Uusi päivitys <strong>({{version}})</strong> on saatavilla, kooltaan {{size}}. Ladataanko?",
+      "message2": "Uusi päivitys <strong>({{version}})</strong> on saatavilla. Ladataanko?"
+    },
+    "update_check_failed": {
+      "title": "Päivitysten tarkistus epäonnistui!",
+      "message": "Päivitysten saatavuutta ei voi tarkistaa juuri nyt. Yritä myöhemmin uudelleen."
+    },
+    "up_to_date": {
+      "title": "Päivitykset ajan tasalla!",
+      "message": "Sinulla on groovisin versio Groove Launcherista."
+    },
+    "font_read_error": {
+      "title": "Tiedostomuotoa ei tueta",
+      "message": "Fonttitiedosto ei kelpaa. Varmista, että se on .ttf muodossa ja yritä uudelleen."
+    },
+    "font_load_error": {
+      "title": "Fonttia ei voitu ladata",
+      "message": "Fonttitiedoston lukeminen epäonnistui. Vain .ttf fonttitiedostot ovat tuettuja. Yritä uudelleen toisella tiedostolla."
+    },
+    "copy_failed": {
+      "title": "Kopiointi epäonnistui!",
+      "message": "Sovelluslistan kopiointi epäonnistui. Yritä uudelleen."
+    },
+    "copy_success": {
+      "title": "Kopioitu leikepöydälle!",
+      "message": "Asennetut sovellukset kopioitu onnistuneesti JSON muotoon."
+    }
+  },
+  "about": {
+    "title": "Tietoja",
+    "description": "Groove Launcher",
+    "version": "Versio:{{version}}",
+    "webview_version": "WebView Versio:{{version}}",
+    "reset_launcher": "Nollaa Launcher",
+    "check_updates": "Tarkista päivitykset"
+  },
+  "apps": {
+    "uninstall_app": "Poista Sovellus",
+    "show_in_app_list": "Näytä tämä sovellus sovellusluettelossa",
+    "name": "Nimi",
+    "icon": "Kuvake",
+    "icon_selections": {
+      "default": "Oletus",
+      "monochrome": "Yksivärinen"
+    },
+    "background": "Tausta",
+    "background_selections": {
+      "default": "Oletus",
+      "transparent": "Läpinäkyvä"
+    },
+    "text_color": "Tekstin väri",
+    "text_color_selections": {
+      "auto": "Auto",
+      "dark": "tumma",
+      "light": "vaalea"
+    },
+    "live_tile": "Live ruutu",
+    "show_app": "Näytä sovellusluettelossa"
+  },
+  "roles": {
+    "team_groove": "Team Groove",
+    "developer": "Kehittäjä",
+    "icon_design": "Kuvakkeen suunnittelu",
+    "logo_design": "Logon suunnittelu"
+  }
+}

@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "próximo",
+        "previous": "prévio",
+        "pleaseWait": "Aguarde..."
+    },
+    "welcome": {
+        "install": "Bem-vindo",
+        "update": "Bem-vindo de volta",
+        "appName": "Groove Launcher",
+        "setupIntro": "Vamos configurar sua experiência em algumas etapas curtas.",
+        "warning": "Aviso: este é um software de pré-lançamento e pode conter falhas."
+    },
+    "wizard": {
+        "title": "Assistente de atualização",
+        "description": "Vamos garantir que seus dados sejam movidos com segurança! Clique em Avançar para continuar."
+    },
+    "access": {
+        "title": "Facilidade de acesso",
+        "description": "Personalize sua experiência para garantir que tudo pareça perfeito.",
+        "background": "Tela de fundo",
+        "scaling": "Escala"
+    },
+    "themes": {
+        "light": "Clara",
+        "dark": "Escura"
+    },
+    "colors": {
+        "title": "Escolha sua cor",
+        "description": "Escolha uma cor de destaque para expressar seu espirito."
+    },
+    "permissions": {
+        "title": "Permissões",
+        "groups": {
+            "contacts": {
+                "title": "Contatos",
+                "description": "É necessário acesso aos contatos para exibir o bloco dinâmico de contatos. "
+            },
+            "photos": {
+                "title": "Fotos",
+                "description": "É necessário ter acesso às fotos para exibir o bloco dinâmico."
+            },
+            "notifications": {
+                "title": "Notificações",
+                "description": "É  necessário ter acesso às notificações para exibir o bloco dinâmico."
+            },
+            "accessibility": {
+                "title": "Acessibilidade",
+                "description": "Habilite a acessibilidade para bloquear o dispositivo."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "O que há de novo?"
+    },
+    "finish": {
+        "title": "Prepare-se para o Groove",
+        "description": "Sua configuração está pronta. Hora de mergulhar dentro!"
+    }
+}

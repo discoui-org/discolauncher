@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong>는 사용자 정의가 가능하고 매끄러운 사용자 경험을 위해 설계된 메트로 스타일 런처입니다. 런처를 타일의 크기, 위치, 테마 색, 그리고 좋아하는 배경화면으로 런처를 사용자 지정할 수 있습니다.",
+    "title_features": "기능",
+    "list_featuers_0": "<strong>메트로 스타일 인터페이스: </strong> Windows Phone 8에서 영감을 받은 깔끔하고 현대적인 디자인",
+    "list_featuers_1": "<strong>사용자 지정 가능한 타일: </strong>타일을 당신의 고유한 스타일로 드래그 앤 드롭하고, 크기를 조절하고, 이동하세요.",
+    "list_featuers_2": "<strong>테마 사용자 지정:</strong> 런처의 색을 당신의 기분이나 미적 감각에 맞게 변경하세요.",
+    "list_featuers_3": "<strong>배경화면 사용자 지정:</strong> 완전히 사용자 지정된 설정을 만들기 위해 당신의 고유한 배경화면을 골라보세요.",
+    "title_contributing": "기여하기",
+    "paragraph_contributing_0": "기여를 환영합니다! <strong>Groove Launcher</strong>를 개선하기 위해 이슈와 풀 리퀘스트를 자유롭게 제출해 주세요.",
+    "list_paragraph_contributing_0": "저장소를 포크하세요.",
+    "list_paragraph_contributing_1": "당신의 기능이나 버그 수정을 위해 새 브랜치를 만드세요.",
+    "list_paragraph_contributing_2": "코드가 준비되었을 때 풀 리퀘스트를 제출하세요.",
+    "title_license": "라이센스",
+    "paragraph_license": "이 프로젝트는 MIT 라이센스로 라이센스가 부여되었습니다 - 자세한 내용은 <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> 파일을 참고하세요.",
+    "title_contact": "연락하기",
+    "paragraph_contact_0": "문의사항이나 피드백이 있으면 자유롭게 연락해주세요!"
+}

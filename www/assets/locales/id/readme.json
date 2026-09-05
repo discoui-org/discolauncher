@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> merupakan launcher yang dibuat untuk pengalaman pengguna yang mulus dan dapat disesuaikan. Pengguna dapat mempersonalisasikan launcher mereka dengan mengubah ukuran tile, mengubah posisi tile, kustomisasi tema warna, serta menambahkan wallpaper favorit mereka.",
+    "title_features": "Fitur",
+    "list_featuers_0": "<strong>Gaya Antarmuka Metro:</strong> Desain yang bersih dan modern terinspirasi dari Windows Phone 8.",
+    "list_featuers_1": "<strong>Kustomisasi Tile:</strong> Tambahkan tile, sesuaikan ukurannya, dan gerakan kemana saja sesuai dengan gaya unikmu.",
+    "list_featuers_2": "<strong>Kustomisasi Tema:</strong> Ubah warna launcher agar sesuai dengan suasana hatimu.",
+    "list_featuers_3": "<strong>Personalisasi wallpaper:</strong> Pilih dan atur wallpaper anda untuk menciptakan setup yang sepenuhnya personal.",
+    "title_contributing": "Kontribusi",
+    "paragraph_contributing_0": "Semua kontribusi sangat diterima! Jangan sungkan untuk menyampaikan masalah dan pull requests agar <strong>Groove Launcher</strong> dapat menjadi lebih baik.",
+    "list_paragraph_contributing_0": "Fork repositorinya.",
+    "list_paragraph_contributing_1": "Buat cabang baru untuk fitur buatan anda atau perbaikan bug.",
+    "list_paragraph_contributing_2": "Tambahkan pull request ketika kodemu sudah siap.",
+    "title_license": "Lisensi",
+    "paragraph_license": "Proyek ini dilisensikan dibawah lisensi MIT - Silahkan baca <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> untuk keterangan lebih lanjut.",
+    "title_contact": "Kontak",
+    "paragraph_contact_0": "Jika ada pertanyaan atau saran, silakan hubungi kami!"
+}

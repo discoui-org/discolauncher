@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "înainte",
+        "previous": "înapoi",
+        "pleaseWait": "Vă rugăm să așteptați..."
+    },
+    "welcome": {
+        "install": "Bine ați venit",
+        "update": "Bine ați revenit",
+        "appName": "Lansator Groove",
+        "setupIntro": "Haideți să vă configurăm experiența în câțiva pași scurți.",
+        "warning": "Atenție: Aceasta este o aplicație de pre-lansare și poate conține bug-uri."
+    },
+    "wizard": {
+        "title": "Asistent de Actualizare",
+        "description": "Haideți să ne asigurăm că datele dvs. sunt mutate în siguranță. Apăsați butonul \"înainte\" pentru a continua."
+    },
+    "access": {
+        "title": "Simplificare Acces",
+        "description": "Personalizați-vă experiența pentru a vă asigura că totul se simte perfect.",
+        "background": "Fundal",
+        "scaling": "Scalare"
+    },
+    "themes": {
+        "light": "Deschis",
+        "dark": "Închis"
+    },
+    "colors": {
+        "title": "Alegeți culoarea dvs",
+        "description": "Alegeți o culoare care se potrivește cu starea dvs."
+    },
+    "permissions": {
+        "title": "",
+        "groups": {
+            "contacts": {
+                "title": "",
+                "description": ""
+            },
+            "photos": {
+                "title": "",
+                "description": ""
+            },
+            "notifications": {
+                "title": "",
+                "description": ""
+            },
+            "accessibility": {
+                "title": "",
+                "description": ""
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Ce E Nou?"
+    },
+    "finish": {
+        "title": "Pregătiți-vă să Groove-uiți",
+        "description": "Configurarea dvs. este gata. E timpul să începem!"
+    }
+}

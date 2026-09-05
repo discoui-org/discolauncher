@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> É um launcher de interface metro projetado para uma experiência de usuário personalizável e elegante. Os usuários podem personalizar seu launcher ajustando tamanhos dos tiles, alterando posições de tiles, usando cores ou seus papéis de parede favoritos.",
+    "title_features": "Características",
+    "list_featuers_0": "<strong>Interface Metro:</strong> Um design limpo e moderno inspirado por o Windows Phone 8.",
+    "list_featuers_1": "<strong>Tiles Personalizáveis:</strong> Arraste e solte os tiles, ajuste seus tamanhos e mova-os para se adequar ao seu estilo único.",
+    "list_featuers_2": "<strong>Personalização de cores:</strong> Altere a cor do launcher para combinar com seu humor ou estética.",
+    "list_featuers_3": "<strong>Personalização do papel de parede:</strong> Escolha e defina seus próprios papéis de parede para criar uma configuração totalmente personalizada.",
+    "title_contributing": "Contribuir",
+    "paragraph_contributing_0": "Contribuições são muito bem-vindas! Sinta-se à vontade para enviar falhas e solicitações de pull para ajudar a melhorar o <strong>Groove Launcher</strong>.",
+    "list_paragraph_contributing_0": "Fazer um fork do repositório.",
+    "list_paragraph_contributing_1": "Crie um novo branch para sua nova função ou correção de falhas.",
+    "list_paragraph_contributing_2": "Envie solicitações de pull cuando o seu codigo esta pronto.",
+    "title_license": "Licença",
+    "paragraph_license": "Este projeto está licenciado sob a Licença MIT - consulte o <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> arquivo para mais detalhes.",
+    "title_contact": "Contato",
+    "paragraph_contact_0": "Para qualquer dúvida ou feedback, sinta-se à vontade para entrar em contato!"
+}
