@@ -661,7 +661,6 @@ const backendMethods = {
         homeBack
       });
       history.pushState(change, "", window.location.href);
-      listHistory();
     },
     back: (action = true, homeBack = false) => {
       if (backendMethods.navigation.history.length <= 1) return;
@@ -673,7 +672,6 @@ const backendMethods = {
       } else if (!homeBack) {
         act.backAction(homeBack);
       }
-      listHistory();
     },
     home: () => {
       const actions = backendMethods.navigation.history.slice(1).reverse()
@@ -700,7 +698,6 @@ const backendMethods = {
       if (DiscoBoard.backendMethods.navigation.lastPush.change == change) {
         DiscoBoard.backendMethods.navigation.back(false);
       }
-      listHistory();
     },
   },
   getTileSize: function (w, h) {
@@ -1034,21 +1031,6 @@ const backendMethods = {
         backendMethods.applyTilePreferences(homeTile, tile.p);
 
       })
-      /*
-            const loadData = {}
-            config.forEach(tile => {
-              console.log("tile",tile)
-              const homeTile = DiscoElements.wHomeTile(tile.ii, tile.i, tile.t, tile.p, "", tile.s)
-              loadData[tile.p] = {
-                w: tile.w,
-                h: tile.h,
-                x: tile.x,
-                y: tile.y,
-                content: homeTile.innerHTML
-              }
-            })
-            console.log(loadData)
-            window.tileListGrid.load(Object.values(loadData))*/
       window.tileListGrid.batchUpdate(false)
       window.cantSaveHomeConfig = false
       backendMethods.homeConfiguration.syncPageAvailability()
@@ -1438,16 +1420,6 @@ const backendMethods = {
 
 };
 backendMethods.animationDurationScale.set(1)
-function listHistory() {
-  return
-  console.log(
-    "%c" +
-    DiscoBoard.backendMethods.navigation.history
-      .map((e, index) => index - -1 + ": " + JSON.stringify(e))
-      .join("\n"),
-    "background: #222; color: #bada55"
-  );
-}
 window.addEventListener("backButtonPress", function () {
   backendMethods.navigation.back();
 });

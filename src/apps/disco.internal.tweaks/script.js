@@ -478,18 +478,17 @@ function addManually() {
     }, 250);
 }
 function writeManually() {
-    // Create a flyout for manual CSS entry with fullscreen textarea and Apply/Cancel buttons
     const flyout = document.createElement("div");
     flyout.classList.add("install-flyout", "manual-write-flyout");
     flyout.innerHTML = `
-        <div class="install-flyout-inner" style="height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
-            <div style="flex:1; display:flex; flex-direction:column;">
-                <p class="install-flyout-title" style="font-size: 1.3em; margin-bottom: 12px;">Write or Paste CSS</p>
-                <textarea class="manual-css-input" style="flex:1; width:100%; min-height:300px; resize:vertical; font-family:monospace; font-size:1em; border-radius:8px; border:1px solid #ccc; padding:12px;" placeholder="Paste your CSS here..."></textarea>
+        <div class="install-flyout-inner">
+            <div class="manual-css-editor">
+                <p class="install-flyout-title">Write or Paste CSS</p>
+                <textarea class="manual-css-input" aria-label="CSS" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="Paste your CSS here..."></textarea>
             </div>
-            <div style="display:flex; gap:12px; margin-top:24px;">
-                <button class="install-flyout-cancel metro-button" style="flex:1;">Cancel</button>
-                <button class="install-flyout-install metro-button" style="flex:1;">Apply</button>
+            <div class="manual-css-actions">
+                <button class="install-flyout-cancel metro-button">Cancel</button>
+                <button class="install-flyout-install metro-button">Apply</button>
             </div>
         </div>
     `;
@@ -772,7 +771,6 @@ function setupGlobalIconDropdown() {
 
     // Add monochrome option if supported
     if (window.parent.Disco.supportsMonochromeIcons()) {
-        console.log("monochrome supported")
         const monochromeOption = document.createElement("div");
         monochromeOption.classList.add("metro-dropdown-option");
         monochromeOption.setAttribute("value", "monochrome");
@@ -780,7 +778,6 @@ function setupGlobalIconDropdown() {
         monochromeOption.innerText = "Monochrome";
         iconDropdown.appendChild(monochromeOption);
     } else {
-        console.log("monochrome not supported")
     }
 
     // Add icon pack options

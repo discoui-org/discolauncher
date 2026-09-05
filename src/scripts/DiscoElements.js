@@ -394,7 +394,6 @@ function wListViewItem(title, description) {
   return listViewItem;
 }
 function wAppBar(elements = []) {
-  console.log("elements", elements)
   const appBar = document.createElement("div");
   appBar.classList.add("disco-element");
   appBar.classList.add("disco-app-bar");

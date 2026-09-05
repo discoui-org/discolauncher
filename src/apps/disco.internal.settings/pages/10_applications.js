@@ -234,14 +234,12 @@ function setupIconDropdown(appdetail, tilePrefs) {
 
     // Add monochrome option (only if supported)
     if (window.parent.Disco.supportsMonochromeIcons()) {
-        console.log("monochrome supported")
         const monochromeOption = document.createElement("div");
         monochromeOption.classList.add("metro-dropdown-option");
         monochromeOption.setAttribute("value", "monochrome");
         monochromeOption.innerText = "Monochrome";
         iconDropdown.appendChild(monochromeOption);
     } else {
-        console.log("monochrome not supported")
     }
 
     // Add icon pack options
