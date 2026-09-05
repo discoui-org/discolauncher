@@ -2,50 +2,22 @@ import * as ITL from "isotolanguage";
 import DOMPurify from 'dompurify';
 import JSON5 from 'json5';
 window.ITL = ITL;
-class Locale {
-  constructor(locale) {
-    this.locale = locale;
-  }
-}
 const files = ["colors", "common", "readme", "settings", "welcome"]
-const defaultLocalizationRepo = ""; // Intentionally blank to avoid predefined URLs
+const localeCodes = [
+  "af", "ar", "az", "bg", "bs", "ca", "ckb", "cs", "da", "de", "el", "en-GB", "en-US",
+  "es-419", "es-ES", "fa", "fal", "fi", "fr", "he", "hu", "hy-AM", "id", "it", "ja", "ka",
+  "kmr", "ko", "ku", "lol", "lzz", "mk", "nl", "no", "pl", "pt-BR", "pt-PT", "quc", "ro",
+  "ru", "sr", "sv-SE", "ta", "tr", "uk", "vi", "zh-CN", "zh-TW"
+]
 
-function getLocalizationBaseURL() {
-  const buildConfig = (window["BuildConfig"] || window.parent["BuildConfig"]) || {};
-  const rawRepoUrl = (() => {
-    if (typeof buildConfig.LOCALIZATION_REPOSITORY_URL === "function") {
-      return buildConfig.LOCALIZATION_REPOSITORY_URL();
-    }
-    return buildConfig["LOCALIZATION_REPOSITORY_URL"] || defaultLocalizationRepo;
-  })();
-
-  // Unescape common property-file escapes like https\://
-  let repoUrl = rawRepoUrl.replace(/\\:/g, ':').replace(/\\\//g, '/');
-  if (repoUrl && !/^https?:\/\//i.test(repoUrl)) {
-    repoUrl = `https://${repoUrl}`;
-  }
-
-  // Pattern 1: raw URLs (strip refs/heads and any trailing path after branch)
-  const rawMatch = repoUrl.match(/^https?:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(?:refs\/heads\/)?([^/]+)(?:\/(?:languages.*)?)?/i);
-  if (rawMatch) {
-    const [, owner, repo, branch] = rawMatch;
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/languages`;
-  }
-
-  // Pattern 2: github.com URLs, optionally with /tree/<branch> or /refs/heads/<branch>
-  const ghMatch = repoUrl.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)(?:\/(?:tree|refs\/heads)\/([^/]+))?/i);
-  if (ghMatch) {
-    const [, owner, repo, branch = "main"] = ghMatch;
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/languages`;
-  }
-
-  // Fallback: return as-is
-  return repoUrl;
+function getAssetURL(assetPath) {
+  const appWindow = window.parent !== window ? window.parent : window;
+  return new URL(`./assets/${assetPath}`, appWindow.location.href).href;
 }
 
-function remoteFiles(locale = "en-US") {
-  const mainURL = `${getLocalizationBaseURL()}/${locale}`;
-  return Object.fromEntries(files.map(file => [file, `${mainURL}/${file}.json`]));
+function localeFiles(locale = "en-US") {
+  const directory = locale === "en-US" ? "defaultlocales" : `locales/${locale}`;
+  return Object.fromEntries(files.map(file => [file, getAssetURL(`${directory}/${file}.json`)]));
 }
 const localeNames = {
   "key": { name: "DebugKey", nativeName: "DebugKey" },
@@ -72,106 +44,21 @@ const localeNames = {
   "es-ES": { name: "Spanish (Spain)", nativeName: "Español (España)" },
   "uk": { name: "Ukranian", nativeName: "Українська" }
 }
-window.remoteFiles = remoteFiles;
 const localization = {
-  setLanguage: (languageId) => {
-    //localeStore.setLocale(languageId);
-  },
-  getAllLanguages: (() => {
-    let lastCall = 0;
-    const debounceTime = 10000; // 10 second debounce
-    let cachedResult = null;
-
-    return async () => {
-      const now = Date.now();
-      if (cachedResult && now - lastCall < debounceTime) {
-        //console.log("Returning cached result")
-        return cachedResult;
-      }
-      //console.log("Returning new result")
-      const projectId = 737627;
-      try {
-        const response = await fetch(`https://api.crowdin.com/api/v2/projects/${projectId}/languages/progress?limit=100`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${(window["BuildConfig"] || window.parent["BuildConfig"])["CAK"]()}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = (await response.json())["data"];
-        cachedResult = Object.fromEntries(data.map(e => [e.data.languageId, e.data]));
-        cachedResult["en-US"] = {
-          "languageId": "en-US",
-          "translationProgress": 100,
-          "approvalProgress": 100,
-          "language": {
-            "id": "en-US",
-            "name": "English, United States",
-            "editorCode": "enus",
-            "twoLettersCode": "en",
-            "threeLettersCode": "eng",
-            "locale": "en-US",
-            "androidCode": "en-US",
-            "pluralCategoryNames": [
-              "one",
-              "other"
-            ],
-            "pluralRules": "(n != 1)",
-            "pluralExamples": [
-              "1",
-              "0, 2-999; 1.2, 2.07..."
-            ],
-            "textDirection": "ltr",
-            "dialectOf": "en"
-          }
-        }
-        lastCall = now;
-        return cachedResult;
-
-      } catch (error) {
-        console.error('Error fetching languages:', error);
-        return {}; // Return empty object if request fails
-      }
-    };
-  })(),
+  getAllLanguages: async () => Object.fromEntries(
+    localeCodes.map(languageId => [languageId, { languageId }])
+  ),
   getLanguage: async (languageId) => {
-    const baseUrl = getLocalizationBaseURL();
-    const files = ['colors', 'common', 'readme', 'settings', 'welcome'];
-    const languageData = {};
-
     try {
-      // Fetch all files in parallel
-      const responses = await Promise.all(
-        files.map(file =>
-          fetch(`${baseUrl}/${languageId}/${file}.json`)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.json();
-            })
-            .catch(error => {
-              console.warn(`Failed to fetch ${file}.json for ${languageId}:`, error);
-              return null;
-            })
-        )
+      const responses = await Promise.all(Object.entries(localeFiles(languageId)).map(async ([file, url]) => {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`${file}.json returned HTTP ${response.status}`);
+        return [file, await response.json()];
+      })
       );
-
-      // Combine all successful responses into languageData
-      responses.forEach((data, index) => {
-        if (data) {
-          languageData[files[index]] = data;
-        }
-      });
-
-      return languageData;
+      return Object.fromEntries(responses);
     } catch (error) {
-      console.error('Error fetching language data:', error);
+      console.error(`Failed to load local locale ${languageId}:`, error);
       return null;
     }
   }
@@ -196,9 +83,9 @@ class LocaleManager {
     const languageCode = window._i18n.currentLocale.split('-')[0];
     return str.toLocaleUpperCase(languageCode);
   }
-  async getAvailableLocales(refresh = false, debug = false) {
+  async getAvailableLocales(refresh = false) {
     const localesData = window._i18n.availableLocales || {};
-    if (refresh || !localesData.userLocales.length) {
+    if (refresh || Object.keys(localesData.userLocales).length === 0) {
       const allLocales = (await localization.getAllLanguages()) || {};
       window._i18n.availableLocales.userLocales = allLocales
     }
@@ -207,7 +94,7 @@ class LocaleManager {
   getLocaleName(locale) {
     const localeCode = locale || window._i18n.currentLocale;
 
-    if (locale == "lol" || locale == "lol-US") {
+    if (localeCode == "lol" || localeCode == "lol-US") {
       return { name: "LOLCAT", nativeName: "LOLCAT" }
     }
     // First check if we have it in localeNames
@@ -220,34 +107,39 @@ class LocaleManager {
 
     // Fall back to ITL lookup
     const info = ITL.isoInfo(localeCode);
-    if (info["type"]) {
+    if (info && info["type"]) {
       if (info["country"]) {
         return { name: info.language.name + ` (${info.country.name})`, nativeName: info.language.original + ` (${info.country.original})` };
       }
       return { name: info.language.name, nativeName: info.language.original };
-    } else {
+    } else if (info) {
       return { name: info.name, nativeName: info.original };
+    }
+
+    try {
+      const name = new Intl.DisplayNames(["en"], { type: "language" }).of(localeCode);
+      const nativeName = new Intl.DisplayNames([localeCode], { type: "language" }).of(localeCode);
+      return {
+        name: name === localeCode ? localeCode.toUpperCase() : name,
+        nativeName: nativeName === localeCode ? localeCode.toUpperCase() : nativeName
+      };
+    } catch {
+      return { name: localeCode.toUpperCase(), nativeName: localeCode.toUpperCase() };
     }
   }
   async init(force = false, fallback = false) {
     try {
-      const loadingLocale = (window._i18n.availableLocales['debug-locales'] || []).includes(window._i18n.currentLocale)
-        ? 'en-US'
-        : window._i18n.currentLocale;
-
       if (force || Object.keys(window._i18n.translations).length === 0) {
-        //
-        // Try loading default locales
         if (window != window.parent && window.parent["_i18n"]) {
           window._i18n.translations = window.parent._i18n.translations
-          window._i18n.defaultTranslations = window.parent._i18ndefaultTranslations
+          window._i18n.defaultTranslations = window.parent._i18n.defaultTranslations
 
         } else {
           const defaultTranslations = {};
           window._i18n.defaultTranslations = {}
           await Promise.all(files.map(async (file) => {
             try {
-              const response = await fetch(`./assets/defaultlocales/${file}.json`);
+              const response = await fetch(getAssetURL(`defaultlocales/${file}.json`));
               if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
               defaultTranslations[file] = await response.json();
               window._i18n.defaultTranslations[file] = defaultTranslations[file]
@@ -260,19 +152,10 @@ class LocaleManager {
             throw new Error('Failed to load translations and default locales');
           }
 
-          //window._i18n.translations = defaultTranslations;
-          //localStorage.setItem('language', "en-US");
-
-          //localeStore.setLocaleJSON(defaultTranslations);
-
-          //
-
           const translations = await localeStore.getLocaleJSON();
           if (!translations) localStorage.setItem('language', "en-US");
-          window._i18n.translations = Object.assign(defaultTranslations, translations || {});
+          window._i18n.translations = translations || defaultTranslations;
         }
-
-        //console.log("tyküledim")
       }
     } catch (err) {
       if (fallback) {
@@ -464,93 +347,30 @@ class LocaleManager {
     el.textContent = content;
   }
 
-  async setLocale(locale, progressCallback = null) {
-    if (window._i18n.availableLocales.userLocales.length === 0) {
-      await this.getAvailableLocales(true, true);
+  async setLocale(locale) {
+    if (Object.keys(window._i18n.availableLocales.userLocales).length === 0) {
+      await this.getAvailableLocales(true);
     }
-    if (!(window._i18n.availableLocales.debugLocales.includes(locale) || Object.keys(window._i18n.availableLocales.userLocales).includes(locale))) {
-      if (progressCallback) {
-        progressCallback({
-          status: 'error',
-          error: `Invalid locale: ${locale}`,
-          availableLocales: Object.keys(window._i18n.availableLocales.userLocales).concat(window._i18n.availableLocales.debugLocales)
-        });
-      }
+
+    const isDebugLocale = window._i18n.availableLocales.debugLocales.includes(locale);
+    const isUserLocale = Object.hasOwn(window._i18n.availableLocales.userLocales, locale);
+    if (!isDebugLocale && !isUserLocale) {
+      console.error(`Invalid locale: ${locale}`);
       return false;
     }
 
-    if (Object.keys(window._i18n.availableLocales.userLocales).includes(locale)) {
-      const files = remoteFiles(locale);
-      let downloadedFiles = 0;
-      const totalFiles = Object.keys(files).length;
+    const defaultTranslations = window._i18n.defaultTranslations || window.parent._i18n?.defaultTranslations;
+    const translations = isDebugLocale
+      ? defaultTranslations
+      : await localization.getLanguage(locale);
 
-      for (const [key, url] of Object.entries(files)) {
-        try {
-          const response = await fetch(url);
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-          const totalBytes = response.headers.get('content-length');
-          const reader = response.body.getReader();
-          let receivedBytes = 0;
-          let chunks = [];
-
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            chunks.push(value);
-            receivedBytes += value.length;
-
-            // Calculate progress
-            const fileProgress = totalBytes ?
-              Math.min(100, Math.round((receivedBytes / parseInt(totalBytes)) * 100)) :
-              0;
-
-            const currentFileContribution = totalBytes ?
-              Math.min(1, receivedBytes / parseInt(totalBytes)) / totalFiles :
-              0;
-            const completedFilesContribution = downloadedFiles / totalFiles;
-            const totalProgress = Math.min(100, Math.round((completedFilesContribution + currentFileContribution) * 100));
-
-            if (progressCallback) {
-              progressCallback({
-                status: 'downloading',
-                totalProgress,
-                fileProgress,
-                file: key,
-                currentFile: downloadedFiles + 1,
-                totalFiles
-              });
-            }
-          }
-
-          // Combine chunks and parse JSON
-          const data = JSON.parse(new TextDecoder().decode(
-            new Uint8Array(chunks.reduce((acc, chunk) => [...acc, ...chunk], []))
-          ));
-
-          window._i18n.translations[key] = data;
-          if (window.parent != window) window.parent._i18n.translations[key] = data;
-
-          downloadedFiles++;
-
-        } catch (error) {
-          if (progressCallback) {
-            progressCallback({
-              status: 'error',
-              error: `Failed to download ${key}: ${error.message}`,
-              file: key,
-              currentFile: downloadedFiles + 1,
-              totalFiles
-            });
-          }
-          console.error(`Failed to download ${key}:`, error);
-          return false;
-        }
-      }
+    if (!translations) {
+      return false;
     }
-    //console.log(window._i18n.translations)
-    localeStore.setLocaleJSON(window._i18n.translations);
+
+    window._i18n.translations = translations;
+    if (window.parent != window) window.parent._i18n.translations = translations;
+    await localeStore.setLocaleJSON(translations);
     window._i18n.currentLocale = locale;
     if (window.parent != window) window.parent._i18n.currentLocale = locale;
 
@@ -563,15 +383,6 @@ class LocaleManager {
     await this.init();
     this.translateDOM();
 
-    if (progressCallback) {
-      await progressCallback({
-        status: 'complete',
-        locale: locale
-      });
-
-    }
-
-    //console.log('Locale dispatch event:', window._i18n.currentLocale);
     window.dispatchEvent(new CustomEvent('localeChanged'));
     if (window.parent != window) window.parent.dispatchEvent(new CustomEvent('localeChanged'));
 

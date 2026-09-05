@@ -22,9 +22,6 @@ if (window["DiscoMockInstance"] || window.parent["DiscoMockInstance"]) {
     }
 }
 class BuildConfigMock {
-    CAK() {
-        return buildConfig["CAK"] || "0"
-    }
     CHANGELOG() {
         return "<strong>Hello</strong>Hello{NEWLINE}World"
     }
@@ -57,12 +54,6 @@ class BuildConfigMock {
     }
     REPOSITORY_NAME() {
         return buildConfig["REPOSITORY_NAME"] || "";
-    }
-    LOCALIZATION_REPOSITORY_URL() {
-        return buildConfig["LOCALIZATION_REPOSITORY_URL"] || "";
-    }
-    LOCALIZATION_REPOSITORY_NAME() {
-        return buildConfig["LOCALIZATION_REPOSITORY_NAME"] || "";
     }
 }
 export default BuildConfigMock;

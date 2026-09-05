@@ -116,7 +116,6 @@ public final class GeckoBridgeServer extends NanoHTTPD {
         BuildConfigInterface buildConfig = new BuildConfigInterface(activity);
         try {
             switch (method) {
-                case "CAK": return jsonResponse(Response.Status.OK, buildConfig.CAK(), null);
                 case "CHANGELOG": return jsonResponse(Response.Status.OK, buildConfig.CHANGELOG(), null);
                 case "signed": return jsonResponse(Response.Status.OK, buildConfig.signed(), null);
                 case "isGeckoView": return jsonResponse(Response.Status.OK, buildConfig.isGeckoView(), null);
@@ -126,8 +125,6 @@ public final class GeckoBridgeServer extends NanoHTTPD {
                 case "getAppArchitecture": return jsonResponse(Response.Status.OK, buildConfig.getAppArchitecture(), null);
                 case "REPOSITORY_URL": return jsonResponse(Response.Status.OK, buildConfig.REPOSITORY_URL(), null);
                 case "REPOSITORY_NAME": return jsonResponse(Response.Status.OK, buildConfig.REPOSITORY_NAME(), null);
-                case "LOCALIZATION_REPOSITORY_URL": return jsonResponse(Response.Status.OK, buildConfig.LOCALIZATION_REPOSITORY_URL(), null);
-                case "LOCALIZATION_REPOSITORY_NAME": return jsonResponse(Response.Status.OK, buildConfig.LOCALIZATION_REPOSITORY_NAME(), null);
                 default: return jsonResponse(Response.Status.NOT_FOUND, null, "Unsupported BuildConfig method: " + method);
             }
         } catch (Exception exception) {

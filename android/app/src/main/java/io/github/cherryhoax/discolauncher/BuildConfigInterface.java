@@ -14,11 +14,6 @@ public class BuildConfigInterface {
     }
 
     @JavascriptInterface
-    public String CAK() {
-        return BuildConfig.CAK;
-    }
-
-    @JavascriptInterface
     public String CHANGELOG() {
         return BuildConfig.CHANGELOG;
     }
@@ -67,15 +62,6 @@ public class BuildConfigInterface {
         return BuildConfig.REPOSITORY_NAME;
     }
 
-    @JavascriptInterface
-    public String LOCALIZATION_REPOSITORY_URL() {
-        return BuildConfig.LOCALIZATION_REPOSITORY_URL;
-    }
-
-    @JavascriptInterface
-    public String LOCALIZATION_REPOSITORY_NAME() {
-        return BuildConfig.LOCALIZATION_REPOSITORY_NAME;
-    }
 }
 //HELLO YALL
 //THIS IS THE BUILD CONFIG INTERFACE

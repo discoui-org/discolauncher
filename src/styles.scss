@@ -178,12 +178,9 @@ div.flow-scrollable {
         scale: 1;
       }
 
-
-
       100% {
         opacity: 0;
         scale: .5;
-        filter: blur(5px) brightness(2);
       }
     }
 
@@ -196,12 +193,9 @@ div.flow-scrollable {
           scale: 1;
         }
 
-
-
         100% {
           opacity: 0;
           scale: 1.5;
-          filter: blur(5px) brightness(2);
         }
       }
     }

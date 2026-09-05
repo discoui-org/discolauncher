@@ -44,12 +44,6 @@ android {
         // VERSIONNAME END
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Add the API key
-        buildConfigField(
-            type = "String",
-            name = "CAK",
-            value = "\"${localProperties.getProperty("CAK", "")}\""
-        )
         // Add the changelog for Nightly builds
         buildConfigField(
             type = "String",
@@ -66,16 +60,6 @@ android {
             type = "String",
             name = "REPOSITORY_NAME",
             value = "\"${localProperties.getProperty("REPOSITORY_NAME", "")}\""
-        )
-        buildConfigField(
-            type = "String",
-            name = "LOCALIZATION_REPOSITORY_URL",
-            value = "\"${localProperties.getProperty("LOCALIZATION_REPOSITORY_URL", "")}\""
-        )
-        buildConfigField(
-            type = "String",
-            name = "LOCALIZATION_REPOSITORY_NAME",
-            value = "\"${localProperties.getProperty("LOCALIZATION_REPOSITORY_NAME", "")}\""
         )
     }
     

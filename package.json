@@ -3,6 +3,7 @@
   "version": "0.7.0-beta",
   "main": "index.js",
   "scripts": {
+    "check:locales": "node ./scripts/check-locales.mjs",
     "build-watch": "npx concurrently \"npm run build-watch:vite\" \"npm run build-watch:scss\" \"npm run build-watch:internal-apps\" \"npm run build-watch:android\"",
     "build-watch:vite": "npm run clean:vite && npx concurrently \"vite build --watch --mode development\" \"vite build --watch --mode development --config vite.worker.config.mjs\"",
     "build-watch:scss": "npx sass --no-source-map --watch src/styles.scss www/dist/styles.css",

@@ -37,7 +37,7 @@ div.snowHolder {
     @keyframes snowHolderEnter {
         from {
             transform: scale(2);
-            filter: blur(10px) opacity(0);
+            filter: opacity(0);
         }
 
         to {}

@@ -687,12 +687,10 @@ body.fade-out #background {
         @keyframes welcome-loader {
             0% {
                 background: black;
-                backdrop-filter: blur(10px) contrast(1);
             }
 
             100% {
                 background: var(--metro-transparent);
-                backdrop-filter: blur(10px) contrast(0.9);
             }
         }
     }

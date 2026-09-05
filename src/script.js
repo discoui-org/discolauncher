@@ -380,7 +380,6 @@ startUpSequence([
 
 
 
-//DiscoBoard.alert("CAK", BuildConfig.CAK())
 
 
 window.liveTileManager = liveTileManager
