@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> 是一个地铁风格的启动器，旨在提供可定制和时尚的用户体验。用户可以通过调整磁贴大小、更改磁贴位置、自定义颜色主题和设置自己喜欢的壁纸来个性化他们的启动器。",
+    "title_features": "功能",
+    "list_featuers_0": "<strong>地铁风格界面：</strong> 受 Windows Phone 8 启发的干净现代设计。",
+    "list_featuers_1": "<strong>可定制磁贴：</strong> 拖放磁贴，调整其大小，并移动它们以适应您的独特风格。",
+    "list_featuers_2": "<strong>主题自定义：</strong> 更改启动器的颜色以匹配您的心情或美学。",
+    "list_featuers_3": "<strong>壁纸个性化：</strong> 选择并设置您自己的壁纸以创建完全个性化的设置。",
+    "title_contributing": "贡献",
+    "paragraph_contributing_0": "欢迎贡献！随时提交问题和拉取请求以帮助改进 <strong>Groove Launcher</strong>。",
+    "list_paragraph_contributing_0": "分叉存储库。",
+    "list_paragraph_contributing_1": "为您的功能或错误修复创建一个新分支。",
+    "list_paragraph_contributing_2": "当您的代码准备好时提交拉取请求。",
+    "title_license": "许可证",
+    "paragraph_license": "此项目根据 MIT 许可证授权 - 有关详细信息，请参阅 <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> 文件。",
+    "title_contact": "联系",
+    "paragraph_contact_0": "如有任何疑问或反馈，请随时联系我们！"
+}

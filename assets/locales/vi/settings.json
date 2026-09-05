@@ -1,0 +1,159 @@
+{
+  "title": "Cài đặt",
+  "tabs": {
+    "home": "Màn hình chính",
+    "applications": "Ứng dụng"
+  },
+  "theme": {
+    "title": "Màn hình chính+Chủ đề",
+    "accent_color": "Màu chủ đề",
+    "background": "Nền",
+    "home_background": "Nền bắt đầu",
+    "choose_photo": "Chọn ảnh",
+    "show_more_tiles": "Hiển thị thêm Hình xếp",
+    "friendly_accent": "Thay đổi nền và <span style='color: var(--accent-color)'>màu chủ đề</span> của thiết bị để phù hợp với tâm trạng của bạn hôm nay, tuần này hoặc cả tháng.",
+    "friendly_tiles": "Bạn có thể thay đổi kích cỡ và số lượng hình xếp sẵn dùng trên màn hình bắt đầu.",
+    "themes": {
+      "light": "Sáng",
+      "dark": "Tối",
+      "auto": "Tự động"
+    }
+  },
+  "screen_rotation": {
+    "title": "Xoay màn hình",
+    "auto_rotate": "Tự động xoay",
+    "rotation_lock": "Khóa xoay",
+    "friendly_rotation_lock": "Khi Khóa xoay được bật, màn hình chính sẽ giữ hướng xoay của nó bất kể thiết bị có xoay màn hình hay không."
+  },
+  "language": {
+    "title": "Ngôn ngữ"
+  },
+  "ease_of_access": {
+    "title": "Hỗ trợ tiếp cận",
+    "description": "cỡ chữ, tương phản cao, và hơn thế",
+    "reduce_motion": {
+      "title": "Giảm hoạt ảnh",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "Cỡ phóng",
+    "font": {
+      "title": "Phông chữ",
+      "choose": "Lựa chọn...",
+      "remove": "Xóa font"
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "Nâng cao",
+    "description": "trình quản lí gói và các tùy biến khác",
+    "debugging": {
+      "title": "Gỡ lỗi",
+      "dump_apps": "Dump danh sách ứng dụng được cài đặt ra JSON"
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "Trình quản lí gói",
+      "title_experimental": "Trình quản lí gói (THỬ NGHIỆM)",
+      "system": "Hệ thống",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "Đặt lại Groove Launcher?",
+      "message": "Mọi cài đặt và tùy biến sẽ về mặc định."
+    },
+    "root": {
+      "title": "Cần truy cập root",
+      "message": "Quyền truy cập root là cần thiết cho hành động này."
+    },
+    "shizuku": {
+      "title": "Cần quyền sử dụng Shizuku",
+      "message": "Quyền truy cập Shizuku là cần thiết cho hành động này."
+    },
+    "update_available": {
+      "title": "Đã có bản cập nhật!",
+      "message": "Phiên bản <strong>{{version}}</strong> đã khả dụng, size {{size}}. Tải về?",
+      "message2": "Phiên bản <strong>{{version}}</strong> khả dụng. Tải về?"
+    },
+    "update_check_failed": {
+      "title": "Tìm bản cập nhật thất bại!",
+      "message": "Không thể kiểm tra cập nhật. Vui lòng thử lại sau."
+    },
+    "up_to_date": {
+      "title": "Đang chạy bản mới nhất!",
+      "message": "Bạn đang sử dụng phiên bản xịn nhất của Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Định dạng tập tin không được hỗ trợ",
+      "message": "File font chữ này không hợp lệ. Kiểm chứng liệu nó có phải file TTF không và thử lại."
+    },
+    "font_load_error": {
+      "title": "Không thể load font",
+      "message": "Không thể đọc file này. Chỉ font ở định dạng .ttf là được hỗ trợ. Hãy thử một file khác."
+    },
+    "copy_failed": {
+      "title": "Copy thất bại!",
+      "message": "Không thể sao chép danh sách ứng dụng. Vui lòng thử lại sau."
+    },
+    "copy_success": {
+      "title": "Đã sao chép vào bộ nhớ tạm!",
+      "message": "Danh sách ứng dụng đã được sao chép sang định dạng JSON."
+    }
+  },
+  "about": {
+    "title": "Giới thiệu",
+    "description": "Groove Launcher",
+    "version": "Phiên bản: {{version}}",
+    "webview_version": "Phiên bản WebView: {{version}}",
+    "reset_launcher": "Đặt lại",
+    "check_updates": "Kiểm tra cập nhật"
+  },
+  "apps": {
+    "uninstall_app": "Gỡ cài đặt ứng dụng",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "Đội ngữ Groove",
+    "developer": "Nhà phát triển",
+    "icon_design": "Thiết kế icon",
+    "logo_design": "Thiết kế logo"
+  }
+}

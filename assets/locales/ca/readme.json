@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> és un llançador amb estil Metro dissenyat per a una experiència d'usuari personalitzable i elegant. Els usuaris poden personalitzar el seu llançador ajustant la mida i posició de les teulades, canviar el color del tema i posar els seus fons favorits.",
+    "title_features": "Característiques",
+    "list_featuers_0": "<strong>Interfase estil Metro:</strong> Un disseny modern inspirat per Windows Phone 8.",
+    "list_featuers_1": "<strong>Teulades personalitzables:</strong> Arrossega les teulades, ajusta les seves mides i mou-les per a que combinin amb el teu estil.",
+    "list_featuers_2": "<strong>Personalització del Tema:</strong> Canvia el color del llançador perquè combinin amb la teva estètica i sentiments.",
+    "list_featuers_3": "<strong>Personalització del Fons de Pantalla:</strong> Escolliu els vostres fons de pantalla per crear una configuració completament personalitzada.",
+    "title_contributing": "Contribuir",
+    "paragraph_contributing_0": "Les contribucions s'aprecien molt! Sentiu-vos lliures de reportar problemes i fer «pull requests» per millorar <strong>Groove Launcher</strong>.",
+    "list_paragraph_contributing_0": "Feu una bifurcació del repositori.",
+    "list_paragraph_contributing_1": "Crea una nova branca per a la teva característica o solució a un bug.",
+    "list_paragraph_contributing_2": "Pujeu una «pull request»  quan el teu codi estigui llest.",
+    "title_license": "Llicència",
+    "paragraph_license": "Aquest projecte està llicenciat baix la Llicència MIT - veieu l'arxiu <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> per més detalls.",
+    "title_contact": "Contacte",
+    "paragraph_contact_0": "Per qualsevol dubte o comentari, sentiu-vos lliures de contactar amb nosaltres!"
+}

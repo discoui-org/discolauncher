@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong>, fərdiləşdirilə bilən və qəşəng istifadəçi təcrübəsi üçün nəzərdə tutulmuş metro tipli başlatma cihazıdır. İstifadəçilər kafel ölçülərini tənzimləməklə, mövqelərini dəyişdirməklə, rəng mövzusunu fərdiləşdirməklə və sevimli divar kağızlarını qurmaqla başlatma cihazını fərdiləşdirə bilərlər.",
+    "title_features": "Özəlliklər",
+    "list_featuers_0": "<strong>Metro-Stil İnterfeys:</strong> Windows Phone 8-dən ilhamlanmış təmiz və müasir dizayn.",
+    "list_featuers_1": "<strong>Fərdiləşdirilə bilən Lövhəciklər:</strong> Lövhəcikləri sürükləyin və buraxın, ölçülərini tənzimləyin və unikal üslubunuza uyğunlaşdırmaq üçün onları hərəkət etdirin.",
+    "list_featuers_2": "<strong>Mövzunun Fərdiləşdirməsi:</strong> Əhval-ruhiyyənizə və ya estetikanıza uyğunlaşdırmaq üçün başlatma qurğusunun rəngini dəyişdirin.",
+    "list_featuers_3": "<strong>Əsas Ekran Fonu Fərdiləşdirmə:</strong> Tam fərdiləşdirilmiş quraşdırma yaratmaq üçün öz divar kağızlarınızı seçin və təyin edin.",
+    "title_contributing": "Töhfə Vermək",
+    "paragraph_contributing_0": "Layihəyə töhfələriniz çox önəmlidir! <strong>Groove Launcher</strong>'ı təkmilləşdirmək üçün rəy göndərməkdən və pull request göndərməkdən çekinmeyin.",
+    "list_paragraph_contributing_0": "Repo'yu yükləyin.",
+    "list_paragraph_contributing_1": "Redaktə etmək və səhvləri düzəltmək üçün yeni branch yaradın.",
+    "list_paragraph_contributing_2": "Kodunuz hazır olduqda pull request göndərin.",
+    "title_license": "Lisenziya",
+    "paragraph_license": "Bu layihə MIT Lisenziyası ilə lisenziyalaşdırılıb - təfərrüatlar üçün <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> faylına baxın.",
+    "title_contact": "Əlaqə",
+    "paragraph_contact_0": "İstənilən sorğu və ya rəy üçün əlaqə saxlamaqdan çekinmeyin!"
+}

@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Tamam",
+    "okay": "Tamam",
+    "yes": "Bəli",
+    "no": "Yox",
+    "uninstall": "Silin",
+    "cancel": "Ləğv et",
+    "apply": "Tətbiq et",
+    "allow": "Allow",
+    "try_again": "Yenidən cəhd edin",
+    "light": "Açıq",
+    "dark": "Tünd",
+    "remove": "Sil",
+    "on": "Aktiv",
+    "off": "Qeyri-aktiv",
+    "locked": "Kilidlənib",
+    "unlocked": "Kilidi açıldı",
+    "dismiss": "Məhəl qoyma",
+    "read_more": "Ətraflı oxu"
+  },
+  "search": {
+    "title": "Axtarış",
+    "no_results": "{{query}} üçün nəticə yoxdur",
+    "search_store": "Mağazada axtar"
+  },
+  "errors": {
+    "webview_old": "WebView çox köhnədir!",
+    "home_reset": "Əsas ekranınız kritik xəta səbəbindən sıfırlandı :( Bu xətanı bildirin:",
+    "launch_timeout": "Sistemin yüklənməsi çox uzun çəkdi"
+  },
+  "app_menu": {
+    "pin_to_home": "Əsas ekrana daxil et",
+    "app_info": "Proqram məlumatı",
+    "uninstall": "Quraş-ı ləğv et"
+  },
+  "alerts": {
+    "default": {
+      "title": "Xəbərdarlıq!",
+      "message": "Mesaj"
+    },
+    "uninstall": {
+      "title": "Bu proqramın quraşdırılmışı ləğv olunsun?",
+      "message": "Bu proqram, həmçinin onun ehtiva etdiyi istənilən məlumat cihazınızdan silinəcək."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

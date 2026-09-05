@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "siguiente",
+        "previous": "anterior",
+        "pleaseWait": "Por favor espere..."
+    },
+    "welcome": {
+        "install": "Bienvenido",
+        "update": "Bienvenido de vuelta",
+        "appName": "Groove Launcher",
+        "setupIntro": "Vamos a configurar tu experiencia en unos pasos.",
+        "warning": "Advertencia: Este es un software preliminar y puede contener bugs."
+    },
+    "wizard": {
+        "title": "Asistente de actualización",
+        "description": "Asegurémonos que tus datos sean movidos seguramente. Presiona siguiente para continuar."
+    },
+    "access": {
+        "title": "Accesibilidad",
+        "description": "Personaliza tu experiencia para asegurarte que todo esté adecuado.",
+        "background": "Fondo",
+        "scaling": "Escalado"
+    },
+    "themes": {
+        "light": "Claro",
+        "dark": "Oscuro"
+    },
+    "colors": {
+        "title": "Elige tu color",
+        "description": "Elige un color que esté acorde a tu ánimo."
+    },
+    "permissions": {
+        "title": "Permisos",
+        "groups": {
+            "contacts": {
+                "title": "Contactos",
+                "description": "El acceso a los contactos es necesario para mostrar tus contactos en el mosaico de contactos."
+            },
+            "photos": {
+                "title": "Fotos",
+                "description": "El acceso a las fotos es necesario para mostrar tus fotos en el mosaico de fotos."
+            },
+            "notifications": {
+                "title": "Notificaciones",
+                "description": "El acceso a las notificaciones es necesario para mostrar las notificaciones en los mosaicos."
+            },
+            "accessibility": {
+                "title": "Accesibilidad",
+                "description": "Habilite la accesibilidad para bloquear el dispositivo."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "¿Qué hay de nuevo?"
+    },
+    "finish": {
+        "title": "Prepárate para Groovear",
+        "description": "Tu configuración está lista. ¡Hora de la acción!"
+    }
+}

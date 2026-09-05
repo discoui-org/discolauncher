@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "suivant",
+        "previous": "précédent",
+        "pleaseWait": "S'il vous plaît, attendez..."
+    },
+    "welcome": {
+        "install": "Bienvenue",
+        "update": "Bienvenue de nouveau",
+        "appName": "Groove Launcher",
+        "setupIntro": "Configurons votre expérience en quelques étapes seulement.",
+        "warning": "Attention : il s'agit d'un logiciel préliminaire et il peut contenir des bugs."
+    },
+    "wizard": {
+        "title": "Assistant de mise à jour",
+        "description": "Assurons-nous que vos données sont transférées en toute sécurité ! Cliquez sur Suivant pour continuer."
+    },
+    "access": {
+        "title": "Options D'ergonomie",
+        "description": "Personnalisez votre expérience pour vous assurer que tout se passe bien.",
+        "background": "Arrière-plan",
+        "scaling": "Mise à l'échelle"
+    },
+    "themes": {
+        "light": "Clair",
+        "dark": "Sombre"
+    },
+    "colors": {
+        "title": "Choisissez votre couleur",
+        "description": "Choisir une couleur qui correspond à votre humeur."
+    },
+    "permissions": {
+        "title": "Permissions",
+        "groups": {
+            "contacts": {
+                "title": "Contacts",
+                "description": "L'accès aux contacts est nécessaire pour afficher la vignette dynamique de vos contacts."
+            },
+            "photos": {
+                "title": "Photos",
+                "description": "L'accès aux photos est nécessaire pour afficher la vignette dynamique de vos photos."
+            },
+            "notifications": {
+                "title": "Notifications",
+                "description": "L'accès aux notifications est nécessaire pour afficher la vignette dynamique de vos notifications."
+            },
+            "accessibility": {
+                "title": "Accessibilité",
+                "description": "Activer l'accessibilité pour verrouiller l'appareil."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Quoi de neuf?"
+    },
+    "finish": {
+        "title": "Préparez-vous pour Groove",
+        "description": "Votre configuration est terminée!"
+    }
+}

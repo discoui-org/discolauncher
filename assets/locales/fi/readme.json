@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> on metro-tyylinen launcheri, joka on suunniteltu mukautettavaan ja tyylikkääseen käyttökokemukseen. Käyttäjät voivat muokata ruutujen kokoa, niiden sijoittelua, väri teemaa sekä asettaa suosikki taustakuvansa.",
+    "title_features": "Ominaisuuksia",
+    "list_featuers_0": "<strong>Metro-tyylinen käyttöliittymä:</strong> Puhdas ja moderni muotoilu, joka on saanut inspiraation Windows Phone 8 -käyttöjärjestelmästä.",
+    "list_featuers_1": "<strong>Mukautettavat ruudut:</strong> Vedä ja pudota ruutuja, muokkaa niiden kokoa ja liikuttele niitä ympäriinsä saadaksesi ainutlaatuisen käyttökokemuksen.",
+    "list_featuers_2": "<strong>Teeman mukauttaminen:</strong> Vaihda launcherin väriä estetiikan tai mielialasi mukaan.",
+    "list_featuers_3": "<strong>Taustakuvan personointi:</strong> Valitse oma taustakuva luodaksesi personoidun kokonaisuuden.",
+    "title_contributing": "Osallistu kehittämiseen",
+    "paragraph_contributing_0": "Apu on erittäin tervetullutta! Voit raportoida ongelmista ja tehdä pull request -pyyntöjä auttaaksesi <strong>Groove Launcherin</strong> kehityksessä.",
+    "list_paragraph_contributing_0": "Muokkaa repository -arkistoa.",
+    "list_paragraph_contributing_1": "Luo uusi branch -haara ominaisuudelle tai bugikorjauksellesi.",
+    "list_paragraph_contributing_2": "Lähetä pull request -pyyntö, kun koodisi on valmis.",
+    "title_license": "Lisenssi",
+    "paragraph_license": "Tämä projekti on lisenssoitu MIT -lisenssillä. Lisätietoja saat <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">täältä</a>.",
+    "title_contact": "Ota yhteyttä",
+    "paragraph_contact_0": "Jos sinulla on kysyttävää tai palautetta, ota rohkeasti yhteyttä!"
+}

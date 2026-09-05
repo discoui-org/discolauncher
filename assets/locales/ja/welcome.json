@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "次へ",
+        "previous": "前へ",
+        "pleaseWait": "少々お待ちください..."
+    },
+    "welcome": {
+        "install": "ようこそ",
+        "update": "お帰りなさい",
+        "appName": "Groove Launcher",
+        "setupIntro": "数回のステップで環境を設定しましょう。",
+        "warning": "警告: これはプレリリースソフトウェアのため不具合が発生する可能性があります。"
+    },
+    "wizard": {
+        "title": "アップデートウィザード",
+        "description": "データを安全に移行するための手順です。次へをクリックして続行してください。"
+    },
+    "access": {
+        "title": "簡単操作",
+        "description": "すべてがちょうど良い感覚になるようにカスタマイズしましょう。",
+        "background": "背景",
+        "scaling": "拡大縮小"
+    },
+    "themes": {
+        "light": "白",
+        "dark": "黒"
+    },
+    "colors": {
+        "title": "色を選んでください",
+        "description": "あなたの気分に合う色を選びましょう。"
+    },
+    "permissions": {
+        "title": "権限",
+        "groups": {
+            "contacts": {
+                "title": "連絡先",
+                "description": "連絡先を表示するライブタイルのために連絡先へのアクセスが必要です。"
+            },
+            "photos": {
+                "title": "写真",
+                "description": "写真を表示するライブタイルのために写真へのアクセスが必要です。"
+            },
+            "notifications": {
+                "title": "通知",
+                "description": "通知を表示するライブタイルのために通知へのアクセスが必要です。"
+            },
+            "accessibility": {
+                "title": "アクセシビリティ",
+                "description": "デバイスをロックするにはアクセシビリティを有効にしてください。"
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "新着情報"
+    },
+    "finish": {
+        "title": "Grooveの準備をしましょう",
+        "description": "セットアップが完了しました。本格的に始めましょう。"
+    }
+}

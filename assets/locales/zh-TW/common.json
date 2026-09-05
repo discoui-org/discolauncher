@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "好",
+    "okay": "好",
+    "yes": "是",
+    "no": "否",
+    "uninstall": "解除安裝",
+    "cancel": "取消",
+    "apply": "套用",
+    "allow": "允許",
+    "try_again": "再試一次",
+    "light": "淺色",
+    "dark": "深色",
+    "remove": "移除",
+    "on": "開啟",
+    "off": "關閉",
+    "locked": "已鎖定",
+    "unlocked": "已解鎖",
+    "dismiss": "關閉",
+    "read_more": "閱讀更多"
+  },
+  "search": {
+    "title": "搜尋",
+    "no_results": "沒有符合「{{query}}」的結果",
+    "search_store": "搜尋商店"
+  },
+  "errors": {
+    "webview_old": "WebView 版本過舊！",
+    "home_reset": "由於發生嚴重錯誤，您的主畫面已被重設 :( 請回報此問題：",
+    "launch_timeout": "系統啟動耗時過長"
+  },
+  "app_menu": {
+    "pin_to_home": "固定到主畫面",
+    "app_info": "應用程式資訊",
+    "uninstall": "解除安裝"
+  },
+  "alerts": {
+    "default": {
+      "title": "警告！",
+      "message": "訊息"
+    },
+    "uninstall": {
+      "title": "要解除安裝這個應用程式嗎？",
+      "message": "此應用程式及其所含的所有資訊將會從您的裝置中刪除。"
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

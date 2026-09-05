@@ -1,0 +1,17 @@
+{
+    "entry": "A <strong>Groove Launcher</strong> egy Metro stílusú launcher, ami az egyedi megjelenés és gördülékeny használat jegyében készült. Személyre szabható a csempék mérete és pozíciója, valamint a téma színe és a háttérkép.",
+    "title_features": "Jellemzők",
+    "list_featuers_0": "<strong>Metro stílusú felület:</strong> Letisztult és modern dizájn a Windows Phone 8 által inspirálva.",
+    "list_featuers_1": "<strong>Testreszabható csempék:</strong> Nyomva tartva méretezze át és mozgassa a csempéket egyedi stílusának megfelelően.",
+    "list_featuers_2": "<strong>Témaszín beállítás:</strong> Állítsa a launcher színét kedve és ízlése szerint.",
+    "list_featuers_3": "<strong>Háttérkép beállítása:</strong> Tegye igazán egyedivé a felületet saját háttérképével.",
+    "title_contributing": "Közreműködés",
+    "paragraph_contributing_0": "Hozzájárulását szívesen fogadjuk! Vegyen fek issue-kat és pull request-eket, hogy tovább fejlődjön a <strong>Groove Launcher</strong>.",
+    "list_paragraph_contributing_0": "Készítsen forkot a repositoryból.",
+    "list_paragraph_contributing_1": "Hozzon létre leágazást a funkciónak vagy bugfixnek.",
+    "list_paragraph_contributing_2": "Nyújtson be pull requestet, ha a kódja elkészült.",
+    "title_license": "Licensz",
+    "paragraph_license": "Ez a projekt az MIT License alapján elérhető - részletekért olvassa el a <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSZ</a> fájlt.",
+    "title_contact": "Elérhetőség",
+    "paragraph_contact_0": "Észrevételével vagy visszajelzéseivel forduljon hozzánk bátran!"
+}

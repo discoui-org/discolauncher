@@ -1,0 +1,23 @@
+{
+    "lime": "Sárgászöld",
+    "green": "Zöld",
+    "emerald": "Smaragdzöld",
+    "teal": "Pávakék",
+    "cyan": "Ciankék",
+    "cobalt": "Kobaltkék",
+    "indigo": "Indigókék",
+    "violet": "Ibolyaszínű",
+    "pink": "Rózsaszín",
+    "magenta": "Bíbor",
+    "crimson": "Karmazsinvörös",
+    "red": "Piros",
+    "orange": "Narancssárga",
+    "amber": "Borostyánsárga",
+    "yellow": "Sárga",
+    "brown": "Barna",
+    "olive": "Olívazöld",
+    "steel": "Acélszürke",
+    "mauve": "Mályvazínű",
+    "taupe": "Barnásszürke",
+    "custom_color": "Egyedi szín"
+}

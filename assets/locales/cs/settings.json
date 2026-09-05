@@ -1,0 +1,159 @@
+{
+  "title": "Nastavení",
+  "tabs": {
+    "home": "Domov",
+    "applications": "Aplikace"
+  },
+  "theme": {
+    "title": "Domov+Téma",
+    "accent_color": "Barva nádechu",
+    "background": "Pozadí",
+    "home_background": "Pozadí domovské obrazovky",
+    "choose_photo": "Vybrat obrázek",
+    "show_more_tiles": "Ukázat více dlaždic",
+    "friendly_accent": "Změnit pozadí a <span style='color: var(--accent-color)'>barvu nádechu</span> podle vaší nálady dnes, tento týden, nebo celý měsíc.",
+    "friendly_tiles": "Můžete změnit velikost a počet dlaždic dostupných na vaší domovské obrazovce.",
+    "themes": {
+      "light": "Světlý",
+      "dark": "Tmavý",
+      "auto": "Automaticky"
+    }
+  },
+  "screen_rotation": {
+    "title": "Otáčení obrazovky",
+    "auto_rotate": "Automatické otáčení",
+    "rotation_lock": "Zámek otáčení obrazovky",
+    "friendly_rotation_lock": "Když je zámek otáčení obrazovky zapnutý, vaše domovská obrazovka zůstane v aktuální pozici, pokud otočíte zařízením."
+  },
+  "language": {
+    "title": "Jazyk"
+  },
+  "ease_of_access": {
+    "title": "Snadný přístup",
+    "description": "velikost písma, vysoký kontrast a více",
+    "reduce_motion": {
+      "title": "Snížit pohyb",
+      "description": "Omezit účinky pohybu, jako je parallax a animace, aby se zabránilo nemoci pohybu."
+    },
+    "high_contrast": {
+      "title": "Vysoký kontrast",
+      "description": "Změní barvy pro některé funkce a skryje některé jejich obrázky na pozadí."
+    },
+    "scaling": "Škálování",
+    "font": {
+      "title": "Font",
+      "choose": "Zvolit...",
+      "remove": "Odstranit font"
+    },
+    "haptic_feedback": {
+      "title": "Hmatová odezva",
+      "description": "Povolit zpětnou vazbu vibrací při interakci s dlaždicemi a ovládáními."
+    },
+    "groups": {
+      "vision": "Viditelnost",
+      "tactile": "Hmatové"
+    }
+  },
+  "advanced": {
+    "title": "Pokročilé",
+    "description": "správce balíčků a další úpravy",
+    "debugging": {
+      "title": "Ladění",
+      "dump_apps": "Smazat nainstalované JSON aplikace"
+    },
+    "data": {
+      "title": "Údaje",
+      "backup": "Zálohovat",
+      "restore": "Obnovit"
+    },
+    "package_manager": {
+      "title": "Správce balíčků",
+      "title_experimental": "Správce balíčků (POKUSNÉ)",
+      "system": "Systém",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Uspat dvojitým poklepáním",
+    "alternative_wallpaper": "Alternativní umístění tapety"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Resetovat Groove Launcher?",
+      "message": "Váš launcher bude obnoven do výchozího nastavení. Všechny úpravy budou ztraceny."
+    },
+    "root": {
+      "title": "Vyžadovaný root přístup",
+      "message": "Root přístup je vyžadovaný k dokončení této akce. Prosím, povolte root a pokračujte."
+    },
+    "shizuku": {
+      "title": "Vyžadováno Shizuku povolení",
+      "message": "Shizuku povolení je vyžadováno k dokončení této akce. Prosím, udělte Shizuku povolení a pokračujte."
+    },
+    "update_available": {
+      "title": "Dostupná aktualizace!",
+      "message": "Nová verze<strong>({{version}})</strong> o velikosti {{size}} je dostupná. Přejete si ji stáhnout?",
+      "message2": "Nová verze <strong>({{version}})</strong> je dostupná. Přejete si ji stáhnout?"
+    },
+    "update_check_failed": {
+      "title": "Kontrola aktualizací neúspěšná!",
+      "message": "Nelze zkontrolovat aktualizace aplikací. Zkuste to, prosím, později."
+    },
+    "up_to_date": {
+      "title": "Aktuální!",
+      "message": "Máte tu nejnovější verzi Groove Launcheru."
+    },
+    "font_read_error": {
+      "title": "Nepodporovaný formát souboru",
+      "message": "Nesprávný soubor fontu. Použijte prosím soubor s příponou .ttf a zkuste to znovu."
+    },
+    "font_load_error": {
+      "title": "Nelze načíst font",
+      "message": "Nelze přečíst soubor fontu. Pouze soubory s příponou .ttf jsou podporovány. Použijte prosím jiný soubor."
+    },
+    "copy_failed": {
+      "title": "Kopírování neúspěšné!",
+      "message": "Nelze zkopírovat seznam aplikací. Zkuste to znovu."
+    },
+    "copy_success": {
+      "title": "Zkopírováno do schránky!",
+      "message": "Aplikace zkopírované do formátu JSON úspěšně staženy."
+    }
+  },
+  "about": {
+    "title": "O aplikaci",
+    "description": "Groove Launcher",
+    "version": "Verze: {{version}}",
+    "webview_version": "WebView verze: {{version}}",
+    "reset_launcher": "Resetovat launcher",
+    "check_updates": "Zkontrolovat aktualizace"
+  },
+  "apps": {
+    "uninstall_app": "Odinstalovat aplikaci",
+    "show_in_app_list": "Zobrazit tuto aplikaci v seznamu aplikací",
+    "name": "Název",
+    "icon": "Ikona",
+    "icon_selections": {
+      "default": "Výchozí",
+      "monochrome": "Černobílé zobrazení"
+    },
+    "background": "Pozadí",
+    "background_selections": {
+      "default": "Výchozí",
+      "transparent": "Průhledná"
+    },
+    "text_color": "Barva písma",
+    "text_color_selections": {
+      "auto": "Automaticky",
+      "dark": "tmavé",
+      "light": "světlý"
+    },
+    "live_tile": "Živé dlaždice",
+    "show_app": "Zobrazit v seznamu aplikací"
+  },
+  "roles": {
+    "team_groove": "Tým Groove",
+    "developer": "Vývojář",
+    "icon_design": "Vzhled ikony",
+    "logo_design": "Vzhled loga"
+  }
+}

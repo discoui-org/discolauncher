@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> هو مشغل برامج مصمم لتوفير تجرِبة مستخدم أنيقة وقابلة للتخصيص. يمكن للمستخدمين تخصيص المشغل الخاص بهم عن طريق ضبط أحجام التطبيقات وتغيير مواضع التطبيقات وتخصيص اللون وتعيين خلفياتهم المفضلة.",
+    "title_features": "المزايا",
+    "list_featuers_0": "<strong>واجهة المترو:</strong> تصميم انيق وحديث مستوحاة من Windows Phone 8.",
+    "list_featuers_1": "<strong>تخصيص البرامج:</strong> قم بسحب المربعات وإسقاطها، وضبط أحجامها، وتحريكها لتناسب أسلوبك الفريد.",
+    "list_featuers_2": "<strong>تخصيص المظهر:</strong> قم بتغيير لون المشغل ليتناسب مع حالتك المزاجية أو الجمالية.",
+    "list_featuers_3": "<strong>تخصيص الخلفيه:</strong> ختر خلفياتك الخاصة وعيينها لإنشاء إعداد مخصص بالكامل. ",
+    "title_contributing": "المساهمة",
+    "paragraph_contributing_0": "المساهمات محمودة جداً! لا تتردد في تقديم المشكلات و طلبات السحب للمساعدة في تحسين <strong>Groove Launcher</strong>.",
+    "list_paragraph_contributing_0": "إنشاء فرع جديد",
+    "list_paragraph_contributing_1": "قم بإنشاء فرع جديد للميزتك أو للخطأ الخاص بك.",
+    "list_paragraph_contributing_2": "قم بتقديم طلب سحب عندما يكون الكود جاهزاً.",
+    "title_license": "رخصة",
+    "paragraph_license": "هذا المشروع مرخص بموجب رخصة MIT - انظر الملف <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> للحصول على التفاصيل.",
+    "title_contact": "تواصل",
+    "paragraph_contact_0": "للحصول على أي استفسارات أو ملاحظات، لا تتردد في التواصل معنا!"
+}

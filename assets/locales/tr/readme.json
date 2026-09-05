@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong>, özelleştirilebilir ve şık bir kullanıcı deneyimi için tasarlanmış metro stilinde bir başlatıcıdır. Kullanıcılar, kutucuk boyutlarını ayarlayarak, konumlarını değiştirerek, renk temasını özelleştirerek ve favori duvar kağıtlarını ayarlayarak başlatıcılarını kişiselleştirebilirler.",
+    "title_features": "Özellikler",
+    "list_featuers_0": "<strong>Metro Tarzı Arayüz:</strong> Windows Phone 8'den esinlenen temiz ve modern bir tasarım.",
+    "list_featuers_1": "<strong>Özelleştirilebilir Kutucuklar:</strong> Kutucukları sürükleyip bırakın, boyutlarını ayarlayın ve benzersiz tarzınıza uyacak şekilde tasarlayın.",
+    "list_featuers_2": "<strong>Tema Özelleştirme:</strong> Başlatıcının rengini ruh halinize veya estetiğinize uyacak şekilde değiştirin.",
+    "list_featuers_3": "<strong>Duvar Kağıdı Kişiselleştirme:</strong> Kendi duvar kağıtlarınızı seçin ve tamamen kişiselleştirilmiş bir düzen oluşturun.",
+    "title_contributing": "Katkıda Bulunma",
+    "paragraph_contributing_0": "Katkılarınız proje için çok önemlidir! <strong>Groove Launcher</strong>'nin gelişimine yardımcı olmak için geri bildirim ve çekme istekleri göndermekten çekinmeyin.",
+    "list_paragraph_contributing_0": "Depoyu çatallandırın.",
+    "list_paragraph_contributing_1": "Özelliğiniz veya hata düzeltmeniz için yeni bir dal oluşturun.",
+    "list_paragraph_contributing_2": "Kodunuz hazır olduğunda bir çekme isteği oluşturun.",
+    "title_license": "Lisans",
+    "paragraph_license": "Bu proje MIT Lisansı altında lisanslanmıştır, ayrıntılar için <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> dosyasına bakın.",
+    "title_contact": "İletişim",
+    "paragraph_contact_0": "Herhangi bir soru veya geri bildirim için iletişim kurmaktan çekinmeyin!"
+}

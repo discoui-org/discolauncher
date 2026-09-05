@@ -1,0 +1,159 @@
+{
+  "title": "Ayarlar",
+  "tabs": {
+    "home": "Ana Ekran",
+    "applications": "Uygulamalar"
+  },
+  "theme": {
+    "title": "Ana Ekran+Tema",
+    "accent_color": "Tema rengi",
+    "background": "Arka plan",
+    "home_background": "Ana ekran arka planı",
+    "choose_photo": "Fotoğraf seç",
+    "show_more_tiles": "Daha fazla Kutucuk göster",
+    "friendly_accent": "Cihazınızın arka planını ve <span style='color: var(--accent-color)'>tema rengini</span> istediğiniz gibi değiştirin.",
+    "friendly_tiles": "Ana ekranınızdaki Kutucukların boyutunu ve sayısını değiştirebilirsiniz.",
+    "themes": {
+      "light": "Açık",
+      "dark": "Koyu",
+      "auto": "Otomatik"
+    }
+  },
+  "screen_rotation": {
+    "title": "Ekran Döndürme",
+    "auto_rotate": "Otomatik-döndürme",
+    "rotation_lock": "Ekran yön kilidi",
+    "friendly_rotation_lock": "Ekran yön kilidi açıkken, cihazınızı döndürdüğünüzde ekranınız geçerli yönlendirmede kalır."
+  },
+  "language": {
+    "title": "Dil"
+  },
+  "ease_of_access": {
+    "title": "Erişim Kolaylığı",
+    "description": "metin boyutu, yüksek kontrast ve diğer özellikler",
+    "reduce_motion": {
+      "title": "Hareketi azalt",
+      "description": "Hareket hassassiyetini tetiklememeye yardımcı olmak için paralaks ve animasyonlar gibi hareket etkilerini azaltın."
+    },
+    "high_contrast": {
+      "title": "Yüksek karşıtlık",
+      "description": "Bazı elemanların renklerini değiştirir ve arka plan resimlerini gizler."
+    },
+    "scaling": "Ölçekleme",
+    "font": {
+      "title": "Font",
+      "choose": "Seç...",
+      "remove": "Fontu kaldır"
+    },
+    "haptic_feedback": {
+      "title": "Dokunsal Geribildirim",
+      "description": "Karolar ve kontrollerle etkileşime girerken titreşim geri bildirimini etkinleştirin."
+    },
+    "groups": {
+      "vision": "Görme",
+      "tactile": "Dokunma"
+    }
+  },
+  "advanced": {
+    "title": "Gelişmiş",
+    "description": "paket yöneticisi ve diğer ayarlamalar",
+    "debugging": {
+      "title": "Hata ayıklama",
+      "dump_apps": "Yüklü uygulamaları JSON olarak dökümle"
+    },
+    "data": {
+      "title": "Veri",
+      "backup": "Yedekle",
+      "restore": "Geri Yükle"
+    },
+    "package_manager": {
+      "title": "Paket yöneticisi",
+      "title_experimental": "Paket yöneticisi (DENEYSEL)",
+      "system": "Sistem",
+      "root": "Kök",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Uyutmak için çift dokunma",
+    "alternative_wallpaper": "Alternatif duvar kağıdı yerleşimi"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Groove Launcher sıfırlansın mı?",
+      "message": "Bu, başlatıcınızı varsayılan ayarlarına sıfırlar. Tüm kişiselleştirmeler kaybedilecektir."
+    },
+    "root": {
+      "title": "Kök Erişimi Gereksinimi",
+      "message": "Bu eylemi gerçekleştmek için kök erişimi gereklidir. Devam etmek için lütfenkök erişimine izin verin."
+    },
+    "shizuku": {
+      "title": "Shizuku İzni Gereksinimi",
+      "message": "Bu eylemi gerçekleştirmek için Shizuku izni gereklidir. Devam etmek için lütfen Shizuku izni verin."
+    },
+    "update_available": {
+      "title": "Güncelleme Mevcut!",
+      "message": "{{size}} boyutlu yeni bir sürüm <strong>({{version}})</strong> mevcut. İndirmek ister misiniz?",
+      "message2": "Yeni bir sürüm <strong>({{version}})</strong> mevcut. İndirmek ister misiniz?"
+    },
+    "update_check_failed": {
+      "title": "Güncelleme Kontrol Edilemedi!",
+      "message": "Uygulama güncellemeleri kontrol edilemiyor. Lütfen daha sonra tekrar deneyin."
+    },
+    "up_to_date": {
+      "title": "Son sürümdesiniz!",
+      "message": "En kıyak Groove Launcher sürümünü kullanıyorsunuz."
+    },
+    "font_read_error": {
+      "title": "Desteklenmeyen dosya formatı",
+      "message": "Bu font dosyası geçerli değildir. Lütfen .ttf dosyası olduğundan emin olun ve tekrar yüklemeyi deneyin."
+    },
+    "font_load_error": {
+      "title": "Font yüklenemedi",
+      "message": "Font dosyası okunamadı. Sadece .ttf dosyaları desteklenir. Farklı bir dosya yüklemeyi deneyin."
+    },
+    "copy_failed": {
+      "title": "Kopyalama Başarısız!",
+      "message": "Uygulamalar listesi kopyalanamadı. Lütfen daha sonra tekrar deneyin."
+    },
+    "copy_success": {
+      "title": "Panoya kopyalandı!",
+      "message": "Yüklü uygulamalar başarıyla JSON formatında panoya kopyalandı."
+    }
+  },
+  "about": {
+    "title": "Hakkında",
+    "description": "Groove Launcher",
+    "version": "Versiyon: {{version}}",
+    "webview_version": "WebView Versiyonu: {{version}}",
+    "reset_launcher": "Başlatıcıyı Sıfırla",
+    "check_updates": "Güncellemeleri Al"
+  },
+  "apps": {
+    "uninstall_app": "Uygulamayı Kaldır",
+    "show_in_app_list": "Bu uygulamayı listede göster",
+    "name": "İsim",
+    "icon": "Simge",
+    "icon_selections": {
+      "default": "Varsayılan",
+      "monochrome": "Siyah-Beyaz"
+    },
+    "background": "Arka plan",
+    "background_selections": {
+      "default": "Varsayılan",
+      "transparent": "Saydam"
+    },
+    "text_color": "Metin rengi",
+    "text_color_selections": {
+      "auto": "Otomatik",
+      "dark": "koyu",
+      "light": "açık"
+    },
+    "live_tile": "Canlı kutucuk",
+    "show_app": "Uygulamalarda göster"
+  },
+  "roles": {
+    "team_groove": "Groove Takımı",
+    "developer": "Geliştirici",
+    "icon_design": "Simge Tasarımı",
+    "logo_design": "Logo Tasarımı"
+  }
+}

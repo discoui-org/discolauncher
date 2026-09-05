@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Lansatorul Groove</strong> este un lansator de stil metro, proiectat pentru o experiență personalizabilă și elegantă a utilizatorului. Utilizatorii își pot personaliza lansatorul ajustând dimensiunile de dale, schimbând tema de culoare și setând imaginile sale de fundal preferate.",
+    "title_features": "Caracteristici",
+    "list_featuers_0": "<strong>Interfață de Stil Metro:</strong> Un design curat și modern, inspirat de Windows Phone 8.",
+    "list_featuers_1": "<strong>Dale Personalizabile:</strong> Trageți și plasați dale, ajustați mărimile lor și mutați-le pentru a fi în ton cu stilului dvs. unic.",
+    "list_featuers_2": "<strong>Personalizare Temă:</strong> Schimbați culoarea lansatorului pentru a fi în ton cu dispoziția sau estetica dvs.",
+    "list_featuers_3": "<strong>Personalizare Fundal:</strong> Alegeți și setați propriile imagini de fundal pentru a crea o configurare complet personalizată.",
+    "title_contributing": "Contribuire",
+    "paragraph_contributing_0": "Contribuțiile sunt foarte binevenite! Nu ezitați să trimiteți probleme și cereri de pull pentru a ajuta la îmbunătățirea <strong>Lansatorului Groove</strong>.",
+    "list_paragraph_contributing_0": "Bifurcați depozitul.",
+    "list_paragraph_contributing_1": "Creați o sucursală nouă pentru caracteristica sau bugfix-ul dvs.",
+    "list_paragraph_contributing_2": "Trimiteți o cerere de pull când codul dvs. este gata.",
+    "title_license": "Licență",
+    "paragraph_license": "Acest proiect este licențiat sub licența MIT - vedeți fișierul <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> pentru detalii.",
+    "title_contact": "Contactare",
+    "paragraph_contact_0": "Pentru orice întrebări sau feedback, nu ezitați să ne contactați!"
+}

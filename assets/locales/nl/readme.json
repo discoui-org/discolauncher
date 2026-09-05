@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> is een metro-gestileerde launcher ontworpen voor een aanpasbaar en strakke gebruikerservaring. Gebruikers kunnen hun launcher personaliseren door tegelgroottes aan te passen, de tegelposities te wijzigen, de kleur te veranderen, en hun favoriete achtergronden in te stellen.",
+    "title_features": "Functies",
+    "list_featuers_0": "<strong>Metro-gestileerd interface:</strong> Een strak en modern ontwerp geïnspireerd door Windows Phone 8.",
+    "list_featuers_1": "<strong>Pas de tegels aan:</strong> sleep en plaats tegels, verander hun grootte, en verplaats ze rondom jouw unieke stijl",
+    "list_featuers_2": "<strong>Thema aanpassing:</strong> Verander de kleur van de launcher om bij jouw sfeer of stijl te passen.",
+    "list_featuers_3": "<strong>Achtergrond aanpassing:</strong> Kies en pas jouw achtergrond toe om een volledig aangepaste setup te creëren.",
+    "title_contributing": "Bijdragen",
+    "paragraph_contributing_0": "Bijdragen zijn van harte welkom! U kunt gerust problemen en pull-requests indienen om <strong>Groove Launcher</strong> te helpen verbeteren.",
+    "list_paragraph_contributing_0": "Fork de repository.",
+    "list_paragraph_contributing_1": "Creëer een nieuwe branch voor jouw functie of bugfix.",
+    "list_paragraph_contributing_2": "Dien een pull request wanneer jouw code gereed is.",
+    "title_license": "Licentie",
+    "paragraph_license": "Dit project is gelicentieerd onder de MIT-licentie - zie de <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> voor meer details.",
+    "title_contact": "Contact",
+    "paragraph_contact_0": "Voor vragen en feedback kan je gerust contact met ons opnemen!"
+}

@@ -1,0 +1,159 @@
+{
+  "title": "Параметри",
+  "tabs": {
+    "home": "Дома",
+    "applications": "Апликации"
+  },
+  "theme": {
+    "title": "Дома+Тема",
+    "accent_color": "Боа за нагласуванье",
+    "background": "Заднина",
+    "home_background": "Заднина за почетниот екран",
+    "choose_photo": "Избери фотографиа",
+    "show_more_tiles": "Покажи повеке плочки",
+    "friendly_accent": "Променете ја заднината на телефонот и <span style='color: var(--accent-color)'>нагласете ја бојата</span> за да ви одговараат на расположението денес, оваа недела или цел месец.",
+    "friendly_tiles": "Може да j менувате големината и броот на плочките што се достапни на почетниот екран.",
+    "themes": {
+      "light": "Светла",
+      "dark": "Темна",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "Ротација на екран",
+    "auto_rotate": "Ауто ротирање",
+    "rotation_lock": "Заклучуваье на ротациата",
+    "friendly_rotation_lock": "Кога е вклучено Заклучувањето на ротацијата, при ротирање на уредот екранот ќе остане во тековната ориентација."
+  },
+  "language": {
+    "title": "Јазик"
+  },
+  "ease_of_access": {
+    "title": "Лесен пристап",
+    "description": "големина на текст, висок контраст и друго",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "Големина",
+    "font": {
+      "title": "Фонт",
+      "choose": "Одбери...",
+      "remove": "Издишување фонт"
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "Напредни",
+    "description": "апликаци манџер и повеќе",
+    "debugging": {
+      "title": "Дебагирање",
+      "dump_apps": "Cтушту инсталирани апликаци во JSON"
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "Апникаци маџер",
+      "title_experimental": "Апникаци маџер (НЕЗАВРШЕНО)",
+      "system": "Систем",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "Рисетирајтего Groove launcher?",
+      "message": "Оба ке го рисетира апликациата како што беше кога прво го пушти."
+    },
+    "root": {
+      "title": "Root можност треба",
+      "message": "Root Можност треба. Дајнитего тоа за да продолжиш."
+    },
+    "shizuku": {
+      "title": "Shizuku можност треба",
+      "message": "Shizuku можност треба. Дајго тоа можноста да продолжиш."
+    },
+    "update_available": {
+      "title": "Има нова верзија!",
+      "message": "Има нова верзиа <strong>({{version}})</strong>, на {{size}}. дали сакаш да го спуштиш дали го сакаж?",
+      "message2": "Има нова верзиа <strong>({{version}})</strong>. дали сакаш да го спуштиш дали го сакаж?"
+    },
+    "update_check_failed": {
+      "title": "Не можеше да се провери дали има понова верзија!",
+      "message": "Не можеше да се провери верзиата. пробај пак."
+    },
+    "up_to_date": {
+      "title": "Ти си со најновата верзија!",
+      "message": "Ти си со најнова верзија."
+    },
+    "font_read_error": {
+      "title": "Неточно документ формат",
+      "message": "Не можи де се користи фонтот провери дали е .ttf Документ."
+    },
+    "font_load_error": {
+      "title": "Не можи де се користи фонтот",
+      "message": "Не можи де се користи фонтот провери дали е .ttf Документ."
+    },
+    "copy_failed": {
+      "title": "Неможеше да се копира!",
+      "message": "Неможеше да се копира аппликаците. пробај пак."
+    },
+    "copy_success": {
+      "title": "Копизано!",
+      "message": "Апликациите се инсталирани правилно."
+    }
+  },
+  "about": {
+    "title": "Информации",
+    "description": "Groove Launcher",
+    "version": "Верзија: {{version}}",
+    "webview_version": "Верзија на WebView: {{version}}",
+    "reset_launcher": "Рисетирајтеро апликациата",
+    "check_updates": "Провериа Верзиата"
+  },
+  "apps": {
+    "uninstall_app": "Избриши апликациата",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "Група Groove",
+    "developer": "Девелопер",
+    "icon_design": "Икон дизијн",
+    "logo_design": "Лороа дизијн"
+  }
+}

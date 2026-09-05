@@ -1,0 +1,159 @@
+{
+  "title": "Einstellungen",
+  "tabs": {
+    "home": "Home",
+    "applications": "Anwendungen"
+  },
+  "theme": {
+    "title": "Homeseite+Design",
+    "accent_color": "Akzentfarbe",
+    "background": "Hintergrund",
+    "home_background": "Home-hintergrund",
+    "choose_photo": "Foto auswählen",
+    "show_more_tiles": "Mehr Kacheln anzeigen",
+    "friendly_accent": "Ändere die Hintergrundfarbe und die <span style='color: var(--accent-color)'>Akzentfarbe</span> deines Geräts passend zu deiner Stimmung - für heute, diese Woche oder den ganzen Monat.",
+    "friendly_tiles": "Du kannst die Größe und die Anzahl der auf dem Homebildschirm angezeigten Kacheln ändern.",
+    "themes": {
+      "light": "Hell",
+      "dark": "Dunkel",
+      "auto": "Automatisch"
+    }
+  },
+  "screen_rotation": {
+    "title": "Automatische Ausrichtung",
+    "auto_rotate": "Automatisch drehen",
+    "rotation_lock": "Rotationsperre",
+    "friendly_rotation_lock": "Bei aktivierter Rotationssperre bleibt die aktuelle Ausrichtung des Bildschirms erhalten, wenn du das Gerät drehst."
+  },
+  "language": {
+    "title": "Sprache"
+  },
+  "ease_of_access": {
+    "title": "Erleichterte Bedienung",
+    "description": "Textgröße, hoher Kontrast und weitere Features",
+    "reduce_motion": {
+      "title": "Bewegung reduzieren",
+      "description": "Reduziert Bewegungseffekte wie Parallax und Animationen, um Reisekrankheit zu verhindern."
+    },
+    "high_contrast": {
+      "title": "Hoher Kontrast",
+      "description": "Ändert die Farben für einige Funktionen und blendet einige ihrer Hintergrundbilder aus."
+    },
+    "scaling": "Skalierung",
+    "font": {
+      "title": "Schriftart",
+      "choose": "Wählen...",
+      "remove": "Schriftart entfernen"
+    },
+    "haptic_feedback": {
+      "title": "Haptisches Feedback",
+      "description": "Aktiviert Vibrationsfeedback bei der Interaktion mit Kacheln und Steuerelementen."
+    },
+    "groups": {
+      "vision": "Sehen",
+      "tactile": "Taktile"
+    }
+  },
+  "advanced": {
+    "title": "Erweitert",
+    "description": "Paketmanager und andere Optimierungen",
+    "debugging": {
+      "title": "Debuggen",
+      "dump_apps": "Installierte Apps im JSON-Format exportieren"
+    },
+    "data": {
+      "title": "Daten",
+      "backup": "Sicherung",
+      "restore": "Wiederherstellen"
+    },
+    "package_manager": {
+      "title": "Paketmanager",
+      "title_experimental": "Paketmanager (EXPERIMENTELL)",
+      "system": "System",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Doppeltippen zum Schlafen",
+    "alternative_wallpaper": "Alternative Hintergrundbildplatzierung"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Groove Launcher zurücksetzen?",
+      "message": "Dies wird deinen Launcher auf seine Standardeinstellungen zurücksetzen. Alle Anpassungen gehen verloren."
+    },
+    "root": {
+      "title": "Root-Zugriff erforderlich",
+      "message": "Für diese Aktion ist Root-Zugriff erforderlich. Bitte gewähre Root-Zugriff, um fortzufahren."
+    },
+    "shizuku": {
+      "title": "Shizuku-Berechtigung erforderlich",
+      "message": "Für diese Aktion ist die Shizuku-Berechtigung erforderlich. Bitte gewähre die Shizuku-Berechtigung, um fortzufahren."
+    },
+    "update_available": {
+      "title": "Update verfügbar!",
+      "message": "Eine neue Version <strong>({{version}})</strong> ist verfügbar, in der Größe {{size}}. Möchtest du sie herunterladen?",
+      "message2": "Eine neue Version <strong>({{version}})</strong> ist verfügbar. Möchtest du sie herunterladen?"
+    },
+    "update_check_failed": {
+      "title": "Updateprüfung fehlgeschlagen!",
+      "message": "Es konnte nicht nach Updates gesucht werden. Bitte versuche es später erneut."
+    },
+    "up_to_date": {
+      "title": "Auf dem neuesten Stand!",
+      "message": "Du verwendest die aktuellste Version von Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Nicht unterstütztes Dateiformat",
+      "message": "Die Schriftdatei ist ungültig. Stelle sicher, dass es sich um eine .ttf-Datei handelt, und versuche es erneut."
+    },
+    "font_load_error": {
+      "title": "Schriftart kann nicht geladen werden",
+      "message": "Die Schriftdatei konnte nicht gelesen werden. Nur .ttf-Schriftarten werden unterstützt. Bitte versuche es mit einer anderen Datei."
+    },
+    "copy_failed": {
+      "title": "Kopieren fehlgeschlagen!",
+      "message": "Die Liste der Apps konnte nicht kopiert werden. Bitte versuche es erneut."
+    },
+    "copy_success": {
+      "title": "In die Zwischenablage kopiert!",
+      "message": "Installierte Anwendungen wurden erfolgreich in das JSON-Format kopiert."
+    }
+  },
+  "about": {
+    "title": "Info",
+    "description": "Groove Launcher",
+    "version": "Version: {{version}}",
+    "webview_version": "WebView-Version: {{version}}",
+    "reset_launcher": "Launcher zurücksetzen",
+    "check_updates": "Nach Updates suchen"
+  },
+  "apps": {
+    "uninstall_app": "App deinstallieren",
+    "show_in_app_list": "Diese App in der App-Liste anzeigen",
+    "name": "Name",
+    "icon": "Icon",
+    "icon_selections": {
+      "default": "Standard",
+      "monochrome": "Monochrom"
+    },
+    "background": "Hintergrund",
+    "background_selections": {
+      "default": "Standard",
+      "transparent": "Transparent"
+    },
+    "text_color": "Textfarbe",
+    "text_color_selections": {
+      "auto": "Auto",
+      "dark": "Dunkel",
+      "light": "Hell"
+    },
+    "live_tile": "Live-Kachel",
+    "show_app": "In der App-Liste anzeigen"
+  },
+  "roles": {
+    "team_groove": "Team Groove",
+    "developer": "Entwickler",
+    "icon_design": "Icon-Design",
+    "logo_design": "Logo-Design"
+  }
+}

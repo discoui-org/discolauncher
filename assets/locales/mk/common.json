@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Добро",
+    "okay": "Добро",
+    "yes": "Да",
+    "no": "Не",
+    "uninstall": "Деинсталира",
+    "cancel": "Откажи",
+    "apply": "Примени",
+    "allow": "",
+    "try_again": "Пробај пак",
+    "light": "Светла",
+    "dark": "Темна",
+    "remove": "Исбриши",
+    "on": "Вклучено",
+    "off": "Исклучено",
+    "locked": "Блокирано",
+    "unlocked": "Отклучено",
+    "dismiss": "",
+    "read_more": ""
+  },
+  "search": {
+    "title": "Пребарај",
+    "no_results": "Нема резултати за {{query}}",
+    "search_store": "побарај Продавница"
+  },
+  "errors": {
+    "webview_old": "WebView е многу старо!",
+    "home_reset": "Домот се ресетирање оти имаше голем проблем :( можи да го приавиш:",
+    "launch_timeout": "Системот требаше премногу да се пушти"
+  },
+  "app_menu": {
+    "pin_to_home": "Прикачи на почетен",
+    "app_info": "",
+    "uninstall": "Деинсталирај"
+  },
+  "alerts": {
+    "default": {
+      "title": "Известување!",
+      "message": "Порака"
+    },
+    "uninstall": {
+      "title": "Да се деинсталира апликациата?",
+      "message": "Оваа апликација и сите информации што таа ги содржи, ќе бидат избришани од уредот."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "Próximo",
+        "previous": "Anterior",
+        "pleaseWait": "Por favor aguarda..."
+    },
+    "welcome": {
+        "install": "Bem-vindo",
+        "update": "Bem-vindo novamente",
+        "appName": "Groove Launcher",
+        "setupIntro": "Vamos configurar a tua experiência em poucos passos.",
+        "warning": "Aviso: Este é um software de pré-lançamento e pode conter erros."
+    },
+    "wizard": {
+        "title": "Assistente de atualização",
+        "description": "Vamos garantir que teus dados sejam movidos com segurança! Clica em próximo para continuar."
+    },
+    "access": {
+        "title": "Facilidade de acesso",
+        "description": "Customiza tua experiência para garantir que tudo está correto.",
+        "background": "Fundo",
+        "scaling": "Escala"
+    },
+    "themes": {
+        "light": "Claro",
+        "dark": "Escuro"
+    },
+    "colors": {
+        "title": "Escolhe tua cor",
+        "description": "Escolhe uma cor que combina com o teu humor."
+    },
+    "permissions": {
+        "title": "Permissões",
+        "groups": {
+            "contacts": {
+                "title": "Contactos",
+                "description": "É necessário acesso aos contatos para exibir contactos no bloco."
+            },
+            "photos": {
+                "title": "Fotografias",
+                "description": "O acesso às fotos é necessário para exibir fotos no bloco."
+            },
+            "notifications": {
+                "title": "Notificações",
+                "description": "O acesso às notificações é necessário para exibir as notificações no bloco."
+            },
+            "accessibility": {
+                "title": "Acessibilidade",
+                "description": "Ativar acessibilidade para bloquear o dispositivo."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "O que há de novo?"
+    },
+    "finish": {
+        "title": "Prepara-te pro Groove",
+        "description": "Tua configuração está pronta. Hora de entrar."
+    }
+}

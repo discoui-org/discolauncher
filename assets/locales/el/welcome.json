@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "",
+        "previous": "",
+        "pleaseWait": ""
+    },
+    "welcome": {
+        "install": "",
+        "update": "",
+        "appName": "Groove Launcher",
+        "setupIntro": "",
+        "warning": ""
+    },
+    "wizard": {
+        "title": "",
+        "description": ""
+    },
+    "access": {
+        "title": "Διευκόλυνση Πρόσβασης",
+        "description": "",
+        "background": "Φόντο",
+        "scaling": "Κλιμάκωση"
+    },
+    "themes": {
+        "light": "Ανοιχτό",
+        "dark": "Σκούρο"
+    },
+    "colors": {
+        "title": "",
+        "description": ""
+    },
+    "permissions": {
+        "title": "",
+        "groups": {
+            "contacts": {
+                "title": "",
+                "description": ""
+            },
+            "photos": {
+                "title": "",
+                "description": ""
+            },
+            "notifications": {
+                "title": "",
+                "description": ""
+            },
+            "accessibility": {
+                "title": "",
+                "description": ""
+            }
+        }
+    },
+    "whatsnew": {
+        "title": ""
+    },
+    "finish": {
+        "title": "",
+        "description": ""
+    }
+}

@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "はい",
+    "okay": "はい",
+    "yes": "はい",
+    "no": "いいえ",
+    "uninstall": "アンインストール",
+    "cancel": "キャンセル",
+    "apply": "適用",
+    "allow": "許可",
+    "try_again": "再試行",
+    "light": "白",
+    "dark": "黒",
+    "remove": "削除",
+    "on": "オン",
+    "off": "オフ",
+    "locked": "ロック",
+    "unlocked": "ロック解除",
+    "dismiss": "閉じる",
+    "read_more": "もっと読む"
+  },
+  "search": {
+    "title": "検索",
+    "no_results": "{{query}} の結果はありません",
+    "search_store": "ストアを検索"
+  },
+  "errors": {
+    "webview_old": "WebViewが古すぎます！",
+    "home_reset": "致命的なエラーのため、ホーム画面がリセットされました :( 報告してください:",
+    "launch_timeout": "システムの起動に時間がかかりすぎました"
+  },
+  "app_menu": {
+    "pin_to_home": "ホームにピン留め",
+    "app_info": "アプリ情報",
+    "uninstall": "削除"
+  },
+  "alerts": {
+    "default": {
+      "title": "警告！",
+      "message": "メッセージ"
+    },
+    "uninstall": {
+      "title": "このアプリを削除しますか？",
+      "message": "このアプリとそれに含まれるすべての情報はデバイスから削除されます。"
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}}B",
+      "kb": "{{size}}KB",
+      "mb": "{{size}}MB",
+      "gb": "{{size}}GB",
+      "tb": "{{size}}TB"
+    }
+  }
+}

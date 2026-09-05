@@ -1,0 +1,159 @@
+{
+  "title": "Ρυθμίσεις",
+  "tabs": {
+    "home": "Αρχική",
+    "applications": "Εφαρμογές"
+  },
+  "theme": {
+    "title": "Αρχική+Θέμα",
+    "accent_color": "Χρώμα έμφασης",
+    "background": "Φόντο",
+    "home_background": "Φόντο αρχικής",
+    "choose_photo": "Φωτογραφία",
+    "show_more_tiles": "Εμφάνιση περισσότερων πλακιδίων",
+    "friendly_accent": "Αλλάξτε το φόντο και το <span style='color: var(--accent-color)'>χρώμα έμφασης</span> της συσκευής σας, για να ταιριάζει με τη διάθεσή σας σήμερα, αυτήν την εβδομάδα ή όλο το μήνα.",
+    "friendly_tiles": "Μπορείτε να αλλάξετε το μέγεθος και τον αριθμό των πλακιδίων που είναι διαθέσιμα στην οθόνη έναρξης.",
+    "themes": {
+      "light": "Ανοιχτό",
+      "dark": "Σκούρο",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "Περιστροφή Οθόνης",
+    "auto_rotate": "Αυτόματη περιστροφή",
+    "rotation_lock": "Κλείδωμα περιστροφής",
+    "friendly_rotation_lock": "Όταν είναι ενεργοποιημένο το κλείδωμα περιστροφής, η οθόνη σας θα παραμένει στον τρέχοντα προσανατολισμό όταν περιστρέφετε τη συσκευή σας."
+  },
+  "language": {
+    "title": "Γλώσσα"
+  },
+  "ease_of_access": {
+    "title": "Διευκόλυνση Πρόσβασης",
+    "description": "μέγεθος κειμένου, αντιθέσεις και άλλα",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "",
+    "font": {
+      "title": "",
+      "choose": "",
+      "remove": ""
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "",
+    "description": "",
+    "debugging": {
+      "title": "",
+      "dump_apps": ""
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "",
+      "title_experimental": "",
+      "system": "",
+      "root": "",
+      "shizuku": ""
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "",
+      "message": ""
+    },
+    "root": {
+      "title": "",
+      "message": ""
+    },
+    "shizuku": {
+      "title": "",
+      "message": ""
+    },
+    "update_available": {
+      "title": "",
+      "message": "",
+      "message2": ""
+    },
+    "update_check_failed": {
+      "title": "",
+      "message": ""
+    },
+    "up_to_date": {
+      "title": "",
+      "message": ""
+    },
+    "font_read_error": {
+      "title": "",
+      "message": ""
+    },
+    "font_load_error": {
+      "title": "",
+      "message": ""
+    },
+    "copy_failed": {
+      "title": "",
+      "message": ""
+    },
+    "copy_success": {
+      "title": "",
+      "message": ""
+    }
+  },
+  "about": {
+    "title": "Πληροφορίες",
+    "description": "Groove Launcher",
+    "version": "Έκδοση: {{version}}",
+    "webview_version": "Έκδοση WebView: {{version}}",
+    "reset_launcher": "",
+    "check_updates": ""
+  },
+  "apps": {
+    "uninstall_app": "",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "",
+    "developer": "",
+    "icon_design": "",
+    "logo_design": ""
+  }
+}

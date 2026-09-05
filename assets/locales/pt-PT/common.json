@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Okay",
+    "yes": "Sim",
+    "no": "Não",
+    "uninstall": "Desinstalar",
+    "cancel": "Cancelar",
+    "apply": "Aplicar",
+    "allow": "Permitir",
+    "try_again": "Tentar novamente",
+    "light": "Claro",
+    "dark": "Escuro",
+    "remove": "Eliminar",
+    "on": "Ligado",
+    "off": "Desligado",
+    "locked": "Bloqueado",
+    "unlocked": "Desbloqueado",
+    "dismiss": "Dispensar",
+    "read_more": "Ler mais"
+  },
+  "search": {
+    "title": "Buscar",
+    "no_results": "Sem resultados para {{query}}",
+    "search_store": "Buscar Loja"
+  },
+  "errors": {
+    "webview_old": "WebView é muito antigo!",
+    "home_reset": "Sua tela inicial foi redefinida devido a um erro fatal :( Por favor, reporte isto:",
+    "launch_timeout": "O sistema demorou demasiado a iniciar"
+  },
+  "app_menu": {
+    "pin_to_home": "Afixar no ecrã inicial",
+    "app_info": "Informações da aplicação",
+    "uninstall": "Desinstalar"
+  },
+  "alerts": {
+    "default": {
+      "title": "Atenção!",
+      "message": "Mensagem"
+    },
+    "uninstall": {
+      "title": "Desinstalar aplicação?",
+      "message": "Esta aplicação, além de todas as informações, serão eliminadas do teu dispositivo."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

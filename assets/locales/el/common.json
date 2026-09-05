@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "",
+    "okay": "",
+    "yes": "Ναι",
+    "no": "Όχι",
+    "uninstall": "Κατάργηση",
+    "cancel": "",
+    "apply": "",
+    "allow": "",
+    "try_again": "",
+    "light": "",
+    "dark": "",
+    "remove": "",
+    "on": "Ενεργό",
+    "off": "Ανενεργό",
+    "locked": "",
+    "unlocked": "",
+    "dismiss": "",
+    "read_more": ""
+  },
+  "search": {
+    "title": "Αναζήτηση",
+    "no_results": "Δεν βρέθηκαν αποτελέσματα για {{query}}",
+    "search_store": "αναζήτηση στο Store"
+  },
+  "errors": {
+    "webview_old": "",
+    "home_reset": "",
+    "launch_timeout": ""
+  },
+  "app_menu": {
+    "pin_to_home": "",
+    "app_info": "",
+    "uninstall": "Κατάργηση"
+  },
+  "alerts": {
+    "default": {
+      "title": "",
+      "message": ""
+    },
+    "uninstall": {
+      "title": "Να καταργηθεί η εφαρμογή;",
+      "message": "Αυτή η εφαρμογή και τυχόν πληροφορίες που περιέχει θα διαγραφούν από τη συσκευή σας."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

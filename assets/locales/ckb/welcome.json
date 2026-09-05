@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "",
+        "previous": "",
+        "pleaseWait": ""
+    },
+    "welcome": {
+        "install": "",
+        "update": "",
+        "appName": "",
+        "setupIntro": "",
+        "warning": ""
+    },
+    "wizard": {
+        "title": "",
+        "description": ""
+    },
+    "access": {
+        "title": "",
+        "description": "",
+        "background": "",
+        "scaling": ""
+    },
+    "themes": {
+        "light": "",
+        "dark": ""
+    },
+    "colors": {
+        "title": "",
+        "description": ""
+    },
+    "permissions": {
+        "title": "",
+        "groups": {
+            "contacts": {
+                "title": "",
+                "description": ""
+            },
+            "photos": {
+                "title": "",
+                "description": ""
+            },
+            "notifications": {
+                "title": "",
+                "description": ""
+            },
+            "accessibility": {
+                "title": "",
+                "description": ""
+            }
+        }
+    },
+    "whatsnew": {
+        "title": ""
+    },
+    "finish": {
+        "title": "",
+        "description": ""
+    }
+}

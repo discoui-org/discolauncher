@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "seuraava",
+        "previous": "edellinen",
+        "pleaseWait": "Odota..."
+    },
+    "welcome": {
+        "install": "Tervetuloa",
+        "update": "Tervetuloa takaisin",
+        "appName": "Groove Launcher",
+        "setupIntro": "Määritetään käyttökokemuksesi muutamalla lyhyellä vaiheella.",
+        "warning": "Varoitus: Tämä sovellus on beta vaiheessa ja saattaa sisältää bugeja."
+    },
+    "wizard": {
+        "title": "Päivitysavustaja",
+        "description": "Varmistetaan tietojesi siirto turvallisesti! Paina seuraava jatkaaksesi."
+    },
+    "access": {
+        "title": "Aputoiminnot",
+        "description": "Mukauta kokemustasi varmistaaksesi, että kaikki tuntuu oikealta.",
+        "background": "Tausta",
+        "scaling": "Skaalaus"
+    },
+    "themes": {
+        "light": "Vaalea",
+        "dark": "Tumma"
+    },
+    "colors": {
+        "title": "Valitse värisi",
+        "description": "Valitse väri, joka sopii mielialaasi."
+    },
+    "permissions": {
+        "title": "Käyttöluvat",
+        "groups": {
+            "contacts": {
+                "title": "Yhteystiedot",
+                "description": "Pääsy yhteystietoihin tarvitaan live tile -ruutua varten."
+            },
+            "photos": {
+                "title": "Kuvat",
+                "description": "Pääsy kuviin tarvitaan live tile -ruutua varten."
+            },
+            "notifications": {
+                "title": "Ilmoitukset",
+                "description": "Pääsy ilmoituksiin tarvitaan live tile -ruutua varten."
+            },
+            "accessibility": {
+                "title": "Saavutettavuus",
+                "description": "Salli esteettömyys näytön lukitsemista varten."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Mitä uutta?"
+    },
+    "finish": {
+        "title": "Valmistaudu Grooveen",
+        "description": "Asetusten määritys on valmis. Aloitetaan!"
+    }
+}

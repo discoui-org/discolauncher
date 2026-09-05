@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "siguiente",
+        "previous": "anterior",
+        "pleaseWait": "Por favor espere..."
+    },
+    "welcome": {
+        "install": "Bienvenido",
+        "update": "Bienvenido de vuelta",
+        "appName": "Groove Launcher",
+        "setupIntro": "Vamos a configurar tu experiencia en unos pasos.",
+        "warning": "Aviso: Este es un software preliminar y puede contener errores."
+    },
+    "wizard": {
+        "title": "Asistente de actualización",
+        "description": "Asegurémonos de que tus datos se muevan de forma segura. Pulsa siguiente para continuar."
+    },
+    "access": {
+        "title": "Accesibilidad",
+        "description": "Personaliza tu experiencia para asegurarte de que todo esté correcto.",
+        "background": "Fondo",
+        "scaling": "Escalado"
+    },
+    "themes": {
+        "light": "Claro",
+        "dark": "Oscuro"
+    },
+    "colors": {
+        "title": "Elige tu color",
+        "description": "Elige un color que se ajuste a tu ánimo."
+    },
+    "permissions": {
+        "title": "",
+        "groups": {
+            "contacts": {
+                "title": "",
+                "description": ""
+            },
+            "photos": {
+                "title": "",
+                "description": ""
+            },
+            "notifications": {
+                "title": "",
+                "description": ""
+            },
+            "accessibility": {
+                "title": "",
+                "description": ""
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "¿Qué hay de nuevo?"
+    },
+    "finish": {
+        "title": "Prepárate para Groove",
+        "description": "Tu configuración está lista. ¡Es hora de empezar!"
+    }
+}

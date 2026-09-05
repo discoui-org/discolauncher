@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "næste",
+        "previous": "tidligere",
+        "pleaseWait": "Vent venligst..."
+    },
+    "welcome": {
+        "install": "Velkommen",
+        "update": "Velkommen tilbage",
+        "appName": "Groove Launcher",
+        "setupIntro": "Lad os opsætte din oplevelse i nogle få korte trin.",
+        "warning": "Advarsel: Dette er præ-release software og kan indeholde fejl."
+    },
+    "wizard": {
+        "title": "Opdateringsguide",
+        "description": "Lad os sikre, at dine data flyttes på tværs af sikkert! Tryk næste for at fortsætte."
+    },
+    "access": {
+        "title": "Tilgængelighed",
+        "description": "Tilpas din oplevelse for at sikre, at alt føles helt rigtigt.",
+        "background": "Baggrund",
+        "scaling": "Skalering"
+    },
+    "themes": {
+        "light": "Lys",
+        "dark": "Mørk"
+    },
+    "colors": {
+        "title": "Vælg din farve",
+        "description": "Vælg en farve, der matcher dit humør."
+    },
+    "permissions": {
+        "title": "Tilladelser",
+        "groups": {
+            "contacts": {
+                "title": "Kontakter",
+                "description": "Adgang til kontakter er nødvendig for at vise kontakter dynamisk feltet."
+            },
+            "photos": {
+                "title": "Billeder",
+                "description": "Adgang til billeder er nødvendig for at vise fotos dynamisk feltet."
+            },
+            "notifications": {
+                "title": "Notifikationer",
+                "description": "Adgang til notifikationer er nødvendig for at vise dine notifikationer i dynamiske felter."
+            },
+            "accessibility": {
+                "title": "Tilgængelighed",
+                "description": "Aktivér tilgængelighed for at låse enheden."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Hvad Er Nyt?"
+    },
+    "finish": {
+        "title": "Gør dig klar til at Groove",
+        "description": "Din opsætning er udført. Tid til at dykke ind!"
+    }
+}

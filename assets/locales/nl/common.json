@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Oké",
+    "okay": "Oké",
+    "yes": "Ja",
+    "no": "Nee",
+    "uninstall": "Verwijder",
+    "cancel": "Annuleer",
+    "apply": "Pas toe",
+    "allow": "Toestaan",
+    "try_again": "Probeer opnieuw",
+    "light": "Wit",
+    "dark": "Zwart",
+    "remove": "Verwijder",
+    "on": "Ingeschakeld",
+    "off": "Uitgeschakeld",
+    "locked": "Vergrendeld",
+    "unlocked": "Ontgrendeld",
+    "dismiss": "Sluiten",
+    "read_more": "Lees meer"
+  },
+  "search": {
+    "title": "Zoeken",
+    "no_results": "Geen resultaten voor {{query}}",
+    "search_store": "in Store zoeken"
+  },
+  "errors": {
+    "webview_old": "WebView is te verouderd!",
+    "home_reset": "Je home screen werd gereset door een fataal probleem :( Rapporteer dit a.u.b:",
+    "launch_timeout": "Systeem duurde te lang om te lanceren"
+  },
+  "app_menu": {
+    "pin_to_home": "Aan thuisscherm vastmaken",
+    "app_info": "App informatie",
+    "uninstall": "Verwijderen"
+  },
+  "alerts": {
+    "default": {
+      "title": "Melding!",
+      "message": "Bericht"
+    },
+    "uninstall": {
+      "title": "Deze app verwijderen?",
+      "message": "Deze app en de bijbehorende gegevens worden van uw apparaat verwijderd."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

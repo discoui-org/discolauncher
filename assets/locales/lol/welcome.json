@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "Nexxy-stepz!",
+        "previous": "Go backz, plz!",
+        "pleaseWait": "Hold on, meowz..."
+    },
+    "welcome": {
+        "install": "Hai dere! Welcomz!",
+        "update": "Ooh hai 'gain!",
+        "appName": "Groovy Launchy!",
+        "setupIntro": "Letz make ur gadget all shiny in jus' few stepz!",
+        "warning": "Uh-oh! Dis pre-releaz, so might hav buggoes!"
+    },
+    "wizard": {
+        "title": "Magical Updatey Timez!",
+        "description": "Wez move ur stuff safe an soundz! Clicky nexty, k?"
+    },
+    "access": {
+        "title": "Eazy-peazy Accessy!",
+        "description": "Make ur gadget feelz puurfect fur u!",
+        "background": "Pretty backy-ground!",
+        "scaling": "Zoomy-zoom levelz!"
+    },
+    "themes": {
+        "light": "Shiny Modez!",
+        "dark": "Spoopy Darky!"
+    },
+    "colors": {
+        "title": "Pick ur purr-fav colorz!",
+        "description": "Chooz da colory dat makz u happiez!"
+    },
+    "permissions": {
+        "title": "Permishunz",
+        "groups": {
+            "contacts": {
+                "title": "Kontakts",
+                "description": "Needz accesz to kontakts fur showin' dem live tilez!"
+            },
+            "photos": {
+                "title": "Photoz",
+                "description": "Needz accesz to photoz fur showin' dem live tilez!"
+            },
+            "notifications": {
+                "title": "Notifishunz",
+                "description": "Needz accesz to notifishunz fur showin' dem live tilez!"
+            },
+            "accessibility": {
+                "title": "Accessibilitez",
+                "description": "Turnz on accessibilitez to lock ur devicez!"
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "New Shiny Stuffz!"
+    },
+    "finish": {
+        "title": "All done! Time to Groovy-groove!",
+        "description": "Wez all set! Go play nowz!"
+    }
+}

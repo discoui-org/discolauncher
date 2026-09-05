@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Dobře",
+    "yes": "Ano",
+    "no": "Ne",
+    "uninstall": "Odinstalovat",
+    "cancel": "Zrušit",
+    "apply": "Potvrdit",
+    "allow": "Povolit",
+    "try_again": "Zkusit znovu",
+    "light": "Světlý",
+    "dark": "Tmavý",
+    "remove": "Odstranit",
+    "on": "Zapnout",
+    "off": "Vypnout",
+    "locked": "Zamčeno",
+    "unlocked": "Odemčeno",
+    "dismiss": "Zrušit",
+    "read_more": "Čtěte více"
+  },
+  "search": {
+    "title": "Vyhledat",
+    "no_results": "Žádné výsledky pro {{query}}",
+    "search_store": "prohledat Obchod"
+  },
+  "errors": {
+    "webview_old": "Web View je příliš starý!",
+    "home_reset": "Vaše domovská obrazovka byla resetována kvůli fatální chybě :(\nProsím, nahlaste to:",
+    "launch_timeout": "Načtení systému trvalo příliš dlouho"
+  },
+  "app_menu": {
+    "pin_to_home": "Připnout domů",
+    "app_info": "Informace o aplikaci",
+    "uninstall": "Odinstalovat"
+  },
+  "alerts": {
+    "default": {
+      "title": "Pozor!",
+      "message": "Zpráva"
+    },
+    "uninstall": {
+      "title": "Odinstalovat tuto aplikaci?",
+      "message": "Tato aplikace, společně se všemi informacemi, které obsahuje, bude z vašeho zařízení smazána."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

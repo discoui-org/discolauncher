@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Bascud",
+    "okay": "Bašäd",
+    "yes": "Bule",
+    "no": "Nu",
+    "uninstall": "Huzf",
+    "cancel": "Lugcv",
+    "apply": "Eëmal",
+    "allow": "Tuëyid",
+    "try_again": "Dobare tulasc konid",
+    "light": "Róscun",
+    "dark": "Tarik",
+    "remove": "Burdasctun",
+    "on": "Róscun",
+    "off": "Xamwsc",
+    "locked": "Qofl scode",
+    "unlocked": "Qofl nuscode",
+    "dismiss": "Dur nuzur nugereftun",
+    "read_more": "Xandune bisctur"
+  },
+  "search": {
+    "title": "Jostojw",
+    "no_results": "Natije i buraye {{query}} yaft nuscod",
+    "search_store": "jostojw dur Bazar"
+  },
+  "errors": {
+    "webview_old": "WebView xeyli qudimi ust!",
+    "home_reset": "Sufheye usliye scoma be dulile xutaye sistemi baznescani scod :( Lotfun in ra gozaresc duhid:",
+    "launch_timeout": "Zumane ziyadi buraye burgozariye sistem twl kescid"
+  },
+  "app_menu": {
+    "pin_to_home": "Sunjaq kurdun be xane",
+    "app_info": "Ettelaate burname",
+    "uninstall": "Huzf"
+  },
+  "alerts": {
+    "default": {
+      "title": "Hoscdar!",
+      "message": "Puyam"
+    },
+    "uninstall": {
+      "title": "In burname huzf scuvud?",
+      "message": "In burname, humrah ba humeye ettelaati ke durburdarud, uz dustgahe scoma huzf xahud scod."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

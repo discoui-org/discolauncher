@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Tamam",
+    "okay": "Tamam",
+    "yes": "Evet",
+    "no": "Hayır",
+    "uninstall": "Kaldır",
+    "cancel": "İptal",
+    "apply": "Uygula",
+    "allow": "İzin ver",
+    "try_again": "Yeniden dene",
+    "light": "Açık",
+    "dark": "Koyu",
+    "remove": "Kaldır",
+    "on": "Açık",
+    "off": "Kapalı",
+    "locked": "Kilitli",
+    "unlocked": "Kilit kaldırıldı",
+    "dismiss": "Yoksay",
+    "read_more": "Devamını oku"
+  },
+  "search": {
+    "title": "Ara",
+    "no_results": "{{query}} için herhangi bir sonuç yok",
+    "search_store": "Mağaza'da ara"
+  },
+  "errors": {
+    "webview_old": "WebView sürümü çok eski!",
+    "home_reset": "Ana ekranınız, kritik bir hata nedeniyle sıfırlandı :( Lütfen bu hatayı bildirin:",
+    "launch_timeout": "Sistem yüklemesi çok uzun sürdü"
+  },
+  "app_menu": {
+    "pin_to_home": "Ana ekrana sabitle",
+    "app_info": "Uygulama bilgisi",
+    "uninstall": "Kaldır"
+  },
+  "alerts": {
+    "default": {
+      "title": "Uyarı!",
+      "message": "Mesaj"
+    },
+    "uninstall": {
+      "title": "Bu uygulama kaldırılsın mı?",
+      "message": "Bu uygulama, içerdiği bilgilerle birlikte cihazınızdan silinecek."
+    }
+  },
+  "numbers": {
+    "percent": "%{{value}}",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

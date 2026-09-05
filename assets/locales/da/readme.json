@@ -1,0 +1,17 @@
+{
+    "entry": "<strong>Groove Launcher</strong> er en metro-stilet launcher designet til en tilpasset og slank brugeroplevelse. Brugere kan personliggøre deres launcher ved at justere flisers størrelser, ændre flisers positioner, tilpasse farvetemaet, og indstille deres foretrukne tapeter.",
+    "title_features": "Funktioner",
+    "list_featuers_0": "<strong>Metro-stil Interface:</strong> Et rent og moderne design inspireret af Windows Phone 8.",
+    "list_featuers_1": "<strong>Tilpasset Fliser:</strong> Træk og slip fliser, juster deres størrelser, og flytte dem rundt for at passe til din unikke stil.",
+    "list_featuers_2": "<strong>Tema tilpasning:</strong> Indstil farven på launcheren til at matche dit humør eller æstetiske.",
+    "list_featuers_3": "<strong>Baggrunds Personliggørelse:</strong> Vælg og indstil dine egne baggrunde for at lave en fuldt tilpasset opsætning.",
+    "title_contributing": "Bidrag",
+    "paragraph_contributing_0": "Bidrag er meget velkomne! Du er velkommen til at indsende problemer og pull-anmodninger for at hjælpe med at forbedre <strong>Groove Launcher</strong>.",
+    "list_paragraph_contributing_0": "Fork repositoriet.",
+    "list_paragraph_contributing_1": "Opret en ny gren til din funktion eller fejlrettelse.",
+    "list_paragraph_contributing_2": "Indsend en pull-anmodning, når din kode er klar.",
+    "title_license": "Licens",
+    "paragraph_license": "Dette projekt er licenseret under MIT License - se filen <a href=\"javascript:Groove.openURL('https://github.com/groovelauncher/GrooveLauncher?tab=MIT-1-ov-file')\">LICENSE</a> for detaljer.",
+    "title_contact": "Kontakt",
+    "paragraph_contact_0": "For eventuelle henvendelser eller feedback, er du velkommen til at række ud!"
+}

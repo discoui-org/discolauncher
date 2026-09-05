@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Oke",
+    "yes": "Ya",
+    "no": "Tidak",
+    "uninstall": "Hapus aplikasi",
+    "cancel": "Batal",
+    "apply": "Terapkan",
+    "allow": "Izinkan",
+    "try_again": "Coba lagi",
+    "light": "Cerah",
+    "dark": "Gelap",
+    "remove": "Hapus",
+    "on": "On",
+    "off": "Off",
+    "locked": "Terkunci",
+    "unlocked": "Terbuka",
+    "dismiss": "Abaikan",
+    "read_more": "Selengkapnya"
+  },
+  "search": {
+    "title": "Pencarian",
+    "no_results": "Tidak ada hasil untuk {{query}}",
+    "search_store": "cari di Store"
+  },
+  "errors": {
+    "webview_old": "Versi WebView sudah usang!",
+    "home_reset": "Beranda Anda telah diatur ulang karena kesalahan fatal :( Mohon laporkan ini:",
+    "launch_timeout": "Sistem terlalu lama untuk dimuat."
+  },
+  "app_menu": {
+    "pin_to_home": "Semat ke Beranda",
+    "app_info": "Informasi aplikasi",
+    "uninstall": "Hapus aplikasi"
+  },
+  "alerts": {
+    "default": {
+      "title": "Perhatian!",
+      "message": "Pesan"
+    },
+    "uninstall": {
+      "title": "Hapus aplikasi ini?",
+      "message": "Aplikasi ini dan semua informasi di dalamnya akan dihapus dari gawai Anda."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

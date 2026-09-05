@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "Ok",
+    "okay": "Elfogad",
+    "yes": "Igen",
+    "no": "Nem",
+    "uninstall": "Eltávolít",
+    "cancel": "Mégse",
+    "apply": "Alkalmaz",
+    "allow": "Engedélyezés",
+    "try_again": "Próbálja újra",
+    "light": "Világos",
+    "dark": "Sötét",
+    "remove": "Eltávolít",
+    "on": "Be",
+    "off": "Ki",
+    "locked": "Zárolt",
+    "unlocked": "Feloldott",
+    "dismiss": "Elvetés",
+    "read_more": "Bővebben"
+  },
+  "search": {
+    "title": "Keresés",
+    "no_results": "Nincs találat:{{query}}",
+    "search_store": "keresse az Áruházban"
+  },
+  "errors": {
+    "webview_old": "A WebView elévült!",
+    "home_reset": "Kritikus hiba miatt alaphelyzetbe állt a kezdőképernyő :( Hibajelentés:",
+    "launch_timeout": "A rendszer índítása túl sokáig tartott"
+  },
+  "app_menu": {
+    "pin_to_home": "Kitűzés",
+    "app_info": "Alkalmazás infó",
+    "uninstall": "Eltávolítás"
+  },
+  "alerts": {
+    "default": {
+      "title": "Figyelmeztetés!",
+      "message": "Üzenet"
+    },
+    "uninstall": {
+      "title": "Eltávolítja ezt az alkalmazást?",
+      "message": "Ez az alkalmazás és annak adatai eltávolításra kerülnek eszközéről."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}},{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} KB",
+      "mb": "{{size}} MB",
+      "gb": "{{size}} GB",
+      "tb": "{{size}} TB"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "",
+    "okay": "",
+    "yes": "",
+    "no": "",
+    "uninstall": "",
+    "cancel": "",
+    "apply": "",
+    "allow": "",
+    "try_again": "",
+    "light": "",
+    "dark": "",
+    "remove": "",
+    "on": "",
+    "off": "",
+    "locked": "",
+    "unlocked": "",
+    "dismiss": "",
+    "read_more": ""
+  },
+  "search": {
+    "title": "",
+    "no_results": "",
+    "search_store": ""
+  },
+  "errors": {
+    "webview_old": "",
+    "home_reset": "",
+    "launch_timeout": ""
+  },
+  "app_menu": {
+    "pin_to_home": "",
+    "app_info": "",
+    "uninstall": ""
+  },
+  "alerts": {
+    "default": {
+      "title": "",
+      "message": ""
+    },
+    "uninstall": {
+      "title": "",
+      "message": ""
+    }
+  },
+  "numbers": {
+    "percent": "",
+    "decimal": "",
+    "bytes": {
+      "b": "",
+      "kb": "",
+      "mb": "",
+      "gb": "",
+      "tb": ""
+    }
+  }
+}

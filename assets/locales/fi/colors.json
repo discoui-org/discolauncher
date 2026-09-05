@@ -1,0 +1,23 @@
+{
+    "lime": "Limenvihreä",
+    "green": "Vihreä",
+    "emerald": "Smaragdinvihreä",
+    "teal": "Sinivihreä",
+    "cyan": "Syaani",
+    "cobalt": "Koboltinsininen",
+    "indigo": "Indigonsininen",
+    "violet": "Violetti",
+    "pink": "Vaaleanpunainen",
+    "magenta": "Purppuranpunainen",
+    "crimson": "Karmiininpunainen",
+    "red": "Punainen",
+    "orange": "Oranssi",
+    "amber": "Kullanruskea",
+    "yellow": "Keltainen",
+    "brown": "Ruskea",
+    "olive": "Oliivinvihreä",
+    "steel": "Teräksenharmaa",
+    "mauve": "Malva",
+    "taupe": "Ruskeanharmaa",
+    "custom_color": "Mukautettu väri"
+}

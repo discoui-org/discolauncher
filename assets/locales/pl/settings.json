@@ -1,0 +1,159 @@
+{
+  "title": "Ustawienia",
+  "tabs": {
+    "home": "Ekran Główny",
+    "applications": "Aplikacje"
+  },
+  "theme": {
+    "title": "Ekran Główny+Motyw",
+    "accent_color": "Kolor akcentu",
+    "background": "Tło",
+    "home_background": "Tło ekranu głównego",
+    "choose_photo": "Wybierz zdjęcie",
+    "show_more_tiles": "Pokaż więcej kafelków",
+    "friendly_accent": "Zmień tło oraz<span style='color: var(--accent-color)'>kolor</span>aby pasowały do twojego nastroju dzisiaj, w tym tygodniu albo całego miesiąca.",
+    "friendly_tiles": "Możesz zmienić rozmiar oraz ilość kafelków na ekranie głównym.",
+    "themes": {
+      "light": "Jasny",
+      "dark": "Ciemny",
+      "auto": "Auto"
+    }
+  },
+  "screen_rotation": {
+    "title": "Orientacja ekranu",
+    "auto_rotate": "Automatyczny obrót ekranu",
+    "rotation_lock": "Blokada obrotu ekranu",
+    "friendly_rotation_lock": "Podczas włączonej blokady ekranu, twój ekran główny nie zmieni orientacji podczas obrotu urządzenia."
+  },
+  "language": {
+    "title": "Język"
+  },
+  "ease_of_access": {
+    "title": "Ułatwienia dostępu",
+    "description": "rozmiar tekstu, kontrast oraz więcej",
+    "reduce_motion": {
+      "title": "Zmniejsz ruch",
+      "description": "Zmniejsza efekty ruchowe, takie jak paralaksa i animacje, aby uniknąć chorób."
+    },
+    "high_contrast": {
+      "title": "Wysoki kontrast",
+      "description": "Zmienia kolory dla niektórych funkcji, oraz ukrywa niektóre ich obrazy w tle."
+    },
+    "scaling": "Skalowanie",
+    "font": {
+      "title": "Czcionka",
+      "choose": "Wybierz...",
+      "remove": "Usuń czcionkę"
+    },
+    "haptic_feedback": {
+      "title": "Wibracje",
+      "description": "Włącza wibracje przy interakcji z kafelkami i przełącznikami."
+    },
+    "groups": {
+      "vision": "Widzenie",
+      "tactile": "Czuciowe"
+    }
+  },
+  "advanced": {
+    "title": "Zaawansowane",
+    "description": "menadżer pakietów oraz inne modyfikacje",
+    "debugging": {
+      "title": "Debugowanie",
+      "dump_apps": "Pobierz JSON zainstalowanych aplikacji"
+    },
+    "data": {
+      "title": "Dane",
+      "backup": "Kopia zapasowa",
+      "restore": "Przywróć"
+    },
+    "package_manager": {
+      "title": "Menadżer pakietów",
+      "title_experimental": "System zarządzania pakietami (FUNKCJA EKSPERYMENTALNA)",
+      "system": "System",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Dwukrotnie stuknięcie, aby uśpić",
+    "alternative_wallpaper": "Alternatywne położenie tapety"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Zresetować launcher?",
+      "message": "To zresetuje twój launcher do ustawień domyślnych. Wszystkie zmiany przepadną."
+    },
+    "root": {
+      "title": "Wymagany dostęp root",
+      "message": "Dostęp root jest wymagany żeby wykonać tą czynność. Proszę zezwól na dostęp aby kontynuować."
+    },
+    "shizuku": {
+      "title": "Wymagane uprawnienie Shizuku",
+      "message": "Uprawnienie Shizuku jest wymagane aby wykonać to. Proszę o uprawnienie Shizuku aby kontynuować."
+    },
+    "update_available": {
+      "title": "Dostępna aktualizacja!",
+      "message": "Nowa wersja <strong>({{version}}</strong> jest dostępna, o rozmiarze {{size}}. Czy chciałbyś ją pobrać?",
+      "message2": "Nowa wersja <strong>({{version}})</strong> jest dostępna. Czy chciałbyś ją pobrać?"
+    },
+    "update_check_failed": {
+      "title": "Błąd podczas sprawdzania aktualizacji!",
+      "message": "Nie można sprawdzić aktualizacji aplikacji. Proszę spróbuj ponownie później."
+    },
+    "up_to_date": {
+      "title": "Brak nowych aktualizacji!",
+      "message": "Masz najbardziej szałową wersję Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Nie wspierany format pliku.",
+      "message": "Plik czcionki jest nieprawidłowy. Upewnij się że to jest plik z rozszerzeniem .ttf i spróbuj wysłać ponownie."
+    },
+    "font_load_error": {
+      "title": "Nie udało się załadować czcionki",
+      "message": "Nie mogliśmy odczytać pliku czcionki. Tylko czcionki z rozszerzeniem .ttf są wspierane. Spróbuj inny plik."
+    },
+    "copy_failed": {
+      "title": "Błąd kopiowania!",
+      "message": "Nie udało się skopiować listy aplikacji. Spróbuj ponownie później."
+    },
+    "copy_success": {
+      "title": "Skopiowano do schowka!",
+      "message": "Skopiowano zainstalowane aplikację do formatu JSON pomyślnie."
+    }
+  },
+  "about": {
+    "title": "O aplikacji",
+    "description": "Groove Launcher",
+    "version": "Wersja: {{version}}",
+    "webview_version": "Wersja WebView: {{version}}",
+    "reset_launcher": "Zresetuj Launcher",
+    "check_updates": "Sprawdź aktualizacje"
+  },
+  "apps": {
+    "uninstall_app": "Odinstaluj aplikację",
+    "show_in_app_list": "Pokaż tą aplikację w liście aplikacji",
+    "name": "Nazwa",
+    "icon": "Ikona",
+    "icon_selections": {
+      "default": "Domyślne",
+      "monochrome": "Monochromatyczne"
+    },
+    "background": "Tło",
+    "background_selections": {
+      "default": "Domyślne",
+      "transparent": "Przezroczyste"
+    },
+    "text_color": "Kolor tekstu",
+    "text_color_selections": {
+      "auto": "Auto",
+      "dark": "ciemny",
+      "light": "jasny"
+    },
+    "live_tile": "Żywy kafelek",
+    "show_app": "Pokaż w liście aplikacji"
+  },
+  "roles": {
+    "team_groove": "Zespół Groove",
+    "developer": "Deweloper",
+    "icon_design": "Design ikony",
+    "logo_design": "Design loga"
+  }
+}

@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "التالي",
+        "previous": "السابق",
+        "pleaseWait": "يرجى الانتظار ..."
+    },
+    "welcome": {
+        "install": "مرحباً بك",
+        "update": "مرحباً بعودتك",
+        "appName": "Groove Launcher",
+        "setupIntro": "دعونا نقوم بإعداد تجربتك في بضع خطوات قصيرة.",
+        "warning": "تحذير: هذا برنامج سابق للإفراج وقد يحتوي على أخطاء."
+    },
+    "wizard": {
+        "title": "مساعد تحديث ",
+        "description": "دعونا نتأكد من نقل بياناتك بأمان! انقر بجوار للمتابعة."
+    },
+    "access": {
+        "title": "سهولة الوصول",
+        "description": "تخصيص تجربتك للتأكد من أن كل شيء يبدو صحيحاً.",
+        "background": "الخلفية",
+        "scaling": "القياس"
+    },
+    "themes": {
+        "light": "فاتح",
+        "dark": "داكن"
+    },
+    "colors": {
+        "title": "اختر لون الخاص بك",
+        "description": "اختر لون يتطابق مع مزاجك."
+    },
+    "permissions": {
+        "title": "",
+        "groups": {
+            "contacts": {
+                "title": "",
+                "description": ""
+            },
+            "photos": {
+                "title": "",
+                "description": ""
+            },
+            "notifications": {
+                "title": "",
+                "description": ""
+            },
+            "accessibility": {
+                "title": "",
+                "description": ""
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "ما هو الجديد؟"
+    },
+    "finish": {
+        "title": "كن مستعدا لجروفي",
+        "description": "تم الإعداد الخاص بك. حان الوقت للغزوفي!"
+    }
+}

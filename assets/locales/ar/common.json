@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "ok": "حسناً",
+    "okay": "موافق",
+    "yes": "نعم",
+    "no": "لا",
+    "uninstall": "إلغاء التثبيت",
+    "cancel": "إلغاء",
+    "apply": "تطبيق",
+    "allow": "",
+    "try_again": "إعادة المحاولة",
+    "light": "فاتح",
+    "dark": "داكن",
+    "remove": "حذف",
+    "on": "تشغيل",
+    "off": "إيقاف",
+    "locked": "مغلق",
+    "unlocked": "مفتوح",
+    "dismiss": "",
+    "read_more": ""
+  },
+  "search": {
+    "title": "بحث",
+    "no_results": "لا توجد نتائج ل {{query}}",
+    "search_store": "البحث في المتجر"
+  },
+  "errors": {
+    "webview_old": "WebView قديم جداً!",
+    "home_reset": "تم تعطيل الشاشة الرئيسية بسبب خطأ ما :(\nالرجاء الإبلاغ عن هذا:",
+    "launch_timeout": "النظام استغرق وقتاً طويلاً للتشغيل"
+  },
+  "app_menu": {
+    "pin_to_home": "اضف إلى الصفحة الرئيسية",
+    "app_info": "",
+    "uninstall": "إلغاء التثبيت"
+  },
+  "alerts": {
+    "default": {
+      "title": "تنبيه!",
+      "message": "الرسائل"
+    },
+    "uninstall": {
+      "title": "إلغاء تثبيت هذا التطبيق؟",
+      "message": "هذا التطبيق، بالإضافة إلى أي معلومات يحتوي عليها، سيتم حذفه من جهازك."
+    }
+  },
+  "numbers": {
+    "percent": "{{value}}%",
+    "decimal": "{{whole}}.{{decimal}}",
+    "bytes": {
+      "b": "{{size}} B",
+      "kb": "{{size}} كيلوبأيت",
+      "mb": "{{size}} ميغابايت",
+      "gb": "{{size}} جيجابايت",
+      "tb": "{{size}} TB"
+    }
+  }
+}

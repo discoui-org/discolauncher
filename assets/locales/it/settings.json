@@ -1,0 +1,159 @@
+{
+  "title": "Impostazioni",
+  "tabs": {
+    "home": "",
+    "applications": "Applicazioni"
+  },
+  "theme": {
+    "title": "",
+    "accent_color": "Colore in primo piano",
+    "background": "Sfondo",
+    "home_background": "",
+    "choose_photo": "Scegli foto",
+    "show_more_tiles": "Mostra altri riquadri",
+    "friendly_accent": "Cambia il colore dello sfondo e quello <span style='color: var(--accent-color)'>in primo piano</span> in modo che riflettano il tuo stato d'animo di oggi, di questa settimana o di tutto il mese.",
+    "friendly_tiles": "",
+    "themes": {
+      "light": "Chiaro",
+      "dark": "Scuro",
+      "auto": ""
+    }
+  },
+  "screen_rotation": {
+    "title": "Rotazione schermo",
+    "auto_rotate": "Rotazione automatica",
+    "rotation_lock": "Blocco della rotazione",
+    "friendly_rotation_lock": "Quando il blocco della rotazione è attivato, l’orientamento dello schermo non cambierà se ruoti il dispositivo."
+  },
+  "language": {
+    "title": "Lingua"
+  },
+  "ease_of_access": {
+    "title": "Accessibilità",
+    "description": "dimensioni testo, contrasto elevato e altro",
+    "reduce_motion": {
+      "title": "",
+      "description": ""
+    },
+    "high_contrast": {
+      "title": "",
+      "description": ""
+    },
+    "scaling": "",
+    "font": {
+      "title": "",
+      "choose": "",
+      "remove": ""
+    },
+    "haptic_feedback": {
+      "title": "",
+      "description": ""
+    },
+    "groups": {
+      "vision": "",
+      "tactile": ""
+    }
+  },
+  "advanced": {
+    "title": "",
+    "description": "",
+    "debugging": {
+      "title": "",
+      "dump_apps": ""
+    },
+    "data": {
+      "title": "",
+      "backup": "",
+      "restore": ""
+    },
+    "package_manager": {
+      "title": "",
+      "title_experimental": "",
+      "system": "Sistema",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "",
+    "alternative_wallpaper": ""
+  },
+  "alerts": {
+    "reset": {
+      "title": "",
+      "message": ""
+    },
+    "root": {
+      "title": "",
+      "message": ""
+    },
+    "shizuku": {
+      "title": "",
+      "message": ""
+    },
+    "update_available": {
+      "title": "",
+      "message": "",
+      "message2": ""
+    },
+    "update_check_failed": {
+      "title": "",
+      "message": ""
+    },
+    "up_to_date": {
+      "title": "",
+      "message": ""
+    },
+    "font_read_error": {
+      "title": "",
+      "message": ""
+    },
+    "font_load_error": {
+      "title": "",
+      "message": ""
+    },
+    "copy_failed": {
+      "title": "",
+      "message": ""
+    },
+    "copy_success": {
+      "title": "",
+      "message": ""
+    }
+  },
+  "about": {
+    "title": "Informazioni",
+    "description": "Groove Launcher",
+    "version": "Versione: {{version}}",
+    "webview_version": "Versione WebView: {{version}}",
+    "reset_launcher": "Ripristina Launcher",
+    "check_updates": ""
+  },
+  "apps": {
+    "uninstall_app": "",
+    "show_in_app_list": "",
+    "name": "",
+    "icon": "",
+    "icon_selections": {
+      "default": "",
+      "monochrome": ""
+    },
+    "background": "",
+    "background_selections": {
+      "default": "",
+      "transparent": ""
+    },
+    "text_color": "",
+    "text_color_selections": {
+      "auto": "",
+      "dark": "",
+      "light": ""
+    },
+    "live_tile": "",
+    "show_app": ""
+  },
+  "roles": {
+    "team_groove": "",
+    "developer": "",
+    "icon_design": "",
+    "logo_design": ""
+  }
+}

@@ -1,0 +1,60 @@
+{
+    "common": {
+        "next": "weiter",
+        "previous": "zurück",
+        "pleaseWait": "Bitte warten..."
+    },
+    "welcome": {
+        "install": "Willkommen",
+        "update": "Willkommen zurück",
+        "appName": "Groove Launcher",
+        "setupIntro": "Lass uns deine Erfahrung in wenigen einfachen Schritten einrichten.",
+        "warning": "Warnung: Dies ist eine Vorabversion der Software und kann Fehler enthalten."
+    },
+    "wizard": {
+        "title": "Update-Assistent",
+        "description": "Lass uns dafür sorgen, dass deine Daten sicher übertragen werden! Klicke auf „Weiter“, um fortzufahren."
+    },
+    "access": {
+        "title": "Erleichterte Bedienung",
+        "description": "Passe deine Erfahrung an, damit alles perfekt passt.",
+        "background": "Hintergrund",
+        "scaling": "Skalierung"
+    },
+    "themes": {
+        "light": "Hell",
+        "dark": "Dunkel"
+    },
+    "colors": {
+        "title": "Wähle deine Farbe",
+        "description": "Wähle eine Farbe, die zu deiner Stimmung passt."
+    },
+    "permissions": {
+        "title": "Berechtigungen",
+        "groups": {
+            "contacts": {
+                "title": "Kontakte",
+                "description": "Zugriff auf Kontakte ist erforderlich, um deine Kontakte-Live-Kachel anzuzeigen."
+            },
+            "photos": {
+                "title": "Fotos",
+                "description": "Zugriff auf Fotos ist erforderlich, um deine Fotos-Live-Kachel anzuzeigen."
+            },
+            "notifications": {
+                "title": "Benachrichtigungen",
+                "description": "Zugriff auf Benachrichtigungen ist erforderlich, um deine Benachrichtigungen-Live-Kachel anzuzeigen."
+            },
+            "accessibility": {
+                "title": "Barrierefreiheit",
+                "description": "Aktiviere die Barrierefreiheit, um das Gerät zu sperren."
+            }
+        }
+    },
+    "whatsnew": {
+        "title": "Was gibt’s Neues?"
+    },
+    "finish": {
+        "title": "Mach dich bereit für Groove",
+        "description": "Die Einrichtung ist erledigt. Steige ein!"
+    }
+}

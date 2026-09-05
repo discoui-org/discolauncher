@@ -1,0 +1,159 @@
+{
+  "title": "Indstillinger",
+  "tabs": {
+    "home": "Hjem",
+    "applications": "Applikationer"
+  },
+  "theme": {
+    "title": "Hjem+Tema",
+    "accent_color": "Markeringsfarve",
+    "background": "Baggrund",
+    "home_background": "Hjemskærms baggrund",
+    "choose_photo": "Vælg billede",
+    "show_more_tiles": "Vis flere felter",
+    "friendly_accent": "Indstil din enheds baggrund og <span style='color: var(--accent-color)'>markeringsfarve</span> til at matche dit humør i dag, denne uge eller hele måneden.",
+    "friendly_tiles": "Du kan ændre størrelsen og antallet af felter der vises på din hjemskærm.",
+    "themes": {
+      "light": "Lys",
+      "dark": "Mørk",
+      "auto": "Automatisk"
+    }
+  },
+  "screen_rotation": {
+    "title": "Skærmrotation",
+    "auto_rotate": "Auto-roter",
+    "rotation_lock": "Rotationslås",
+    "friendly_rotation_lock": "Når rotationslås er tændt vil din hjemskærm forblive i den samme rotation, når du roterer din enhed."
+  },
+  "language": {
+    "title": "Sprog"
+  },
+  "ease_of_access": {
+    "title": "Tilgængelighed",
+    "description": "tekststørrelse, høj kontrast, og mere",
+    "reduce_motion": {
+      "title": "Reducer bevægelser",
+      "description": "Reducer bevægelser, som animationer, for at forhindre køresyge."
+    },
+    "high_contrast": {
+      "title": "Høj kontrast",
+      "description": "Ændrer farverne for nogen funktioner, og gemmer nogen af deres baggrundsbilleder væk."
+    },
+    "scaling": "Skalering",
+    "font": {
+      "title": "Skrifttype",
+      "choose": "Vælg...",
+      "remove": "Fjern Skrifttype"
+    },
+    "haptic_feedback": {
+      "title": "Haptisk Feedback",
+      "description": "Aktiver vibrationsfeedback ved berøring af felter og kontrolelementer."
+    },
+    "groups": {
+      "vision": "Syn",
+      "tactile": "Taktil"
+    }
+  },
+  "advanced": {
+    "title": "Avanceret",
+    "description": "pakkemanager og andre justeringer",
+    "debugging": {
+      "title": "Fejlfinding",
+      "dump_apps": "Dump installeret apps JSON"
+    },
+    "data": {
+      "title": "Data",
+      "backup": "Sikkerhedskopier",
+      "restore": "Gendan"
+    },
+    "package_manager": {
+      "title": "Pakkemanager",
+      "title_experimental": "Pakkehåndterer (EKSPERIMENTAL)",
+      "system": "System",
+      "root": "Root",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Dobbelttryk for slumre",
+    "alternative_wallpaper": "Alternativ baggrundsplacering"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Nulstil Groove Launcher?",
+      "message": "Dette vil gendanne din launcher til dens oprindelige indstillinger. Alle personlige konfigurationer vil blive fjernet."
+    },
+    "root": {
+      "title": "Root Adgang Påkrævet",
+      "message": "Root-adgang er påkrævet for at udføre denne handling. Tildel root-adgang for at fortsætte."
+    },
+    "shizuku": {
+      "title": "Shizuku Tilladelse Påkrævet",
+      "message": "Shizuku tilladelse påkrævet for at udføre denne handling. Tildel Shizuku tilladelse for at fortsætte."
+    },
+    "update_available": {
+      "title": "Opdatering tilgængelig!",
+      "message": "En ny version <strong>({{version}})</strong> er tilgængelig, med størrelsen {{size}}. Vil du gerne downloade den?",
+      "message2": "En ny version <strong>({{version}})</strong> er tilgængelig. Vil du gerne downloade den?"
+    },
+    "update_check_failed": {
+      "title": "Søgning efter opdateringer fejlede!",
+      "message": "Kunne ikke søge efter app opdateringer. Prøv igen senere."
+    },
+    "up_to_date": {
+      "title": "Du er opdateret!",
+      "message": "Du har den seneste version af Groove Launcher."
+    },
+    "font_read_error": {
+      "title": "Ikke understøttet filformat",
+      "message": "Skrifttypefilen er ikke gyldig. Sørg for, at det er en .ttf-fil, og prøv igen."
+    },
+    "font_load_error": {
+      "title": "Kan ikke indlæse skrifttype",
+      "message": "Vi kunne ikke læse skrifttypefilen. Kun .ttf skrifttyper understøttes. Prøv en anden fil."
+    },
+    "copy_failed": {
+      "title": "Kopiring Fejlede!",
+      "message": "Kunne ikke kopiere applisten. Prøv venligst igen."
+    },
+    "copy_success": {
+      "title": "Kopiret til Udklipningsholder!",
+      "message": "Installerede apps kopieret til JSON-format med succes."
+    }
+  },
+  "about": {
+    "title": "Om",
+    "description": "Groove Launcher",
+    "version": "Version: {{version}}",
+    "webview_version": "WebView Version: {{version}}",
+    "reset_launcher": "Nulstil Launcher",
+    "check_updates": "Søg efter opdateringer"
+  },
+  "apps": {
+    "uninstall_app": "Afinstaller App",
+    "show_in_app_list": "Vis app i Applisten",
+    "name": "Navn",
+    "icon": "Ikon",
+    "icon_selections": {
+      "default": "Standard",
+      "monochrome": "Monokrom"
+    },
+    "background": "Baggrund",
+    "background_selections": {
+      "default": "Standard",
+      "transparent": "Gennemsigtig"
+    },
+    "text_color": "Tekstfarve",
+    "text_color_selections": {
+      "auto": "Automatisk",
+      "dark": "mørk",
+      "light": "lys"
+    },
+    "live_tile": "Dynamisk felt",
+    "show_app": "Vis i applisten"
+  },
+  "roles": {
+    "team_groove": "Team Groove",
+    "developer": "Udvikler",
+    "icon_design": "Ikondesign",
+    "logo_design": "Logodesign"
+  }
+}

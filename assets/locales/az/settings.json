@@ -1,0 +1,159 @@
+{
+  "title": "Parametrlər",
+  "tabs": {
+    "home": "Əsas Ekran",
+    "applications": "Proqramlar"
+  },
+  "theme": {
+    "title": "Əsas Ekran+Mövzu",
+    "accent_color": "Vurğulama rəngi",
+    "background": "Fondakı şəkil",
+    "home_background": "Əsas ekranının fonu",
+    "choose_photo": "Şəkil seç",
+    "show_more_tiles": "Daha çox Lövhəcik göstərin",
+    "friendly_accent": "Bu gün, bu həftə və ya bütün ay əhval-ruhiyyənizə uyğun cihazınızın fonunu və <span style='color: var(--accent-color)'>vurgulama rəngini</span> dəyişdirin.",
+    "friendly_tiles": "Siz başlama ekranınızda mövcud olan lövhəciklərin ölçüsü və sayını dəyişdirə bilərsiniz.",
+    "themes": {
+      "light": "Açıq",
+      "dark": "Tünd",
+      "auto": "Auto"
+    }
+  },
+  "screen_rotation": {
+    "title": "Ekranın Döndərilməsi",
+    "auto_rotate": "Auto-rotate",
+    "rotation_lock": "Döndərmə kilidi",
+    "friendly_rotation_lock": "Döndərmə kilidi aktiv olanda cihazı döndərdiyiniz zaman ekranınız mövcud istiqamətdə qalacaqdır."
+  },
+  "language": {
+    "title": "Dil"
+  },
+  "ease_of_access": {
+    "title": "Giriş Asanlığı",
+    "description": "mətn ölçüsü, yüksək kəskinlik və sair",
+    "reduce_motion": {
+      "title": "Hərəkəti azaldın",
+      "description": "Paralaks və animasiyalar kimi hərəkət effektlərini azaldın, hərəkət xəstəliyinin qarşısını almağa kömək edin."
+    },
+    "high_contrast": {
+      "title": "Yüksək Kontrast",
+      "description": "Bəzi xüsusiyyətlər üçün rəngləri dəyişir və bəzi fon şəkillərini gizlədir."
+    },
+    "scaling": "Miqyaslama",
+    "font": {
+      "title": "Şrift",
+      "choose": "Seç...",
+      "remove": "Şrifti Silin"
+    },
+    "haptic_feedback": {
+      "title": "Haptik Əlaqə",
+      "description": "Lövhəciklər və idarəetmələrlə qarşılıqlı əlaqədə titrəmə əks əlaqəsini aktiv edin."
+    },
+    "groups": {
+      "vision": "Görmə",
+      "tactile": "Toxunma"
+    }
+  },
+  "advanced": {
+    "title": "Qabaqcıl",
+    "description": "paket meneceri və digər parametrlər",
+    "debugging": {
+      "title": "Sazlama",
+      "dump_apps": "Quraşdırılmış proqramları JSON formatında dökümlə"
+    },
+    "data": {
+      "title": "Məlumat",
+      "backup": "Ehtiyat nüsxə",
+      "restore": "Bərpa et"
+    },
+    "package_manager": {
+      "title": "Paket meneceri",
+      "title_experimental": "Paket meneceri (EKSPERİMENTAL)",
+      "system": "Sistem",
+      "root": "Kök",
+      "shizuku": "Shizuku"
+    },
+    "double_tap_to_sleep": "Yatmaq üçün iki dəfə toxunun",
+    "alternative_wallpaper": "Alternativ divar kağızı yerləşdirmə"
+  },
+  "alerts": {
+    "reset": {
+      "title": "Groove Launcher Sıfırlansın?",
+      "message": "Bu, launcherınızı standart parametrlərinə sıfırlayacaq. Bütün fərdiləşdirmələr itiriləcək."
+    },
+    "root": {
+      "title": "Kök Girişi Tələb Olunur",
+      "message": "Bu prosesi yerinə yetirmək üçün kök girişi tələb olunur. Davam etmək üçün kök girişinə icazə verin."
+    },
+    "shizuku": {
+      "title": "Shizuku İcazəsi Tələb Olunur",
+      "message": "Bu eylemi gerçekleştirmek için Shizuku izni gereklidir. Devam etmek için lütfen Shizuku izni verin."
+    },
+    "update_available": {
+      "title": "Yeniləmə Mövcuddur!",
+      "message": "{{size}}-lıq yeni versiya <strong>({{version}})</strong> mövcuddur. Endirmək istəyirsiniz?",
+      "message2": "Yeni versiya <strong>({{version}})</strong> mövcuddur. Endirmək istəyirsiniz?"
+    },
+    "update_check_failed": {
+      "title": "Yeniləmənmələri Yoxlaya Bilmədik!",
+      "message": "Proqram yeniləmələrin yoxlamaq mümkün deyil. Daha sonra yenidən cəhd edin."
+    },
+    "up_to_date": {
+      "title": "Ən son versiyadasınız!",
+      "message": "Ən yaxşı Groove Launcher istifadə edirsiniz."
+    },
+    "font_read_error": {
+      "title": "Dəstəklənməyən fayl formatı",
+      "message": "Şrift faylı etibarlı deyil. Bunun .ttf faylı olduğuna əmin olun və yenidən yükləməyə cəhd edin."
+    },
+    "font_load_error": {
+      "title": "Şrifti yükləmək mümkün deyil",
+      "message": "Şrift faylını oxuya bilmədik. Yalnız .ttf şriftləri dəstəklənir. Fərqli fayl yükləməyə cəhd edin."
+    },
+    "copy_failed": {
+      "title": "Kopyalama Alınmadı!",
+      "message": "Proqramlar siyahısını kopyalamaq mümkün deyil. Yenidən cəhd edin."
+    },
+    "copy_success": {
+      "title": "Buferə Kopyalandı!",
+      "message": "Quraşdırılmış proqramlar uğurla JSON formatında kopyalandı."
+    }
+  },
+  "about": {
+    "title": "Haqqında",
+    "description": "Groove Launcher",
+    "version": "Versiya: {{version}}",
+    "webview_version": "WebView Versiyası: {{version}}",
+    "reset_launcher": "Başlatıcını Sıfırlayın",
+    "check_updates": "Yeniləmələri Yoxlayın"
+  },
+  "apps": {
+    "uninstall_app": "Quraş-ı ləğv et",
+    "show_in_app_list": "Bu proqramı Proqram Siyahısında göstərin",
+    "name": "Ad",
+    "icon": "Simge",
+    "icon_selections": {
+      "default": "Varsayılan",
+      "monochrome": "Monoxrom"
+    },
+    "background": "Fon",
+    "background_selections": {
+      "default": "Varsayılan",
+      "transparent": "Şəffaf"
+    },
+    "text_color": "Mətn rəngi",
+    "text_color_selections": {
+      "auto": "Avtomatik",
+      "dark": "Tünd",
+      "light": "Açıq"
+    },
+    "live_tile": "Canlı lövhəcik",
+    "show_app": "Proqramlar siyahısında göstərin"
+  },
+  "roles": {
+    "team_groove": "Groove Komandası",
+    "developer": "Tərtibatçı",
+    "icon_design": "Simge Dizaynı",
+    "logo_design": "Logo Dizaynı"
+  }
+}

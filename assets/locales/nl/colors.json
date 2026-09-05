@@ -1,0 +1,23 @@
+{
+    "lime": "Lichtgroen",
+    "green": "Groen",
+    "emerald": "Smaragdgroen",
+    "teal": "Blauwgroen",
+    "cyan": "Cyaan",
+    "cobalt": "Kobaltblauw",
+    "indigo": "Indigo",
+    "violet": "Violet",
+    "pink": "Roze",
+    "magenta": "Magenta",
+    "crimson": "Karmozijnrood",
+    "red": "Rood",
+    "orange": "Oranje",
+    "amber": "Geelbruin",
+    "yellow": "Geel",
+    "brown": "Bruin",
+    "olive": "Olijfgroen",
+    "steel": "Staalblauw",
+    "mauve": "Mauve",
+    "taupe": "Taupe",
+    "custom_color": "Aangepaste kleur"
+}
