@@ -453,7 +453,10 @@ function updateFolderOpenLayout(state, shiftRows = state.rowsShifted) {
   const folderBottomRow = node.y + node.h;
   const previousTiles = state.shiftedTiles || [];
   const followingNodes = tileListGrid.engine.nodes
-    .filter(candidate => candidate !== node && candidate.y >= node.y);
+    // Neighbours that end at or above the folder's bottom edge do not
+    // intersect the open panel, so they can stay in place.
+    .filter(candidate => candidate !== node
+      && candidate.y + candidate.h > folderBottomRow);
   const occupiedFolderRows = followingNodes
     .filter(candidate => candidate.y < folderBottomRow)
     .map(candidate => candidate.y);

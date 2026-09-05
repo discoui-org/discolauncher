@@ -1695,6 +1695,12 @@ div.tile-list-page.home-menu-back div:is(.disco-home-tile, .disco-home-folder-ti
     transform: scale(1) translate(var(--shake-x), var(--shake-y));
 }
 
+div.disco-home-tile.disco-element.grid-stack-item.grid-dragging.folder-intent-source {
+    opacity: .75 !important;
+    scale: .75 !important;
+    transform-origin: var(--folder-intent-origin-x, 50%) var(--folder-intent-origin-y, 50%);
+}
+
 div.disco-home-folder-tile.folder-intent-target>div.disco-folder-matrix:not(.disco-folder-intent-preview) {
     visibility: hidden;
 }

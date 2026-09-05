@@ -168,6 +168,7 @@ class DiscoTileGrid {
     pointerEvent.preventDefault?.();
     const node = el.gridstackNode;
     const containerRect = this.el.getBoundingClientRect();
+    const tileRect = el.getBoundingClientRect();
     const scaleX = containerRect.width && this.el.clientWidth
       ? this.el.clientWidth / containerRect.width
       : 1;
@@ -189,6 +190,12 @@ class DiscoTileGrid {
       scaleY,
       targetX: node.x,
       targetY: node.y,
+      grabOriginX: tileRect.width
+        ? Math.max(0, Math.min(100, (pointerEvent.clientX - tileRect.left) / tileRect.width * 100))
+        : 50,
+      grabOriginY: tileRect.height
+        ? Math.max(0, Math.min(100, (pointerEvent.clientY - tileRect.top) / tileRect.height * 100))
+        : 50,
       proposed: null,
       folderHover: null,
       folderIntent: null,
@@ -314,7 +321,16 @@ class DiscoTileGrid {
       );
       if (current?.target === hover.target && current.isCentered) {
         this.drag.folderIntent = { target: hover.target };
-        this.showFolderPreview(hover.target.el, this.drag.node.el);
+        this.drag.node.el.style.setProperty(
+          "--folder-intent-origin-x",
+          `${this.drag.grabOriginX}%`
+        );
+        this.drag.node.el.style.setProperty(
+          "--folder-intent-origin-y",
+          `${this.drag.grabOriginY}%`
+        );
+        this.drag.node.el.classList.add("folder-intent-source");
+        this.showFolderPreview(hover.target.el);
       }
       this.applyDragLayout();
     }, FOLDER_INTENT_DELAY);
@@ -325,6 +341,9 @@ class DiscoTileGrid {
     const { folderHover, folderIntent } = this.drag;
     if (folderHover?.timer) clearTimeout(folderHover.timer);
     if (folderIntent?.target?.el) this.clearFolderPreview(folderIntent.target.el);
+    this.drag.node?.el.classList.remove("folder-intent-source");
+    this.drag.node?.el.style.removeProperty("--folder-intent-origin-x");
+    this.drag.node?.el.style.removeProperty("--folder-intent-origin-y");
     this.drag.folderHover = null;
     this.drag.folderIntent = null;
   }
@@ -362,21 +381,14 @@ class DiscoTileGrid {
     this.drag.relocationSignature = relocationSignature;
   }
 
-  showFolderPreview(target, source) {
+  showFolderPreview(target) {
     this.clearFolderPreview(target);
     const existingMatrix = target.querySelector(":scope > .disco-folder-matrix");
     const preview = existingMatrix
       ? existingMatrix.cloneNode(true)
-      : this.createFolderMatrix(target.gridstackNode, [target, source]);
+      : this.createFolderMatrix(target.gridstackNode, [target]);
     preview.classList.add("disco-folder-intent-preview");
     preview.setAttribute("aria-hidden", "true");
-
-    if (existingMatrix) {
-      const emptyCell = [...preview.children]
-        .find(cell => !cell.querySelector(":scope > .disco-home-inner-tile"));
-      const innerTile = this.createFolderThumbnail(source);
-      if (emptyCell && innerTile) emptyCell.append(innerTile);
-    }
 
     target.classList.add("folder-intent-target");
     target.append(preview);
@@ -418,12 +430,79 @@ class DiscoTileGrid {
     target.querySelector(":scope > .disco-folder-intent-preview")?.remove();
   }
 
+  folderDropPreviewCell(target) {
+    const preview = target.querySelector(":scope > .disco-folder-intent-preview");
+    if (!preview) return null;
+    return [...preview.children].find(cell => !cell.hidden
+      && !cell.querySelector(":scope > .disco-home-inner-tile")) || null;
+  }
+
+  animateFolderDrop(source, destination) {
+    if (!source || !destination || typeof source.animate !== "function") return;
+    const sourceRect = source.getBoundingClientRect();
+    const destinationRect = destination.getBoundingClientRect();
+    if (!sourceRect.width || !sourceRect.height
+      || !destinationRect.width || !destinationRect.height) return;
+
+    const ghost = source.cloneNode(true);
+    ghost.removeAttribute("id");
+    ghost.querySelector(":scope > .disco-tile-menu")?.remove();
+    ghost.classList.remove(
+      "active",
+      "e_active",
+      "folder-intent-source",
+      "grid-dragging",
+      "home-menu-selected"
+    );
+    ghost.classList.add("folder-drop-ghost");
+    Object.assign(ghost.style, {
+      position: "fixed",
+      left: `${sourceRect.left}px`,
+      top: `${sourceRect.top}px`,
+      width: `${sourceRect.width}px`,
+      height: `${sourceRect.height}px`,
+      margin: "0",
+      opacity: ".75",
+      pointerEvents: "none",
+      scale: "1",
+      transform: "none",
+      transformOrigin: "center",
+      translate: "none",
+      zIndex: "1000"
+    });
+    document.body.append(ghost);
+
+    const animation = ghost.animate([
+      {
+        left: `${sourceRect.left}px`,
+        top: `${sourceRect.top}px`,
+        width: `${sourceRect.width}px`,
+        height: `${sourceRect.height}px`,
+        opacity: .75
+      },
+      {
+        left: `${destinationRect.left}px`,
+        top: `${destinationRect.top}px`,
+        width: `${destinationRect.width}px`,
+        height: `${destinationRect.height}px`,
+        opacity: 0
+      }
+    ], {
+      duration: 240,
+      easing: "cubic-bezier(.2, .8, .2, 1)",
+      fill: "forwards"
+    });
+    animation.finished.catch(() => {}).finally(() => ghost.remove());
+  }
+
   endDrag(event) {
     if (!this.drag) return;
     if (this.drag.pointerId !== null && event.pointerId !== this.drag.pointerId) return;
 
     const { node, folderIntent } = this.drag;
     if (event.type !== "pointercancel" && folderIntent) {
+      const previewCell = this.folderDropPreviewCell(folderIntent.target.el);
+      this.animateFolderDrop(node.el, previewCell);
       const folder = folderIntent.target.el.classList.contains("disco-home-folder-tile")
         ? this.addToFolder(folderIntent.target, node)
         : this.createFolder(folderIntent.target, node);
@@ -486,7 +565,7 @@ class DiscoTileGrid {
     const target = targetNode.el;
     const source = sourceNode.el;
     const children = [target, source].map(tile => this.tileData(tile));
-    const matrix = target.querySelector(":scope > .disco-folder-intent-preview")?.cloneNode(true);
+    const matrix = this.createFolderMatrix(targetNode, [target, source]);
     const folder = document.createElement("div");
     folder.className = "disco-element disco-home-tile disco-home-folder-tile grid-stack-item";
     folder.setAttribute("supportedsizes", "s,m,w");
@@ -499,10 +578,7 @@ class DiscoTileGrid {
     const title = document.createElement("p");
     title.className = "disco-element disco-home-tile-title disco-folder-title";
     titleLayer.append(title);
-    if (matrix) {
-      matrix.classList.remove("disco-folder-intent-preview");
-      folder.append(matrix);
-    }
+    folder.append(matrix);
     folder.append(titleLayer);
 
     target.replaceWith(folder);
@@ -527,15 +603,17 @@ class DiscoTileGrid {
       ...(folder.folderChildren || JSON.parse(folder.dataset.folderChildren || "[]")),
       this.tileData(source)
     ];
-    const preview = folder.querySelector(":scope > .disco-folder-intent-preview");
+    const matrix = folder.querySelector(
+      ":scope > .disco-folder-matrix:not(.disco-folder-intent-preview)"
+    );
+    const emptyCell = matrix && [...matrix.children]
+      .find(cell => !cell.hidden
+        && !cell.querySelector(":scope > .disco-home-inner-tile"));
+    const thumbnail = this.createFolderThumbnail(source);
 
     folder.folderChildren = children;
     folder.dataset.folderChildren = JSON.stringify(children);
-    if (preview) {
-      folder.querySelector(":scope > .disco-folder-matrix:not(.disco-folder-intent-preview)")?.remove();
-      preview.classList.remove("disco-folder-intent-preview");
-      preview.removeAttribute("aria-hidden");
-    }
+    if (emptyCell && thumbnail) emptyCell.append(thumbnail);
 
     this.engine.nodes = this.engine.nodes.filter(candidate => candidate !== sourceNode);
     delete source.gridstackNode;

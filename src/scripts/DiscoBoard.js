@@ -694,7 +694,6 @@ const backendMethods = {
     invalidate: (change) => {
       if (DiscoBoard.backendMethods.navigation.history.length == 0)
         return undefined;
-      //console.log("HISTORY INVA", change);
       if (DiscoBoard.backendMethods.navigation.lastPush.change == change) {
         DiscoBoard.backendMethods.navigation.back(false);
       }
