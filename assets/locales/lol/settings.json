@@ -17,7 +17,8 @@
       "light": "Shiny Modez!",
       "dark": "Spoopy Modez!",
       "auto": "Autoz"
-    }
+    },
+    "color": "colurz"
   },
   "screen_rotation": {
     "title": "Spinz Da Screen!",
@@ -74,7 +75,8 @@
       "shizuku": "Shizuku Powerz!"
     },
     "double_tap_to_sleep": "Dubble tap 4 napz",
-    "alternative_wallpaper": "Alturnatif wallpaper movy"
+    "alternative_wallpaper": "Alturnatif wallpaper movy",
+    "force_rtl": "Force RTL lay-outz!"
   },
   "alerts": {
     "reset": {
@@ -117,6 +119,9 @@
     "copy_success": {
       "title": "Copied, Meow!",
       "message": "Ur installed appy-list iz now JSON!"
+    },
+    "icon_pack_restart": {
+      "message": "Pwease restart da appy 2 make da icon pack happenz!"
     }
   },
   "about": {
@@ -125,7 +130,9 @@
     "version": "Vershun: {{version}}",
     "webview_version": "WebView Vershun: {{version}}",
     "reset_launcher": "Reset Launchy!",
-    "check_updates": "Check 4 Updatez!"
+    "check_updates": "Check 4 Updatez!",
+    "compatible": "worky-goodz",
+    "incompatible": "no worky!"
   },
   "apps": {
     "uninstall_app": "Make Appy Go Bye-Bye!",
@@ -139,21 +146,87 @@
     "background": "Backy-groundz!",
     "background_selections": {
       "default": "Nermal!",
-      "transparent": "Tranzy-parentz!"
+      "transparent": "Tranzy-parentz!",
+      "accent_color": "Fancy colorz!"
     },
     "text_color": "Texty Colorz!",
     "text_color_selections": {
       "auto": "Autoz",
       "dark": "Spoopy Modez!",
-      "light": "Shiny Modez!"
+      "light": "Shiny Modez!",
+      "default": "Nermal!"
     },
     "live_tile": "Live tilez",
-    "show_app": "Showz in da appy-list!"
+    "show_app": "Showz in da appy-list!",
+    "info": "Deetz!"
   },
   "roles": {
     "team_groove": "Team Groovy!",
     "developer": "Code Wizard!",
     "icon_design": "Piccy Makerz!",
-    "logo_design": "Fancy Logo Makerz!"
+    "logo_design": "Fancy Logo Makerz!",
+    "team_disco": "Team Groovy!"
+  },
+  "color_picker": {
+    "not_supported": "Dis color no worky here!",
+    "hex": "Hexy colorz:",
+    "hue": "Hooey:",
+    "saturation": "Saturashun:",
+    "value": "Valoo:",
+    "apply": "Makez it happenz!"
+  },
+  "tweaks": {
+    "title": "Tweaky-tweakz!",
+    "tabs": {
+      "styles": "Stylez!",
+      "tiles": "Tilez!"
+    },
+    "icon_pack": "Icon packy!",
+    "external_link_title": "Outsyde Link Alertz!",
+    "external_link_message": "Dis link opens an outsydy webby-site. Be carefulz, meow!",
+    "install": "Installz!",
+    "installing": "Installin'...",
+    "installed_title": "Style iz Installed!",
+    "installed_message": "Da style got installed all successful-like!",
+    "error": "Oopsie!",
+    "load_error": "Sumthin' went wonky loadin' da CSS file! Check da URL an tryz again!",
+    "install_error": "Sumthin' went wonky installin' da style! Tryz again later!",
+    "invalid_css_url": "Dat URL iz not a valid CSS file, meow!",
+    "enter_style_url": "Put da style URL here!",
+    "style_url_placeholder": "Style URLz",
+    "add": "Addz!",
+    "write_or_paste_css": "Writez or Pastez CSS!",
+    "paste_css_placeholder": "Pastez ur CSS here...",
+    "discard_edits_title": "Toss da editz?",
+    "discard_edits_message": "Ur unsaved editz go bye-bye. Do it?",
+    "discard": "Toss it!",
+    "no_css": "Pwease put sum CSS here!",
+    "no_fonts": "No letterz foundz!",
+    "no_images": "No picz foundz!",
+    "wallpaper": "Wall-pawper!",
+    "fonts": "Letterz!",
+    "images": "Picz!",
+    "colors": "Colurz!",
+    "formatted": "Style iz all tidy!",
+    "saved": "Style savedz!",
+    "no_title": "No titley specified!",
+    "no_author": "No authorz specified!",
+    "no_icon": "No iconz specified!",
+    "no_description": "No describey specified!",
+    "source_downloaded": "Source codez downloaded!",
+    "compiled_downloaded": "Compiled CSS downloadedz!",
+    "selector_copied": "Selector copied an nested stuffz added!",
+    "asset_cancelled": "Asset makin' cancelledz!",
+    "asset_created": "Asset madez!",
+    "asset_failed": "Asset makin' failedz!",
+    "asset_types": "Only letterz an picz assetz allowed!",
+    "preview_element": "Previewy Elementz!",
+    "wallpaper_variable_copied": "Wall-pawper image variable copied 2 clipboard!",
+    "add_file": "Add Filez!",
+    "edit": "Editz!",
+    "later": "Laterz!",
+    "notice": "Noticy!",
+    "restart_message": "Pwease restart da appy 2 make da icon pack happenz!",
+    "empty": "Itz quiet here... nuthin' added yet, meow."
   }
 }
