@@ -9,7 +9,9 @@
         "update": "Welcome back",
         "appName": "Disco Launcher",
         "setupIntro": "Let's setup your experience in a few short steps.",
-        "warning": "Warning: This is pre-release software and may contain bugs."
+        "warning": "Warning: This is pre-release software and may contain bugs.",
+        "updated_description": "Let’s check a few details to enhance your updated experience.",
+        "all_done": "All done!"
     },
     "wizard": {
         "title": "Update Wizard",
@@ -51,7 +53,9 @@
             },
             "accessibility": {
                 "title": "Accessibility",
-                "description": "Enable accessibility to lock device."
+                "description": "Enable accessibility to lock device.",
+                "double_tap_title": "Enable Double-Tap to Lock",
+                "double_tap_message": "This feature needs Accessibility permission to lock your screen with a double-tap. Do you want to enable it?"
             }
         }
     },
@@ -61,5 +65,17 @@
     "finish": {
         "title": "Get ready to Disco",
         "description": "Your setup is done. Time to dive in!"
+    },
+    "errors": {
+        "setup_title": "Setup Error"
+    },
+    "easter_egg": {
+        "title": "Who is this?",
+        "invalid_json": "You found the easter egg! But the clipboard does not contain valid JSON.",
+        "invalid_settings": "You found the easter egg! But the clipboard does not contain any valid settings.",
+        "success_title": "Welcome back!",
+        "success_message": "Easter egg settings have been applied successfully.",
+        "clipboard_denied": "You found the easter egg! But clipboard access was denied.",
+        "reload": "Reload"
     }
 }

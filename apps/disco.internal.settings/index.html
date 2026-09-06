@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings</title>
+  <title data-i18n="settings.title">Settings</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -107,22 +107,22 @@
       <div>
         <div id="iro-color-picker"></div>
         <div class="color-picker-controls">
-          <p class="color-not-supported">This color is not supported.</p>
+          <p class="color-not-supported" data-i18n="settings.color_picker.not_supported">This color is not supported.</p>
           <div class="color-picker-controls-row">
-            <label for="hex-color-input">Hex Color:</label>
+            <label for="hex-color-input" data-i18n="settings.color_picker.hex">Hex Color:</label>
             <div class="color-picker-controls-column">
               <input type="text" id="hex-color-input" placeholder="#FFFFFF" style="width: 100%;" />
             </div>
           </div>
           <div class="color-picker-controls-row">
-            <label for="hue-input">Hue:</label>
+            <label for="hue-input" data-i18n="settings.color_picker.hue">Hue:</label>
             <div class="color-picker-controls-column">
               <input type="number" id="hue-input" min="0" max="360" step="1" placeholder="0" style="width: 100%;" />
               <input type="range" id="hue-range" min="0" max="360" step="1" value="0" style="width: 100%;" />
             </div>
           </div>
           <div class="color-picker-controls-row">
-            <label for="saturation-input">Saturation:</label>
+            <label for="saturation-input" data-i18n="settings.color_picker.saturation">Saturation:</label>
             <div class="color-picker-controls-column">
               <input type="number" id="saturation-input" min="0" max="100" step="1" placeholder="100"
                 style="width: 100%;" />
@@ -130,14 +130,14 @@
             </div>
           </div>
           <div class="color-picker-controls-row">
-            <label for="value-input">Value:</label>
+            <label for="value-input" data-i18n="settings.color_picker.value">Value:</label>
             <div class="color-picker-controls-column">
               <input type="number" id="value-input" min="0" max="100" step="1" placeholder="100" style="width: 100%;" />
               <input type="range" id="value-range" min="0" max="100" step="1" value="100" style="width: 100%;" />
             </div>
           </div>
         </div>
-        <button class="metro-button apply-custom-color">Apply</button>
+        <button class="metro-button apply-custom-color" data-i18n="settings.color_picker.apply">Apply</button>
       </div>
     </div>
   </div>
@@ -238,7 +238,7 @@
           <div class="group first-group">
             <p class="group-title" data-i18n="settings.screen_rotation.rotation_lock">Rotation lock</p>
             <div class="tile-selector">
-              <p>Off</p>
+              <p data-i18n-init="common.actions.off">Off</p>
               <div>
                 <div id="rotation-toggle-switch" class="metro-toggle-switch"></div>
               </div>
@@ -538,7 +538,7 @@
         <div class="settings-page-2" id="app-detail-tab">
           <div>
             <div class="group" style="pointer-events: auto;">
-              <p class="group-title">Info</p>
+              <p class="group-title" data-i18n="settings.apps.info">Info</p>
               <p class="group-description" style="color: var(--metro-foreground);margin-bottom: 15px;"></p>
               <button class="metro-button" id="uninstallappbutton" data-i18n="settings.apps.uninstall_app"
                 style="margin: 0px;">Uninstall

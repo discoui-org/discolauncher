@@ -4,17 +4,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tweaks</title>
+  <title data-i18n="settings.tweaks.title">Tweaks</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body style="perspective: var(--flow-perspective)">
   <div id="splashscreen"></div>
   <div class="innerApp" style="visibility: hidden;">
-    <h1 class="app-title">Tweaks</h1>
+    <h1 class="app-title" data-i18n="settings.tweaks.title">Tweaks</h1>
     <div class="app-tabs">
-      <p class="active-tab">Styles</p>
-      <p>Tiles</p>
+      <p class="active-tab" data-i18n="settings.tweaks.tabs.styles">Styles</p>
+      <p data-i18n="settings.tweaks.tabs.tiles">Tiles</p>
     </div>
     <div id="settings-pages">
       <div class="settings-pages-container">
@@ -50,7 +50,7 @@
     </div>
   </div>
   <div id="icon-pack-picker">
-    <h1 class="app-title">Icon pack</h1>
+    <h1 class="app-title" data-i18n="settings.tweaks.icon_pack">Icon pack</h1>
     <div class="icon-pack-catalogue disco-list-view">
       <div>
         <div class="disco-list-view-item" style="--index:0;">
@@ -73,22 +73,22 @@
       <div>
         <div id="iro-color-picker"></div>
         <div class="color-picker-controls">
-          <p class="color-not-supported">This color is not supported.</p>
+          <p class="color-not-supported" data-i18n="settings.color_picker.not_supported">This color is not supported.</p>
           <div class="color-picker-controls-row">
-            <label for="hex-color-input">Hex Color:</label>
+            <label for="hex-color-input" data-i18n="settings.color_picker.hex">Hex Color:</label>
             <div class="color-picker-controls-column">
               <input type="text" id="hex-color-input" placeholder="#FFFFFF" style="width: 100%;" />
             </div>
           </div>
           <div class="color-picker-controls-row">
-            <label for="hue-input">Hue:</label>
+            <label for="hue-input" data-i18n="settings.color_picker.hue">Hue:</label>
             <div class="color-picker-controls-column">
               <input type="number" id="hue-input" min="0" max="360" step="1" placeholder="0" style="width: 100%;" />
               <input type="range" id="hue-range" min="0" max="360" step="1" value="0" style="width: 100%;" />
             </div>
           </div>
           <div class="color-picker-controls-row">
-            <label for="saturation-input">Saturation:</label>
+            <label for="saturation-input" data-i18n="settings.color_picker.saturation">Saturation:</label>
             <div class="color-picker-controls-column">
               <input type="number" id="saturation-input" min="0" max="100" step="1" placeholder="100"
                 style="width: 100%;" />
@@ -96,14 +96,14 @@
             </div>
           </div>
           <div class="color-picker-controls-row">
-            <label for="value-input">Value:</label>
+            <label for="value-input" data-i18n="settings.color_picker.value">Value:</label>
             <div class="color-picker-controls-column">
               <input type="number" id="value-input" min="0" max="100" step="1" placeholder="100" style="width: 100%;" />
               <input type="range" id="value-range" min="0" max="100" step="1" value="100" style="width: 100%;" />
             </div>
           </div>
         </div>
-        <button class="metro-button apply-custom-color">Apply</button>
+        <button class="metro-button apply-custom-color" data-i18n="settings.color_picker.apply">Apply</button>
       </div>
     </div>
   </div>
