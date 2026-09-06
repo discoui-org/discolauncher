@@ -1,1 +1,1 @@
-import"./chunks/script-B8F40oOz.js";
+import"./chunks/script-BYNP_Vua.js";
