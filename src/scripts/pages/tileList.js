@@ -3,6 +3,7 @@ import DiscoBoard from "../DiscoBoard";
 import DiscoElements from "../DiscoElements";
 import perlin from "../perlin";
 import DiscoTileGrid from "../DiscoTileGrid";
+import { animateWallpaperElement } from "../wallpaperSurface";
 const tileListInnerContainer = document.querySelector(
   "div.tile-list-inner-container"
 );
@@ -650,7 +651,7 @@ function animateFolderOpenPanel(panel) {
   const animations = [...elements].map(element => {
     const travel = element.style.getPropertyValue("--folder-open-travel") || "-32px";
     const order = Number(element.style.getPropertyValue("--folder-open-order")) || 0;
-    return element.animate(
+    return animateWallpaperElement(element,
       [
         { transform: `translateY(${travel})` },
         { transform: "translateY(0px)" }

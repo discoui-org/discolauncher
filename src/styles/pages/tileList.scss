@@ -256,6 +256,33 @@ div.tile-list-page {
 
 }
 
+// Experimental split: the shadow surface below owns blending; this page keeps
+// the original interactive content and all of its press/tilt animations.
+div.slide-page-home.wallpaper-behind > div.tile-list-page.wallpaper-content-layer {
+    z-index: 1;
+    mix-blend-mode: normal;
+    background: transparent;
+    box-shadow: none;
+
+    .disco-home-inner-tile,
+    .disco-folder-matrix,
+    .disco-folder-matrix-cell {
+        background-color: transparent;
+    }
+
+    // Clock/calendar/notification fallbacks used to reveal the wallpaper via
+    // hard-light. Their stage and pages now reveal the separate surface using
+    // real alpha; explicit artwork and metro-backed providers stay opaque.
+    .disco-home-tile.live-tile:not([data-live-tile-surface-fallback="metro"]) {
+        --live-tile-surface-fallback: transparent;
+
+        .live-tile-matrix-container,
+        .live-tile-matrix-row {
+            background-color: transparent !important;
+        }
+    }
+}
+
 #main-home-slider.app-transition-on-resume {
     div.slide-page-home.wallpaper-behind {
 
@@ -263,6 +290,12 @@ div.tile-list-page {
         .disco-home-tile,
         .app-page-icon-banner {
             background: var(--metro-background);
+        }
+
+        // The lower layer supplies the transition surface as well. An opaque
+        // outer tile here would cover its wallpaper during the entrance flip.
+        .wallpaper-content-layer .disco-home-tile {
+            background: transparent;
         }
 
     }

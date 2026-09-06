@@ -16,6 +16,7 @@ import LocaleStore from "./localeManager";
 import { localization } from "./localeManager";
 import liveTileManager from './liveTileManager';
 import StyleManager from './styleManager';
+import { watchWallpaperSurface } from './wallpaperSurface';
 const styleManagerInstance = new StyleManager();
 window.discoTileColumns = discoTileColumns;
 window.discoColors = discoColors;
@@ -23,6 +24,7 @@ window.discoThemes = discoThemes;
 const tileListInnerContainer = document.querySelector(
   "div.tile-list-inner-container"
 );
+watchWallpaperSurface(document.querySelector('div.tile-list-page'));
 import $ from "./dom";
 function hexToRgbObject(hex) {
   hex = hex.replace(/^#/, '');

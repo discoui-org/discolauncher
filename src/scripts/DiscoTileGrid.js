@@ -1,3 +1,5 @@
+import { animateWallpaperElement } from './wallpaperSurface';
+
 function overlaps(first, second) {
   return first.x < second.x + second.w
     && first.x + first.w > second.x
@@ -535,7 +537,7 @@ class DiscoTileGrid {
     this.render();
 
     if (shouldAnimate) {
-      const settleAnimation = tile.animate(
+      const settleAnimation = animateWallpaperElement(tile,
         [
           { left: fromLeft, top: fromTop },
           { left: targetLeft, top: targetTop }
