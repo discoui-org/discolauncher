@@ -95,6 +95,8 @@ public class WebInterface {
     private volatile IShizukuPackageService shizukuPackageService;
     private volatile Location latestWeatherLocation;
     private volatile boolean weatherLocationRequestInFlight;
+    private volatile boolean destroyed;
+    private final Handler weatherLocationHandler = new Handler(Looper.getMainLooper());
     private final List<LocationListener> weatherLocationListeners = new ArrayList<>();
 
     private static final class ShizukuUninstallRequest {
@@ -136,7 +138,9 @@ public class WebInterface {
     }
 
     void destroy() {
+        destroyed = true;
         nativeWidgetManager.destroy();
+        finishCurrentWeatherLocation(null);
         pendingShizukuUninstalls.clear();
         shizukuExecutor.shutdownNow();
         if (shizukuPackageService != null || shizukuServiceBinding.get()) {
@@ -153,6 +157,16 @@ public class WebInterface {
     public float getDevicePixelRatio() {
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
         return displayMetrics.density;
+    }
+
+    @JavascriptInterface
+    public boolean isActivityStopped() {
+        return mainActivity.isActivityStopped();
+    }
+
+    void setActivityStarted(boolean started) {
+        nativeWidgetManager.setActivityStarted(started);
+        if (!started) finishCurrentWeatherLocation(null);
     }
 
     /** Platform-neutral bridge used by the native-widget live-tile provider. */
@@ -981,7 +995,7 @@ public class WebInterface {
 
     @JavascriptInterface
     public void appReady() {
-        mainActivity.isAppReady = true;
+        if (!destroyed) mainActivity.isAppReady = true;
     }
 
     /*
@@ -1342,6 +1356,10 @@ public class WebInterface {
         }
 
         mainActivity.runOnUiThread(() -> {
+            if (destroyed || mainActivity.isActivityStopped()) {
+                finishCurrentWeatherLocation(null);
+                return;
+            }
             try {
                 List<String> providers = new ArrayList<>();
                 // Prefer a low-power approximate source, but fall back to GPS
@@ -1364,7 +1382,7 @@ public class WebInterface {
                 for (String provider : providers) {
                     requestWeatherLocationFromProvider(locationManager, provider);
                 }
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                weatherLocationHandler.postDelayed(() -> {
                     if (weatherLocationRequestInFlight) finishCurrentWeatherLocation(null);
                 }, WEATHER_LOCATION_TIMEOUT_MS);
             } catch (SecurityException | IllegalArgumentException error) {
@@ -1398,6 +1416,7 @@ public class WebInterface {
     }
 
     private void finishCurrentWeatherLocation(Location location) {
+        weatherLocationHandler.removeCallbacksAndMessages(null);
         if (location != null) latestWeatherLocation = location;
         weatherLocationRequestInFlight = false;
         LocationManager locationManager = (LocationManager) mainActivity

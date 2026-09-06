@@ -186,6 +186,13 @@ function generateShakeAnimations() {
 
 window.generateShakeAnimations = generateShakeAnimations
 
+window.addEventListener("activityStop", () => liveTileManager.suspend())
+window.addEventListener("activityStart", () => {
+    if (liveTileManager.resume()) DiscoBoard.boardMethods.liveTiles.refresh()
+})
+// Startup can finish while another app is already in front of the launcher.
+if (window.Disco?.isActivityStopped?.() === true) liveTileManager.suspend()
+
 window.addEventListener("activityPause", () => {
     clearTimeout(window.appTransitionLaunchError)
     //document.body.style.visibility = "hidden"
@@ -385,6 +392,7 @@ startUpSequence([
 window.liveTileManager = liveTileManager
 
 function refreshNotificationLiveTiles(event) {
+    if (liveTileManager.isSuspended()) return
     const providerId = DiscoBoard.boardMethods.liveTiles.init.notifications
     if (!providerId) return
 

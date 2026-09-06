@@ -44,6 +44,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ContentServer extends WebViewClientCompat {
+    @Override
+    public boolean onRenderProcessGone(WebView view, android.webkit.RenderProcessGoneDetail detail) {
+        mainActivity.onWebRendererGone(discoWebView, detail.didCrash());
+        return true;
+    }
+
+    void trimMemory() {
+        iconBytesCache.evictAll();
+        iconPackCache.evictAll();
+    }
+
     private static final String APP_ASSET_SCHEME = "https";
     private static final String APP_ASSET_HOST = "appassets.androidplatform.net";
     private static final int ICON_PACK_CACHE_SIZE = 16;

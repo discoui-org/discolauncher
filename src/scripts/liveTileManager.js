@@ -12,6 +12,25 @@ const ALLOWED_ATTR = [
 function isOnMainThread() {
     return !!document.querySelector("div.tile-list-inner-container") && window["DiscoRole"] === "main";
 }
+let suspended = false;
+
+function suspend() {
+    if (!isOnMainThread() || suspended) return;
+    suspended = true;
+    // Keep the last rendered tile in the DOM, but release worker heaps/timers.
+    // Board.refresh re-registers the currently configured providers on return.
+    for (const [packageName, liveTile] of Object.entries(window.liveTiles || {})) {
+        liveTile.controller.destroy();
+        liveTile.worker.terminate();
+        delete window.liveTiles[packageName];
+    }
+}
+
+function resume() {
+    if (!isOnMainThread() || !suspended) return false;
+    suspended = false;
+    return true;
+}
 if (isOnMainThread()) {
     window.liveTiles = window.liveTiles || {};
     window.liveTileProviders = window.liveTileProviders || [];
@@ -57,6 +76,7 @@ function preloadNativeWidgetSnapshot(url) {
 }
 
 function main_registerLiveTileWorker(packageName, uid) {
+    if (suspended) return;
     const provider = liveTileProviders.find(provider => provider.id === uid);
     if (!provider) {
         throw new Error('Provider not found');
@@ -200,6 +220,7 @@ let cachedWeatherLocation = null;
 let weatherLocationRequestPending = false;
 
 function requestWeatherLocation(worker, retryCount = 0) {
+    if (suspended || !Object.values(window.liveTiles || {}).some(tile => tile.worker === worker)) return;
     if (cachedWeatherLocation) {
         worker.postMessage({ action: "weather-location", data: cachedWeatherLocation });
         return;
@@ -240,6 +261,7 @@ function requestWeatherLocation(worker, retryCount = 0) {
 }
 
 function requestNativeWidgetSnapshot(worker, data = {}) {
+    if (suspended) return;
     if (!window.Disco?.getNativeWidgetSnapshot || !data.providerId) {
         worker.postMessage({ action: "native-widget-snapshot", data: { state: "unsupported" } });
         return;
@@ -461,6 +483,7 @@ class tileController {
     }
 
     notifyWidgetSizeChanged() {
+        if (this.destroyed) return;
         const liveTile = window.liveTiles?.[this.packageName];
         if (!liveTile?.uid?.startsWith('native-widget:')) return;
         const size = getNativeWidgetSize(this.packageName);
@@ -556,6 +579,7 @@ class tileController {
     }
 
     requestDraw() {
+        if (this.destroyed) return;
         clearTimeout(this.redrawTimer);
         const minimumInterval = 1000;
         const delay = Math.max(0, minimumInterval - (Date.now() - this.lastDrawTime));
@@ -571,6 +595,8 @@ class tileController {
     }
 
     destroy() {
+        this.destroyed = true;
+        for (const cancel of this.pendingRequests || []) cancel();
         clearTimeout(this.redrawTimer);
         clearTimeout(this.matrixTimer);
         clearTimeout(this.flipTimer);
@@ -592,6 +618,7 @@ class tileController {
     }
 
     async draw() {
+        if (this.destroyed) return;
         try {
             const drawGeneration = ++this.drawGeneration;
             clearTimeout(this.matrixTimer);
@@ -600,6 +627,8 @@ class tileController {
                 action: "draw",
                 data: { message: "Drawing from tile controller" },
             });
+
+            if (this.destroyed || drawGeneration !== this.drawGeneration) return;
 
             if (!response.result) {
                 throw new Error('Invalid response format: missing result');
@@ -875,21 +904,29 @@ class tileController {
         return page;
     }
     sendMessageToWorker(message, timeout = 10000) {
+        if (this.destroyed) return Promise.resolve(null);
+        this.pendingRequests ||= new Set();
         message.id = generateUniqueId();
         return new Promise((resolve, reject) => {
+            const cleanup = () => {
+                clearTimeout(timer);
+                this.worker.removeEventListener('message', handleMessage);
+                this.pendingRequests.delete(cancel);
+            };
+            const cancel = () => { cleanup(); resolve(null); };
             const handleMessage = (event) => {
                 if (event.data.id === message.id) {
-                    clearTimeout(timer);
-                    this.worker.removeEventListener('message', handleMessage);
+                    cleanup();
                     resolve(event.data);
                 }
             };
 
             const timer = setTimeout(() => {
-                this.worker.removeEventListener('message', handleMessage);
+                cleanup();
                 reject(new Error('Response timed out after 10 seconds'));
             }, timeout);
 
+            this.pendingRequests.add(cancel);
             this.worker.addEventListener('message', handleMessage);
             this.worker.postMessage(message);
         });
@@ -1127,6 +1164,9 @@ export {
     uninitializeLiveTile
 }
 const liveTileManager = {
+    suspend,
+    resume,
+    isSuspended: () => suspended,
     registerLiveTileProvider,
     registerNativeWidgetProvider,
     unregisterLiveTileProvider,

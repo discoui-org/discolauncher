@@ -55,6 +55,8 @@ final class NativeWidgetManager {
     private final Map<Integer, WidgetState> hostedWidgets = new HashMap<>();
     private final Map<Integer, WidgetState> pendingBindings = new HashMap<>();
     private FrameLayout parkingLot;
+    private boolean started = true;
+    private volatile boolean destroyed;
 
     NativeWidgetManager(MainActivity activity) {
         this.activity = activity;
@@ -95,6 +97,7 @@ final class NativeWidgetManager {
     }
 
     String getSnapshot(String providerId, int width, int height) {
+        if (destroyed) return state("unavailable", null, "Widget host is closed");
         ComponentName provider = ComponentName.unflattenFromString(providerId);
         if (provider == null || !hasProvider(provider)) {
             return state("unavailable", null, "Widget provider is unavailable");
@@ -190,15 +193,44 @@ final class NativeWidgetManager {
         });
     }
 
+    void setActivityStarted(boolean value) {
+        if (destroyed || started == value) return;
+        started = value;
+        if (started) {
+            appWidgetHost.startListening();
+            synchronized (widgets) {
+                for (WidgetState widget : widgets.values()) queueSnapshot(widget, 0L);
+            }
+        } else {
+            appWidgetHost.stopListening();
+        }
+    }
+
     void destroy() {
+        if (destroyed) return;
+        destroyed = true;
+        started = false;
         appWidgetHost.stopListening();
-        snapshotEncoder.shutdownNow();
+        mainHandler.removeCallbacksAndMessages(null);
+        // Drain queued tasks so each captured bitmap is recycled by its task.
+        snapshotEncoder.shutdown();
+        if (parkingLot != null) {
+            parkingLot.removeAllViews();
+            ((ViewGroup) parkingLot.getParent()).removeView(parkingLot);
+            parkingLot = null;
+        }
+        synchronized (widgets) {
+            widgets.clear();
+            hostedWidgets.clear();
+            pendingBindings.clear();
+        }
     }
 
     private void beginBinding(WidgetState widget) {
         if (widget.binding || widget.hostView != null || widget.error != null) return;
         widget.binding = true;
         activity.runOnUiThread(() -> {
+            if (destroyed) return;
             try {
                 widget.appWidgetId = appWidgetHost.allocateAppWidgetId();
                 preferences.edit().putInt(widget.provider.flattenToString(), widget.appWidgetId).apply();
@@ -233,7 +265,7 @@ final class NativeWidgetManager {
 
     private void attachWidget(WidgetState widget) {
         activity.runOnUiThread(() -> {
-            if (widget.hostView != null) return;
+            if (destroyed || widget.hostView != null) return;
             AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(widget.appWidgetId);
             if (info == null) {
                 widget.error = "Could not create widget host";
@@ -262,7 +294,7 @@ final class NativeWidgetManager {
 
     private void resizeWidget(WidgetState widget) {
         activity.runOnUiThread(() -> {
-            if (widget.hostView == null) return;
+            if (destroyed || widget.hostView == null) return;
             appWidgetManager.updateAppWidgetOptions(widget.appWidgetId, widgetOptions(widget));
             ViewGroup.LayoutParams current = widget.hostView.getLayoutParams();
             if (current instanceof FrameLayout.LayoutParams) {
@@ -297,14 +329,14 @@ final class NativeWidgetManager {
     }
 
     private void queueSnapshot(WidgetState widget, long delayMs) {
-        if (widget.hostView == null || widget.snapshotQueued) return;
+        if (destroyed || !started || widget.hostView == null || widget.snapshotQueued) return;
         widget.snapshotQueued = true;
         mainHandler.postDelayed(() -> captureSnapshot(widget), delayMs);
     }
 
     private void captureSnapshot(WidgetState widget) {
         widget.snapshotQueued = false;
-        if (widget.hostView == null) return;
+        if (destroyed || !started || widget.hostView == null) return;
         final Bitmap bitmap;
         final int generation = ++widget.snapshotGeneration;
         try {
@@ -321,9 +353,13 @@ final class NativeWidgetManager {
         }
 
         snapshotEncoder.execute(() -> {
+            if (destroyed) {
+                bitmap.recycle();
+                return;
+            }
             byte[] encoded = encodeSnapshot(bitmap);
             mainHandler.post(() -> {
-                if (widget.snapshotGeneration != generation || encoded == null) return;
+                if (destroyed || widget.snapshotGeneration != generation || encoded == null) return;
                 NativeWidgetSnapshotStore.put(widget.provider.flattenToString(), encoded);
                 widget.snapshotVersion++;
                 widget.snapshotUrl = "https://appassets.androidplatform.net/assets/native-widget/"
@@ -362,6 +398,7 @@ final class NativeWidgetManager {
     }
 
     private void publish(WidgetState widget, String snapshotState) {
+        if (destroyed || !started) return;
         try {
             JSONObject payload = new JSONObject()
                     .put("providerId", widget.provider.flattenToString())

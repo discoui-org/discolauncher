@@ -10,6 +10,11 @@ public class WebEvents {
     Context mContext;
     WebView webView;
 
+    void destroy() {
+        webView = null;
+        mContext = null;
+    }
+
     public enum events {
         systemInsetsChange,
         backButtonPress,
@@ -34,6 +39,7 @@ public class WebEvents {
     }
 
     public void dispatchEvent(String eventName, JSONObject arguments) {
+        if (webView == null) return;
         String script = "";
         if (arguments == null) {
             script = "window.dispatchEvent(new CustomEvent(\"" + eventName + "\"))";
@@ -45,10 +51,7 @@ public class WebEvents {
     }
 
     public void dispatchEvent(String eventName) {
-        String script = "";
-        script = "window.dispatchEvent(new CustomEvent(\"" + eventName + "\"))";
-        Log.d("discolauncher", "dispatchEventScript: " + script);
-        webView.evaluateJavascript(script, null);
+        dispatchEvent(eventName, null);
     }
 
     public void dispatchEvent(events eventName, JSONObject arguments) {

@@ -2,7 +2,7 @@ package io.github.cherryhoax.discolauncher2;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentCallbacks;
+import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.os.Handler;
 import android.webkit.ValueCallback;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public PackageManager packageManager;
     private Handler handler;
     private Runnable pauseRunnable;
+    private volatile boolean stopped = true;
     public final static String TAG = "discolauncher";
     Boolean activityPaused = false;
     public Boolean activityDispatchEvent = true;
@@ -76,6 +78,115 @@ public class MainActivity extends AppCompatActivity {
     public Map<String, String> iconPackPerApp;
     public LogcatReader logcatReader;
 
+    public boolean isActivityStopped() {
+        return stopped;
+    }
+
+    private void createWebView() {
+        if (webView != null || isFinishing() || isDestroyed()) return;
+        isAppReady = false;
+        webView = new DiscoWebView(this);
+        webView.setLayoutParams(new ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.MATCH_PARENT));
+        ConstraintLayout mainLayout = findViewById(R.id.main);
+        mainLayout.addView(webView);
+        webView.init(packageManager, this);
+        webEvents = webView.webEvents;
+        if (!stopped) {
+            webView.resumeTimers();
+            webView.onResume();
+            webView.webInterface.setActivityStarted(true);
+        }
+        ViewCompat.requestApplyInsets(mainLayout);
+    }
+
+    private void releaseWebView(DiscoWebView view) {
+        if (view == null) return;
+        if (webView == view) webView = null;
+        if (view.getParent() instanceof ViewGroup) {
+            ((ViewGroup) view.getParent()).removeView(view);
+        }
+        view.destroy();
+    }
+
+    void onWebRendererGone(DiscoWebView view, boolean crashed) {
+        Log.w(TAG, "WebView renderer exited; crashed=" + crashed);
+        boolean wasCurrent = view == webView;
+        releaseWebView(view);
+        if (!wasCurrent) return;
+        isAppReady = false;
+        if (mFilePathCallback != null) {
+            mFilePathCallback.onReceiveValue(null);
+            mFilePathCallback = null;
+        }
+        // Let the renderer-exit callback finish before creating a replacement.
+        // A hidden launcher waits until onStart instead of allocating under pressure.
+        handler.post(() -> {
+            if (!stopped) createWebView();
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        stopped = false;
+        if (logcatReader != null) logcatReader.setActivityStarted(true);
+        if (webEngine.equals("WebView")) {
+            createWebView();
+            webView.resumeTimers();
+            webView.webInterface.setActivityStarted(true);
+            webEvents.dispatchEvent("activityStart");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        stopped = true;
+        if (logcatReader != null) logcatReader.setActivityStarted(false);
+        if (webView != null) {
+            DiscoWebView stoppedView = webView;
+            stoppedView.webInterface.setActivityStarted(false);
+            // Release workers before freezing JS timers. The identity/state check
+            // prevents a delayed callback from pausing a new or resumed WebView.
+            stoppedView.evaluateJavascript(
+                    "if (Disco.isActivityStopped()) window.dispatchEvent(new Event('activityStop'))",
+                    result -> {
+                        if (stopped && webView == stoppedView) stoppedView.pauseTimers();
+                    });
+            stoppedView.trimMemory();
+        }
+        super.onStop();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN
+                || level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW
+                || level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL) {
+            if (webView != null) webView.trimMemory();
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (webView != null) webView.trimMemory();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (webEvents == null) return;
+        String theme = (newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES ? "dark" : "light";
+        try {
+            webEvents.dispatchEvent(WebEvents.events.systemThemeChange, new JSONObject().put("theme", theme));
+        } catch (JSONException ignored) {
+        }
+    }
+
     public class MyLocalServer extends NanoHTTPD {
 
         public MyLocalServer(int port) throws IOException {
@@ -86,11 +197,21 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Response serve(IHTTPSession session) {
-            String response = "Error";
+            DiscoWebView currentView = webView;
+            if (currentView == null || stopped) {
+                return newFixedLengthResponse(Response.Status.SERVICE_UNAVAILABLE,
+                        MIME_PLAINTEXT, "Launcher is unavailable");
+            }
+            String response;
             try {
-                response = webView.evaluateJavascriptSync("DiscoBoard.backendMethods.serveConfig()");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                response = currentView.evaluateJavascriptSync("DiscoBoard.backendMethods.serveConfig()");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                response = null;
+            }
+            if (response == null) {
+                return newFixedLengthResponse(Response.Status.SERVICE_UNAVAILABLE,
+                        MIME_PLAINTEXT, "Launcher is unavailable");
             }
             Response res = newFixedLengthResponse(response);
             res.addHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
@@ -102,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        if (webView != null) webView.onPause();
         pauseRunnable = new Runnable() {
             @Override
             public void run() {
@@ -121,6 +243,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        super.onResume();
+        if (webView != null) webView.onResume();
         if (pauseRunnable != null) {
             handler.removeCallbacks(pauseRunnable);
             if (activityPaused) {
@@ -143,7 +267,6 @@ public class MainActivity extends AppCompatActivity {
             activityPaused = false;
             Log.d("discolauncher", "onResume: ");
         }
-        super.onResume();
     }
 
     @SuppressLint("MissingSuperCall")
@@ -186,16 +309,7 @@ public class MainActivity extends AppCompatActivity {
         systemEvents = new SystemEvents(this);
 
         if (webEngine.equals("WebView")) {
-            webView = new DiscoWebView(this);
-            webView.setLayoutParams(new ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    ConstraintLayout.LayoutParams.MATCH_PARENT));
-            ConstraintLayout mainLayout = findViewById(R.id.main);
-            mainLayout.addView(webView);
-
-            webView.init(packageManager, this);
-            // webView.setWebChromeClient(new ChromeClient());
-            webEvents = webView.webEvents;
+            createWebView();
         } else if (webEngine.equals("GeckoView")) {
             discoView = new DiscoGeckoView(this);
             discoView.setLayoutParams(new ConstraintLayout.LayoutParams(
@@ -209,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
             // Don't uncomment this cause webview itself will deal with inset paddings
             // v.setPadding(systemBars.left, systemBars.top, systemBars.right,
             // systemBars.bottom);
-            if (webEngine.equals("WebView")) {
+            if (webView != null) {
                 webEvents.dispatchEvent(WebEvents.events.systemInsetsChange, null);
                 webView.lastInsets = systemBars;
             }
@@ -239,25 +353,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
         }
 
-        getApplicationContext().registerComponentCallbacks(new ComponentCallbacks() {
-            @Override
-            public void onConfigurationChanged(@NonNull Configuration newConfig) {
-                String theme = (newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES ? "dark" : "light";
-                Log.d("ThemeChange", "System theme changed: " + theme);
-                try {
-                    if (webEngine.equals("WebView")) {
-                        webEvents.dispatchEvent(WebEvents.events.systemThemeChange, new JSONObject().put("theme", theme));
-                    }
-                } catch (JSONException e) {
-                }
-            }
-
-            @Override
-            public void onLowMemory() {
-                // Handle low memory situations if necessary
-            }
-        });
-
         logcatReader = new LogcatReader();
         logcatReader.start();
     }
@@ -271,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
         if (activityDispatchEventTimeout != null) {
             TimerUtils.clearTimeout(activityDispatchEventTimeout);
         }
-        TimerUtils.setTimeout(new Runnable() {
+        activityDispatchEventTimeout = TimerUtils.setTimeout(new Runnable() {
             @Override
             public void run() {
                 activityDispatchHomeEvent = true;
@@ -345,6 +440,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        stopped = true;
+        handler.removeCallbacksAndMessages(null);
+        if (activityDispatchEventTimeout != null) TimerUtils.clearTimeout(activityDispatchEventTimeout);
+        releaseWebView(webView);
+        if (instance == this) instance = null;
         if (systemEvents != null) {
             systemEvents.onDestroy();
             systemEvents = null;
@@ -352,6 +452,7 @@ public class MainActivity extends AppCompatActivity {
         if (myServer != null) {
             myServer.stop();
         }
+        if (gravyServer != null) gravyServer.stop();
         if (logcatReader != null) {
             logcatReader.stopReader();
             logcatReader = null;
@@ -444,7 +545,7 @@ public class MainActivity extends AppCompatActivity {
                             new InputStreamReader(process.getInputStream()));
                     String line;
                     // Start periodic UI updater
-                    logHandler.post(logUpdateRunnable);
+                    if (!stopped) logHandler.post(logUpdateRunnable);
                     while (running && (line = reader.readLine()) != null) {
                         // Skip logs from discolauncher tag to prevent infinite loop
                         if (line.contains("discolauncher")) continue;
@@ -460,6 +561,7 @@ public class MainActivity extends AppCompatActivity {
                             logBuffer.add(type + ": " + line);
                         }
                         synchronized (pendingLogs) {
+                            if (pendingLogs.size() >= MAX_LOGS) pendingLogs.remove(0);
                             pendingLogs.add(type + ": " + line);
                         }
                     }
@@ -476,7 +578,7 @@ public class MainActivity extends AppCompatActivity {
         private final Runnable logUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                if (!running) return;
+                if (!running || stopped) return;
                 java.util.List<String> logsToSend = new java.util.ArrayList<>();
                 synchronized (pendingLogs) {
                     if (!pendingLogs.isEmpty()) {
@@ -498,6 +600,11 @@ public class MainActivity extends AppCompatActivity {
                 logHandler.postDelayed(this, LOG_UPDATE_INTERVAL_MS);
             }
         };
+
+        void setActivityStarted(boolean started) {
+            logHandler.removeCallbacks(logUpdateRunnable);
+            if (started && running) logHandler.post(logUpdateRunnable);
+        }
 
         public void stopReader() {
             running = false;

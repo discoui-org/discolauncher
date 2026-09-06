@@ -391,6 +391,7 @@ const boardMethods = {
       return true
     },
     refresh: () => {
+      if (liveTileManager.isSuspended()) return;
       const initializeLiveTiles = boardMethods.liveTiles.get()
       const newlyRegisteredPackages = new Set()
       const homeTiles = document.querySelector("#main-home-slider div.tile-list-inner-container").querySelectorAll("div.disco-home-tile:not(.disco-home-folder-tile)")

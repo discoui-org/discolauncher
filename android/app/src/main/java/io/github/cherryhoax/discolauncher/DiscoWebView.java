@@ -48,6 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class DiscoWebView extends WebView {
     public WebInterface webInterface;
@@ -56,24 +57,45 @@ public class DiscoWebView extends WebView {
     PackageManager packageManager;
     public Insets lastInsets;
     WebEvents webEvents;
+    private ContentServer contentServer;
+    private volatile boolean destroyed;
+
+    void trimMemory() {
+        if (contentServer != null) contentServer.trimMemory();
+    }
+
+    @Override
+    public void destroy() {
+        if (destroyed) return;
+        destroyed = true;
+        if (webEvents != null) webEvents.destroy();
+        if (webInterface != null) webInterface.destroy();
+        trimMemory();
+        super.destroy();
+        webInterface = null;
+        contentServer = null;
+    }
 
     public String evaluateJavascriptSync(final String script) throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         final String[] resultHolder = new String[1];
 
-        this.post(() -> this.evaluateJavascript(script, new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String value) {
-                resultHolder[0] = value;
+        this.post(() -> {
+            if (destroyed) {
                 latch.countDown();
+                return;
             }
-        }));
+            this.evaluateJavascript(script, new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    resultHolder[0] = value;
+                    latch.countDown();
+                }
+            });
+        });
 
-        try {
-            latch.await(); // Wait until the JavaScript result is available
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // A dead/frozen renderer may never invoke the callback.
+        latch.await(5, TimeUnit.SECONDS);
 
         return resultHolder[0];
     }
@@ -302,7 +324,8 @@ public class DiscoWebView extends WebView {
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(m_context))
                 .build();
 
-        this.setWebViewClient(new ContentServer(this,assetLoader));
+        contentServer = new ContentServer(this, assetLoader);
+        this.setWebViewClient(contentServer);
         this.setWebChromeClient(new WebChromeClient() {
 
             // For Android 5.0+
@@ -439,6 +462,7 @@ public class DiscoWebView extends WebView {
         webViewSettings.setTextZoom(100);
         // Assets are hosted under http(s)://appassets.androidplatform.net/assets/... .
         this.webInterface = new WebInterface((MainActivity) mainActivity, this);
+        this.webInterface.setActivityStarted(!mainActivity.isActivityStopped());
         this.addJavascriptInterface(this.webInterface, "Disco");
         this.addJavascriptInterface(new BuildConfigInterface(m_context), "BuildConfig");
 
