@@ -72,7 +72,9 @@ div.tile-list-page {
         transition: .75s cubic-bezier(0.075, 0.82, 0.165, 1), --shake-distance 1s !important;
         transform: translateZ(-50px) !important;
 
-        div.disco-home-tile {
+        // Live surfaces own their content even while editing. Small live
+        // tiles already restore the icon through the shared size rule below.
+        div.disco-home-tile:not(.live-tile) {
             div.disco-home-inner-tile {
 
                 img.disco-home-tile-imageicon[src] {
