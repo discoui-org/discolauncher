@@ -203,8 +203,9 @@ function wAppTile(
   if (hasIconBackgroundSource(iconbg)) {
     const iconContainer = appTile.querySelector(".disco-app-tile-icon");
     const imageIcon = appTile.querySelector(".disco-app-tile-imageicon");
-    imageIcon.style.backgroundImage = "url('" + sizedAppIconURL(iconbg, 52) + "')";
-    colorContrastDetector.getAverageColor(iconbg).then((color) => {
+    const backgroundURL = sizedAppIconURL(iconbg, 52);
+    imageIcon.style.backgroundImage = "url('" + backgroundURL + "')";
+    colorContrastDetector.getAverageColor(backgroundURL).then((color) => {
       const hasIconBackground = colorHasVisiblePixels(color);
       iconContainer.classList.toggle("has-icon-background", hasIconBackground);
       imageIcon.classList.toggle("has-icon-background", hasIconBackground);

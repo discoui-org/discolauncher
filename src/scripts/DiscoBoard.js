@@ -10,6 +10,7 @@ import {
 } from "./DiscoProperties";
 import appViewEvents from "./appViewEvents"
 import { wallpaperImageSize } from './wallpaperImage';
+import { clearAverageColorCache } from './colorContrastDetector';
 import imageStore from "./imageStore";
 import fontStore from "./fontStore";
 import LocaleStore from "./localeManager";
@@ -531,6 +532,8 @@ const backendMethods = {
     localStorage.clear()
   },
   reloadApps: function (callback) {
+    // Package/profile changes can replace an icon without changing its URL.
+    clearAverageColorCache();
     document.querySelector("#main-home-slider > div > div:nth-child(2) > div > div.app-list > div.app-list-container").querySelectorAll(".disco-letter-tile, .disco-app-tile").forEach(e => e.remove());
     Object.keys(appSortCategories).forEach(key => {
       delete appSortCategories[key];
@@ -1443,6 +1446,7 @@ window.addEventListener("appUninstall", function (e) {
 
 // Listen for tile preferences changes and refresh tiles
 window.addEventListener("tilePreferencesChanged", function (e) {
+  clearAverageColorCache();
   backendMethods.refreshAllTiles();
 });
 

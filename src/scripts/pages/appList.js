@@ -1,6 +1,7 @@
 import $ from "../dom";
 import _ from "lodash";
 import i18n from "../localeManager";
+import { visibleEntryRange } from "../virtualListRange";
 
 const appListPage = $("div.inner-page.app-list-page")
 const appListContainer = $("div.app-list-container")
@@ -61,6 +62,7 @@ class VirtualAppList {
         this.visibleEntries = []
         this.letterEntries = []
         this.rendered = new Map()
+        this.renderedRange = { start: 0, end: 0 }
         this.staticNodes = Array.from(container.children).filter((node) =>
             node.classList.contains("app-search-no-result")
             || node.classList.contains("app-search-search-store")
@@ -161,9 +163,11 @@ class VirtualAppList {
         // instead of culling every row during that overscroll frame.
         const scrollTop = Math.max(0, Math.min(-scroller.y, -scroller.maxScrollY))
         const viewportBottom = scrollTop + scroller.wrapper.clientHeight
+        const range = visibleEntryRange(this.visibleEntries, scrollTop - this.buffer, viewportBottom + this.buffer)
+        if (!this.layoutDirty && range.start === this.renderedRange.start && range.end === this.renderedRange.end) return
         const wanted = new Set()
-        this.visibleEntries.forEach((entry) => {
-            if (entry.top + 64 < scrollTop - this.buffer || entry.top > viewportBottom + this.buffer) return
+        for (let index = range.start; index < range.end; index++) {
+            const entry = this.visibleEntries[index]
             wanted.add(entry.key)
             let node = this.rendered.get(entry.key)
             if (!node) {
@@ -173,7 +177,7 @@ class VirtualAppList {
                 this.rendered.set(entry.key, node)
                 this.applyLayout(node, entry)
             } else if (this.layoutDirty) this.applyLayout(node, entry)
-        })
+        }
         this.rendered.forEach((node, key) => {
             if (!wanted.has(key)) {
                 node.remove()
@@ -181,6 +185,7 @@ class VirtualAppList {
             }
         })
         this.layoutDirty = false
+        this.renderedRange = range
     }
 
     applyLayout(node, entry) {
@@ -202,7 +207,7 @@ class VirtualAppList {
         // Nodes are appended when they enter the virtual window, so their DOM
         // order stops matching the list after a few scrolls. Consumers such as
         // app transitions must follow the persistent entry/layout order.
-        return this.visibleEntries
+        return this.visibleEntries.slice(this.renderedRange.start, this.renderedRange.end)
             .map((entry) => this.rendered.get(entry.key))
             .filter((node) => node?.isConnected)
     }
