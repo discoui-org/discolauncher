@@ -305,8 +305,8 @@ div.slide-page-home.wallpaper-behind > div.tile-list-page.wallpaper-content-laye
 
 div.slide-page-home.wallpaper-behind {
     background-repeat: no-repeat;
-    background-position: 50% 0px;
-    background-size: auto calc(100% + 100px);
+    background-position: center;
+    background-size: cover;
 }
 
 div.tile-list-container,

@@ -77,22 +77,28 @@ document.querySelectorAll("div.accent-color-catalogue-item").forEach(e => e.addE
     }
 }))
 
-document.getElementById("choose-wallpaper").querySelector("input").addEventListener('change', (event) => {
-    window.parent.canPressHomeButton = false
+document.getElementById("choose-wallpaper").querySelector("input").addEventListener('change', async (event) => {
     const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const img = new Image();
-            img.onload = function () {
-                document.getElementById("remove-wallpaper").style.removeProperty("visibility")
-
-                window.parent.DiscoBoard.backendMethods.wallpaper.load(img)
-            };
-            document.getElementById("wallpaper-thumbnail").style.backgroundImage = `url(${e.target.result})`
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+    if (!file) return;
+    window.parent.canPressHomeButton = false;
+    const sourceURL = URL.createObjectURL(file);
+    const img = new Image();
+    try {
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = () => reject(new Error('Could not decode wallpaper'));
+            img.src = sourceURL;
+        });
+        const displayURL = await window.parent.DiscoBoard.backendMethods.wallpaper.load(img, false, file);
+        document.getElementById("wallpaper-thumbnail").style.backgroundImage = `url(${displayURL})`;
+        document.getElementById("remove-wallpaper").style.removeProperty("visibility");
+    } catch (error) {
+        console.error('Could not set wallpaper', error);
+    } finally {
+        URL.revokeObjectURL(sourceURL);
+        img.src = '';
+        event.target.value = '';
+        window.parent.canPressHomeButton = true;
     }
 });
 

@@ -9,7 +9,7 @@ import {
   discoThemes,
 } from "./DiscoProperties";
 import appViewEvents from "./appViewEvents"
-import canvasImageFit, { contain } from "./canvasImageFit";
+import { wallpaperImageSize } from './wallpaperImage';
 import imageStore from "./imageStore";
 import fontStore from "./fontStore";
 import LocaleStore from "./localeManager";
@@ -1038,47 +1038,40 @@ const backendMethods = {
     },
   },
   wallpaper: {
-    context: window["OffscreenCanvas"] ? new OffscreenCanvas(
-      window.innerWidth,
-      window.innerHeight + 50
-    ).getContext("2d") : document.createElement("canvas"),
-    load: async (image, doNotSave = false) => {
-      if (window.lastClippedWallpaper)
-        URL.revokeObjectURL(window.lastClippedWallpaper);
-      /*const image = await new Promise((resolve, reject) => {
-        let img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        img.src = url;
-      });*/
-      let ctx = backendMethods.wallpaper.context;
-      ctx.canvas.width = Math.max(window.innerWidth, window.innerHeight) + 100;
-      ctx.canvas.height = Math.max(window.innerWidth, window.innerHeight) + 100;
-      ctx.filter = "brightness(.8)";
-      canvasImageFit.cover(
-        ctx,
-        image,
-        0,
-        0,
-        ctx.canvas.width,
-        ctx.canvas.height
-      );
-      const blob = await getCanvasBlob(ctx.canvas)
-      const rurl = await backendMethods.wallpaper.loadBlob(blob)
-      if (!doNotSave) {
-        await imageStore.saveImage("wallpaper", blob);
+    load: async (image, doNotSave = false, originalBlob = null) => {
+      const { width, height } = wallpaperImageSize(image);
+      const canvas = window.OffscreenCanvas
+        ? new OffscreenCanvas(width, height) : document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      try {
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.filter = 'brightness(.8)';
+        ctx.drawImage(image, 0, 0, width, height);
+        const blob = await getCanvasBlob(canvas);
+        if (!doNotSave) {
+          // Startup reads only this small, already processed display copy.
+          await imageStore.saveImage('wallpaper', blob);
+          if (originalBlob) await imageStore.saveImage('wallpaper-original', originalBlob);
+          else await imageStore.removeImage('wallpaper-original');
+        }
+        return await backendMethods.wallpaper.loadBlob(blob);
+      } finally {
+        // Do not retain the canvas backing store after encoding the texture.
+        canvas.width = canvas.height = 1;
       }
-      backendMethods.setAccentColorShades();
-      return rurl;
     },
     loadBlob: async (blob) => {
-      const rurl = await URL.createObjectURL(blob);
+      const rurl = URL.createObjectURL(blob);
+      const previousURL = window.lastClippedWallpaper;
       //document.querySelector("#wallpapertest").style.setProperty("background-image", `url(${rurl})`)
       window.lastClippedWallpaper = rurl;
       backendMethods.wallpaper.recalculateOffsets();
 
       $("div.slide-page.slide-page-home").addClass("wallpaper-behind");
       $("body").css("--wallpaper-url", `url(${rurl})`)
+      if (previousURL) URL.revokeObjectURL(previousURL);
       setTimeout(() => {
         window.canPressHomeButton = true
       }, 200);
@@ -1118,11 +1111,13 @@ const backendMethods = {
     remove: async () => {
       if (window.lastClippedWallpaper)
         URL.revokeObjectURL(window.lastClippedWallpaper);
+      window.lastClippedWallpaper = null;
       $("div.slide-page.slide-page-home")
         .removeClass("wallpaper-behind");
       $("body").css("--wallpaper-url", "")
 
-      if (await imageStore.hasImage("wallpaper")) imageStore.removeImage("wallpaper")
+      await imageStore.removeImage('wallpaper');
+      await imageStore.removeImage('wallpaper-original');
     },
     alternative: () => {
       if (localStorage.getItem("alternativeWallpaper") == "true") {
