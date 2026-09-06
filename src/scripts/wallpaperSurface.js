@@ -52,6 +52,11 @@ const surfaceStyles = `
   }
   div.disco-folder-matrix { background: var(--metro-background) !important; }
   div.disco-folder-title-layer { background: transparent !important; }
+  /* Headers/separators are painted by the real content layer. The copy has
+     no title button, so its full-width gray line would blend under the name. */
+  div.disco-folder-open-bar, div.disco-folder-open-bar::after {
+    background: transparent !important;
+  }
   div.app-page-icon-banner { background: var(--metro-background) !important; }
   *, *::before, *::after { pointer-events: none !important; }
 `;

@@ -1823,7 +1823,7 @@ div.disco-folder-open-panel {
                 padding: 0;
                 border: 0;
                 overflow: hidden;
-                background: transparent;
+                background: var(--metro-background);
                 color: var(--folder-open-bar-color);
                 font: inherit;
                 font-size: 23px;
@@ -1932,7 +1932,7 @@ div.tile-list-page:is(.home-menu-back-intro, .home-menu-back) div.disco-folder-o
 div.disco-folder-open-panel {
     div.disco-folder-open-bar-top.has-folder-name:not(.folder-name-editing)>button.disco-folder-name-button {
         display: block;
-        color: #fff;
+        color: var(--metro-foreground);
     }
 }
 
