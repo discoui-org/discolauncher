@@ -152,9 +152,12 @@ class LocaleManager {
             throw new Error('Failed to load translations and default locales');
           }
 
-          const translations = await localeStore.getLocaleJSON();
+          const currentLocale = window._i18n.currentLocale;
+          const cachedTranslations = await localeStore.getLocaleJSON(currentLocale);
+          const translations = await localization.getLanguage(currentLocale) || cachedTranslations;
           if (!translations) localStorage.setItem('language', "en-US");
           window._i18n.translations = translations || defaultTranslations;
+          if (translations) await localeStore.setLocaleJSON(translations, currentLocale);
         }
       }
     } catch (err) {
@@ -370,7 +373,7 @@ class LocaleManager {
 
     window._i18n.translations = translations;
     if (window.parent != window) window.parent._i18n.translations = translations;
-    await localeStore.setLocaleJSON(translations);
+    await localeStore.setLocaleJSON(translations, locale);
     window._i18n.currentLocale = locale;
     if (window.parent != window) window.parent._i18n.currentLocale = locale;
 
@@ -429,19 +432,19 @@ class LocaleStore {
     });
   }
 
-  async setLocaleJSON(data) {
+  async setLocaleJSON(data, locale = window._i18n?.currentLocale) {
     await this._initDB();
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], 'readwrite');
       const store = transaction.objectStore(this.storeName);
-      const request = store.put(data, 'currentLocale');
+      const request = store.put({ locale, translations: data }, 'currentLocale');
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve();
     });
   }
 
-  async getLocaleJSON() {
+  async getLocaleJSON(locale = window._i18n?.currentLocale) {
     await this._initDB();
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], 'readonly');
@@ -449,7 +452,10 @@ class LocaleStore {
       const request = store.get('currentLocale');
 
       request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
+      request.onsuccess = () => {
+        const cached = request.result;
+        resolve(cached?.locale === locale ? cached.translations : null);
+      };
     });
   }
 

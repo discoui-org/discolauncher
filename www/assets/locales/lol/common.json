@@ -17,7 +17,8 @@
     "locked": "Locky-lockz!",
     "unlocked": "Freeeeeee!",
     "dismiss": "Nopez!",
-    "read_more": "Readz moar!"
+    "read_more": "Readz moar!",
+    "details": "Deetz!"
   },
   "search": {
     "title": "Findy-findz!",
@@ -27,7 +28,8 @@
   "errors": {
     "webview_old": "Oh noez! WebView iz OWWWWLD!!",
     "home_reset": "Ur homey-home brokeded :( Report dis paw-lease:",
-    "launch_timeout": "Too sloooow... system napz 2 longz!"
+    "launch_timeout": "Too sloooow... system napz 2 longz!",
+    "setup_failed": "Sumthin' went all wonky settin' up! Pwease tryz again!"
   },
   "app_menu": {
     "pin_to_home": "Stick it to homez!",
@@ -54,5 +56,9 @@
       "gb": "{{size}} GIGA-MEOWZ!",
       "tb": "{{size}} TERRA-PAWZ!"
     }
+  },
+  "folder": {
+    "name": "Naym da folderz!",
+    "label": "Folder naym!"
   }
 }
