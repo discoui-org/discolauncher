@@ -32,7 +32,7 @@ function handleFileInput(event) {
                 document.getElementById("font-chooser").selectOption(2)
                 parent.DiscoBoard.backendMethods.font.set(2)
                 document.getElementById("clearfont").style.visibility = "visible"
-                document.querySelector("#font-chooser > div:nth-child(3) > span.name").innerText = localStorage["customFontName"] || "custom font"
+                document.querySelector("#font-chooser > div:nth-child(3) > span.name").innerText = localStorage["customFontName"] || i18n.t("settings.ease_of_access.font.choose")
                 lastX = -9999
                 setTimeout(() => {
                     lastX = -9999
@@ -106,7 +106,7 @@ setTimeout(() => {
         fontStore.hasFont().then((value) => {
             if (value || localStorage["customFontName"]) {
                 document.getElementById("clearfont").classList.remove("hidden")
-                document.querySelector("#font-chooser > div:nth-child(3) > span.name").innerText = localStorage["customFontName"] || "custom font"
+                document.querySelector("#font-chooser > div:nth-child(3) > span.name").innerText = localStorage["customFontName"] || i18n.t("settings.ease_of_access.font.choose")
 
             } else {
                 document.getElementById("clearfont").classList.add("hidden")

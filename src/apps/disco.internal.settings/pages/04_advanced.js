@@ -5,10 +5,10 @@ const pmtryagaian = {
             parent.DiscoBoard.backendMethods.packageManagerProvider.set(1)
         } else {
             parent.DiscoBoard.alert(
-                "Root Access Required",
-                "Root access is required to perform this action. Please grant root access to continue.",
+                window.i18n.t("settings.alerts.root.title"),
+                window.i18n.t("settings.alerts.root.message"),
                 [{
-                    title: "Try again", style: "default", inline: true, action: () => {
+                    title: window.i18n.t("common.actions.try_again"), style: "default", inline: true, action: () => {
                         pmtryagaian.root()
                     }
                 }, { title: window.i18n.t("common.actions.ok"), style: "default", inline: true, action: () => { } }]
@@ -24,10 +24,10 @@ const pmtryagaian = {
                 parent.DiscoBoard.backendMethods.packageManagerProvider.set(2)
             } else {
                 parent.DiscoBoard.alert(
-                    "Shizuku Permission Required",
-                    "Shizuku permission is required to perform this action. Please grant Shizuku permission to continue.",
+                    window.i18n.t("settings.alerts.shizuku.title"),
+                    window.i18n.t("settings.alerts.shizuku.message"),
                     [{
-                        title: "Try again", style: "default", inline: true, action: () => {
+                        title: window.i18n.t("common.actions.try_again"), style: "default", inline: true, action: () => {
                             pmtryagaian.shizuku()
                         }
                     }, { title: window.i18n.t("common.actions.ok"), style: "default", inline: true, action: () => { } }]

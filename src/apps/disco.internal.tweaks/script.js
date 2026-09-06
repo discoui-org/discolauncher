@@ -7,21 +7,10 @@ import fontStore from "../../scripts/fontStore";
 import $ from "../../scripts/dom";
 import i18n from "../../scripts/localeManager";
 import DiscoElements from "../../scripts/DiscoElements";
-const emptyResponses = [
-    "Wow, it sure is quite lonely here!",
-    "Feels a bit quiet in this space.",
-    "Looks like there’s no one around.",
-    "Kind of quiet here, huh?",
-    "Feels a little empty right now.",
-    "Not much happening here, is there?",
-    "Looks like you’re on your own for now.",
-    "Seems a bit deserted in this spot.",
-    "Feels a bit lonesome here.",
-    "It's pretty quiet around here."
-]
 window.i18n = i18n
 await i18n.init()
 await i18n.translateDOM()
+const emptyResponses = [i18n.t("settings.tweaks.empty")]
 window.fontStore = fontStore
 const { activeTabScroll } = createInternalAppTabSlider({
     onPageChange: (index) => appBar.setState(index === 0 ? 1 : 0)
@@ -149,16 +138,16 @@ if (new URL(location.href).searchParams.get("launchArgs") != null) {
                 <p class="install-flyout-title">${metadata.title}</p>
                 <p class="install-flyout-author">${authorHTML}</p>
                 <p class="install-flyout-description">${metadata.description}</p>
-                <button class="install-flyout-install">Install</button>
+                <button class="install-flyout-install">${i18n.t("settings.tweaks.install")}</button>
                 </div>
                 `
                     if (author) {
                         flyout.querySelector("p.install-flyout-author").addEventListener("click", () => {
-                            parent.DiscoBoard.alert("External Link Warning", "This link opens up an external website. Proceed with caution.", [{
-                                title: "Proceed", style: "default", action: () => {
+                            parent.DiscoBoard.alert(i18n.t("settings.tweaks.external_link_title"), i18n.t("settings.tweaks.external_link_message"), [{
+                                title: i18n.t("common.actions.allow"), style: "default", action: () => {
                                     Disco.openURL(author[2])
                                 }
-                            }, { title: "Cancel", style: "default", action: () => { } }])
+                            }, { title: i18n.t("common.actions.cancel"), style: "default", action: () => { } }])
                         })
                     }
                     window.parent.DiscoBoard.backendMethods.navigation.push("appMenuOpened", () => { }, () => {
@@ -168,12 +157,12 @@ if (new URL(location.href).searchParams.get("launchArgs") != null) {
                         }, 500);
                     })
                     flyout.querySelector("button.install-flyout-install").addEventListener("click", async (e) => {
-                        e.target.innerText = "Installing..."
+                        e.target.innerText = i18n.t("settings.tweaks.installing")
                         try {
                             styleManagerInstance.installStyle(cssText)
                             flyout.remove()
-                            parent.DiscoBoard.alert("Style Installed", "The style has been installed successfully.", [{
-                                title: "OK", style: "default", action: () => {
+                            parent.DiscoBoard.alert(i18n.t("settings.tweaks.installed_title"), i18n.t("settings.tweaks.installed_message"), [{
+                                title: i18n.t("common.actions.ok"), style: "default", action: () => {
                                     refreshList();
                                     window.parent.DiscoBoard.backendMethods.refreshStyles();
                                 }
@@ -181,7 +170,7 @@ if (new URL(location.href).searchParams.get("launchArgs") != null) {
                             refreshList()
                             window.parent.DiscoBoard.backendMethods.refreshStyles()
                         } catch (error) {
-                            parent.DiscoBoard.alert("Error", "An error occurred while installing the style. Please try again later.", [{ title: "OK", style: "default", action: () => { } }])
+                            parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.install_error"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }])
 
                         }
 
@@ -382,10 +371,10 @@ function onItemClick(el) {
 function addManually() {
     var alertView;
     alertView = window.parent.DiscoBoard.alert(
-        "Enter the style url",
-        "<input type='url' placeholder='style url' class='metro-text-input enter-style-url' style='width:100%;'>",
+        i18n.t("settings.tweaks.enter_style_url"),
+        `<input type='url' placeholder='${i18n.t("settings.tweaks.style_url_placeholder")}' class='metro-text-input enter-style-url' style='width:100%;'>`,
         [{
-            title: "add", style: "default", inline: true, action: () => {
+            title: i18n.t("settings.tweaks.add"), style: "default", inline: true, action: () => {
                 const url = alertView.querySelector("input.enter-style-url").value
                 if (url.endsWith(".css")) {
                     fetch(url)
@@ -394,7 +383,7 @@ function addManually() {
                             //check if response code is successful
                             if (!response.ok) {
                                 //show a different error about network problem
-                                parent.DiscoBoard.alert("Error", "An error occurred while loading the CSS file. Please check the URL and try again.", [{ title: "OK", style: "default", action: () => { } }])
+                                parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.load_error"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }])
                                 return;
                             }
 
@@ -421,16 +410,16 @@ function addManually() {
                             <p class="install-flyout-title">${metadata.title}</p>
                             <p class="install-flyout-author">${authorHTML}</p>
                             <p class="install-flyout-description">${metadata.description}</p>
-                            <button class="install-flyout-install">Install</button>
+                            <button class="install-flyout-install">${i18n.t("settings.tweaks.install")}</button>
                             </div>
                             `
                             if (author) {
                                 flyout.querySelector("p.install-flyout-author").addEventListener("click", () => {
-                                    parent.DiscoBoard.alert("External Link Warning", "This link opens up an external website. Proceed with caution.", [{
-                                        title: "Proceed", style: "default", action: () => {
+                                    parent.DiscoBoard.alert(i18n.t("settings.tweaks.external_link_title"), i18n.t("settings.tweaks.external_link_message"), [{
+                                        title: i18n.t("common.actions.allow"), style: "default", action: () => {
                                             Disco.openURL(author[2])
                                         }
-                                    }, { title: "Cancel", style: "default", action: () => { } }])
+                                    }, { title: i18n.t("common.actions.cancel"), style: "default", action: () => { } }])
                                 })
                             }
                             window.parent.DiscoBoard.backendMethods.navigation.push("appMenuOpened", () => { }, () => {
@@ -440,19 +429,19 @@ function addManually() {
                                 }, 500);
                             })
                             flyout.querySelector("button.install-flyout-install").addEventListener("click", async (e) => {
-                                e.target.innerText = "Installing..."
+                                e.target.innerText = i18n.t("settings.tweaks.installing")
                                 try {
                                     styleManagerInstance.installStyle(cssText)
                                     flyout.remove()
-                                    parent.DiscoBoard.alert("Style Installed", "The style has been installed successfully.", [{
-                                        title: "OK", style: "default", action: () => {
+                                    parent.DiscoBoard.alert(i18n.t("settings.tweaks.installed_title"), i18n.t("settings.tweaks.installed_message"), [{
+                                        title: i18n.t("common.actions.ok"), style: "default", action: () => {
                                             refreshList(); window.parent.DiscoBoard.backendMethods.refreshStyles()
                                         }
                                     }])
                                     refreshList()
                                     window.parent.DiscoBoard.backendMethods.refreshStyles()
                                 } catch (error) {
-                                    parent.DiscoBoard.alert("Error", "An error occurred while installing the style. Please try again later.", [{ title: "OK", style: "default", action: () => { } }])
+                                    parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.install_error"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }])
 
                                 }
 
@@ -461,16 +450,16 @@ function addManually() {
                         })
                         .catch(error => {
                             console.error('Error loading CSS:', error)
-                            parent.DiscoBoard.alert("Error", "An error occurred while loading the CSS file. Please check the URL and try again.", [{ title: "OK", style: "default", action: () => { } }])
+                            parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.load_error"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }])
                         });
                 } else {
-                    parent.DiscoBoard.alert("Error", "The URL you entered is not a valid CSS file.", [{ title: "OK", style: "default", action: () => { } }])
+                    parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.invalid_css_url"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }])
                 }
 
             }
         },
         {
-            title: "cancel", style: "default", inline: true, action: () => { }
+            title: i18n.t("common.actions.cancel"), style: "default", inline: true, action: () => { }
         }]
     );
     setTimeout(() => {
@@ -483,12 +472,12 @@ function writeManually() {
     flyout.innerHTML = `
         <div class="install-flyout-inner">
             <div class="manual-css-editor">
-                <p class="install-flyout-title">Write or Paste CSS</p>
-                <textarea class="manual-css-input" aria-label="CSS" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="Paste your CSS here..."></textarea>
+                <p class="install-flyout-title">${i18n.t("settings.tweaks.write_or_paste_css")}</p>
+                <textarea class="manual-css-input" aria-label="CSS" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="${i18n.t("settings.tweaks.paste_css_placeholder")}"></textarea>
             </div>
             <div class="manual-css-actions">
-                <button class="install-flyout-cancel metro-button">Cancel</button>
-                <button class="install-flyout-install metro-button">Apply</button>
+                <button class="install-flyout-cancel metro-button">${i18n.t("common.actions.cancel")}</button>
+                <button class="install-flyout-install metro-button">${i18n.t("common.actions.apply")}</button>
             </div>
         </div>
     `;
@@ -512,14 +501,14 @@ function writeManually() {
         const cssText = flyout.querySelector("textarea.manual-css-input").value.trim();
         if (cssText) {
             parent.DiscoBoard.alert(
-                "Discard Edits?",
-                "You have unsaved changes. Discard them?",
+                i18n.t("settings.tweaks.discard_edits_title"),
+                i18n.t("settings.tweaks.discard_edits_message"),
                 [
                     {
-                        title: "Discard", style: "destructive", action: () => closeFlyout()
+                        title: i18n.t("settings.tweaks.discard"), style: "destructive", action: () => closeFlyout()
                     },
                     {
-                        title: "Cancel", style: "default", action: () => {
+                        title: i18n.t("common.actions.cancel"), style: "default", action: () => {
                             // Add back to DiscoBoard navigation history
                             if (window.parent.DiscoBoard?.backendMethods?.navigation?.push) {
                                 window.parent.DiscoBoard.backendMethods.navigation.push(
@@ -541,15 +530,15 @@ function writeManually() {
     flyout.querySelector(".install-flyout-install").addEventListener("click", async (e) => {
         const cssText = flyout.querySelector("textarea.manual-css-input").value.trim();
         if (!cssText) {
-            parent.DiscoBoard.alert("Error", "Please enter some CSS.", [{ title: "OK", style: "default", action: () => { } }]);
+            parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.no_css"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }]);
             return;
         }
-        e.target.innerText = "Installing...";
+        e.target.innerText = i18n.t("settings.tweaks.installing");
         try {
             styleManagerInstance.installStyle(cssText);
             closeFlyout();
-            parent.DiscoBoard.alert("Style Installed", "The style has been installed successfully.", [{
-                title: "OK", style: "default", action: () => {
+            parent.DiscoBoard.alert(i18n.t("settings.tweaks.installed_title"), i18n.t("settings.tweaks.installed_message"), [{
+                title: i18n.t("common.actions.ok"), style: "default", action: () => {
                     refreshList();
                     window.parent.DiscoBoard.backendMethods.refreshStyles();
                 }
@@ -557,7 +546,7 @@ function writeManually() {
             refreshList();
             window.parent.DiscoBoard.backendMethods.refreshStyles();
         } catch (error) {
-            parent.DiscoBoard.alert("Error", "An error occurred while installing the style. Please try again later.", [{ title: "OK", style: "default", action: () => { } }]);
+            parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.install_error"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }]);
         }
     });
 
@@ -566,17 +555,17 @@ function writeManually() {
         const cssText = flyout.querySelector("textarea.manual-css-input").value.trim();
         if (cssText) {
             parent.DiscoBoard.alert(
-                "Discard Edits?",
-                "You have unsaved changes. Discard them?",
+                i18n.t("settings.tweaks.discard_edits_title"),
+                i18n.t("settings.tweaks.discard_edits_message"),
                 [
                     {
-                        title: "Discard", style: "destructive", action: () => {
+                        title: i18n.t("settings.tweaks.discard"), style: "destructive", action: () => {
                             closeFlyout();
                             history.back();
                         }
                     },
                     {
-                        title: "Cancel", style: "default", action: () => {
+                        title: i18n.t("common.actions.cancel"), style: "default", action: () => {
                             // push state again to keep flyout open and add back to DiscoBoard navigation history
                             history.pushState({}, "");
                             if (window.parent.DiscoBoard?.backendMethods?.navigation?.push) {
@@ -647,16 +636,16 @@ function addFile() {
                 <p class="install-flyout-title">${metadata.title}</p>
                 <p class="install-flyout-author">${authorHTML}</p>
                 <p class="install-flyout-description">${metadata.description}</p>
-                <button class="install-flyout-install">Install</button>
+                <button class="install-flyout-install">${i18n.t("settings.tweaks.install")}</button>
                 </div>
             `;
             if (author) {
                 flyout.querySelector("p.install-flyout-author").addEventListener("click", () => {
-                    parent.DiscoBoard.alert("External Link Warning", "This link opens up an external website. Proceed with caution.", [{
-                        title: "Proceed", style: "default", action: () => {
+                    parent.DiscoBoard.alert(i18n.t("settings.tweaks.external_link_title"), i18n.t("settings.tweaks.external_link_message"), [{
+                        title: i18n.t("common.actions.allow"), style: "default", action: () => {
                             Disco.openURL(author[2])
                         }
-                    }, { title: "Cancel", style: "default", action: () => { } }])
+                    }, { title: i18n.t("common.actions.cancel"), style: "default", action: () => { } }])
                 })
             }
             window.parent.DiscoBoard.backendMethods.navigation.push("appMenuOpened", () => { }, () => {
@@ -666,12 +655,12 @@ function addFile() {
                 }, 500);
             })
             flyout.querySelector("button.install-flyout-install").addEventListener("click", async (e) => {
-                e.target.innerText = "Installing..."
+                e.target.innerText = i18n.t("settings.tweaks.installing")
                 try {
                     styleManagerInstance.installStyle(cssText)
                     flyout.remove()
-                    parent.DiscoBoard.alert("Style Installed", "The style has been installed successfully.", [{
-                        title: "OK", style: "default", action: () => {
+                    parent.DiscoBoard.alert(i18n.t("settings.tweaks.installed_title"), i18n.t("settings.tweaks.installed_message"), [{
+                        title: i18n.t("common.actions.ok"), style: "default", action: () => {
                             refreshList();
                             window.parent.DiscoBoard.backendMethods.refreshStyles();
                         }
@@ -679,7 +668,7 @@ function addFile() {
                     refreshList()
                     window.parent.DiscoBoard.backendMethods.refreshStyles()
                 } catch (error) {
-                    parent.DiscoBoard.alert("Error", "An error occurred while installing the style. Please try again later.", [{ title: "OK", style: "default", action: () => { } }])
+                    parent.DiscoBoard.alert(i18n.t("settings.tweaks.error"), i18n.t("settings.tweaks.install_error"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }])
                 }
             });
             document.body.appendChild(flyout);
@@ -735,18 +724,18 @@ function addIconPack() {
 }
 const appBar = DiscoElements.wAppBar([
     {
-        title: "Add", icon: "󰐕", size: "38px", action: addManually
+        title: i18n.t("settings.tweaks.add"), icon: "󰐕", size: "38px", action: addManually
     },
     {
-        title: "Add File", icon: "󰁦", size: "38px", action: addFile
+        title: i18n.t("settings.tweaks.add_file"), icon: "󰁦", size: "38px", action: addFile
     },
     {
-        title: "Edit", icon: "󰲶", action: writeManually
+        title: i18n.t("settings.tweaks.edit"), icon: "󰲶", action: writeManually
     }
 ])
 const appBar2 = DiscoElements.wAppBar([
     {
-        title: "Add", icon: "󰐕", size: "38px", action: addIconPack
+        title: i18n.t("settings.tweaks.add"), icon: "󰐕", size: "38px", action: addIconPack
     }
 ])
 document.body.append(appBar)
@@ -775,7 +764,7 @@ function setupGlobalIconDropdown() {
         monochromeOption.classList.add("metro-dropdown-option");
         monochromeOption.setAttribute("value", "monochrome");
         monochromeOption.setAttribute("data-i18n", "settings.apps.icon_selections.monochrome");
-        monochromeOption.innerText = "Monochrome";
+        monochromeOption.innerText = i18n.t("settings.apps.icon_selections.monochrome");
         iconDropdown.appendChild(monochromeOption);
     } else {
     }
@@ -819,28 +808,28 @@ function setupGlobalIconDropdown() {
             localStorage.setItem("iconPack", value);
             Disco.applyIconPack(value);
             window.parent.DiscoBoard.alert(
-                "Notice",
-                "You need to restart the app to apply the icon pack.",
+                i18n.t("settings.tweaks.notice"),
+                i18n.t("settings.tweaks.restart_message"),
                 [{
-                    title: "Ok", style: "default", action: () => {
+                    title: i18n.t("common.actions.ok"), style: "default", action: () => {
                         window.parent.location.reload()
                     }
                 },
-                { title: "Later", style: "default", action: () => { } }
+                { title: i18n.t("settings.tweaks.later"), style: "default", action: () => { } }
                 ]
             );
         } else if (value === "default") {
             localStorage.setItem("iconPack", "");
             Disco.applyIconPack("");
             window.parent.DiscoBoard.alert(
-                "Notice",
-                "You need to restart the app to apply the icon pack.",
+                i18n.t("settings.tweaks.notice"),
+                i18n.t("settings.tweaks.restart_message"),
                 [{
-                    title: "Ok", style: "default", action: () => {
+                    title: i18n.t("common.actions.ok"), style: "default", action: () => {
                         window.parent.location.reload()
                     }
                 },
-                { title: "Later", style: "default", action: () => { } }
+                { title: i18n.t("settings.tweaks.later"), style: "default", action: () => { } }
                 ]
             );
         }

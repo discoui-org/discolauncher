@@ -323,7 +323,7 @@ startUpSequence([
         try {
             DiscoBoard.backendMethods.homeConfiguration.load()
         } catch (error) {
-            alert("Your home screen was reset because of a fatal error :( Please report this:\n" + error.message)
+            alert((window.i18n?.t("common.errors.home_reset") || "Your home screen was reset because of a fatal error :( Please report this:") + "\n" + error.message)
         }
         next()
     },

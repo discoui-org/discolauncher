@@ -1,3 +1,6 @@
+import i18n from "./scripts/localeManager";
+await i18n.init();
+window.i18n = i18n;
 const version = "0.5.5";
 const whatsnew = `- Added assets manager`
 import { css as beautifyCss } from 'js-beautify';
@@ -24,7 +27,7 @@ function refreshPreview() {
     preview.innerHTML = '';
     preview.appendChild(style);
     const element = document.createElement(document.getElementById('elementSelector').value);
-    element.textContent = 'Preview Element';
+    element.textContent = i18n.t("settings.tweaks.preview_element");
     preview.appendChild(element);
 }
 var scale = 1
@@ -129,12 +132,12 @@ window.addEventListener('keydown', async (e) => {
         // editor.setValue(editor.getValue().trim());
         await beautify();
         //editor.setValue(formatted);
-        showToast('Style formatted');
+        showToast(i18n.t("settings.tweaks.formatted"));
     }
     if ((e.metaKey || e.ctrlKey) && e.code === 'KeyS') {
         e.preventDefault();
         localStorage.te_style = editor.getValue()
-        showToast('Style saved');
+        showToast(i18n.t("settings.tweaks.saved"));
     }
 });
 if (localStorage.te_style) editor.setValue(localStorage.te_style);
@@ -177,19 +180,19 @@ function compile() {
         cursor.line += 2
         editor.setValue(`/* title: Unnamed Style */\n\n` + editor.getValue())
         editor.setCursor(cursor)
-        showToast("No title specified!", 10000, "var(--metro-color-red)")
+        showToast(i18n.t("settings.tweaks.no_title"), 10000, "var(--metro-color-red)")
         throw new Error("No title specified!");
     } else if (metadata.title == "Unnamed Style" || metadata.title == "No title") {
-        if (showWarning) showToast("No title specified!", 5000, "var(--metro-color-yellow)")
+        if (showWarning) showToast(i18n.t("settings.tweaks.no_title"), 5000, "var(--metro-color-yellow)")
     }
     if (metadata.author == "No author") {
-        if (showWarning) showToast("No author specified!", 5000, "var(--metro-color-yellow)")
+        if (showWarning) showToast(i18n.t("settings.tweaks.no_author"), 5000, "var(--metro-color-yellow)")
     }
     if (metadata.icon == "No icon") {
-        if (showWarning) showToast("No icon specified!", 5000, "var(--metro-color-yellow)")
+        if (showWarning) showToast(i18n.t("settings.tweaks.no_icon"), 5000, "var(--metro-color-yellow)")
     }
     if (metadata.description == "No description") {
-        if (showWarning) showToast("No description specified!", 5000, "var(--metro-color-yellow)")
+        if (showWarning) showToast(i18n.t("settings.tweaks.no_description"), 5000, "var(--metro-color-yellow)")
     }
     try {
         return sass.compileString(editor.getValue()).css
@@ -409,7 +412,7 @@ function downloadSrc() {
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url);
-    showToast('Source code downloaded');
+    showToast(i18n.t("settings.tweaks.source_downloaded"));
 }
 function downladDist() {
     const cssText = editor.getValue();
@@ -436,7 +439,7 @@ function downladDist() {
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url);
-    showToast('Compiled CSS downloaded');
+    showToast(i18n.t("settings.tweaks.compiled_downloaded"));
 }
 document.querySelector("#downloadBtn").addEventListener("click", (e) => {
     if (e.target != document.querySelector("#downloadBtn")) return;
@@ -661,7 +664,7 @@ document.querySelector("#selector-frame").addEventListener("click", async (e) =>
     editor.setCursor(finalLine - 1, 4);
     editor.focus();
 
-    showToast('Selector copied and nested structure added');
+    showToast(i18n.t("settings.tweaks.selector_copied"));
     document.querySelector("#selectorBtn").style.removeProperty("background-color");
     document.querySelector("div.preview").classList.remove("selector-mode");
     selectorOn = false;
@@ -792,7 +795,7 @@ async function createFontsAssets() {
     if (returnee.length == 0) {
         const noResults = document.createElement("p")
         noResults.className = "no-results"
-        noResults.textContent = "No fonts found"
+        noResults.textContent = i18n.t("settings.tweaks.no_fonts")
         returnee.push(noResults)
     }
     return returnee
@@ -882,13 +885,13 @@ async function createImagesAssets() {
         const asset = document.createElement('div');
         asset.className = 'assets-menu-item';
         asset.innerHTML = `<div class="assets-menu-item-preview"></div><div class="asset-menu-item-title"></div>`
-        asset.querySelector('.asset-menu-item-title').textContent = "Wallpaper";
+        asset.querySelector('.asset-menu-item-title').textContent = i18n.t("settings.tweaks.wallpaper");
 
         asset.querySelector('.assets-menu-item-preview').innerHTML = `<i class="fas fa-image"></i>`;
 
         function onClick() {
             navigator.clipboard.writeText(`var(--wallpaper-url)`);
-            showToast(`Wallpaper image variable is copied to clipboard`);
+            showToast(i18n.t("settings.tweaks.wallpaper_variable_copied"));
         }
         asset.addEventListener("click", onClick)
         returnee.push(asset)
@@ -918,7 +921,7 @@ async function createImagesAssets() {
     if (returnee.length == 0) {
         const noResults = document.createElement("p")
         noResults.className = "no-results"
-        noResults.textContent = "No images found"
+        noResults.textContent = i18n.t("settings.tweaks.no_images")
         returnee.push(noResults)
     }
     return returnee
@@ -976,9 +979,9 @@ function showAssetsMenu() {
     topBar.className = 'assets-menu-topbar';
 
     const items = [
-        { title: 'Fonts', icon: 'fa-font' },
-        { title: 'Images', icon: 'fa-image' },
-        { title: 'Colors', icon: 'fa-palette' }
+        { title: i18n.t("settings.tweaks.fonts"), icon: 'fa-font' },
+        { title: i18n.t("settings.tweaks.images"), icon: 'fa-image' },
+        { title: i18n.t("settings.tweaks.colors"), icon: 'fa-palette' }
     ];
 
     items.forEach((item, index) => {
@@ -1077,7 +1080,7 @@ function assetsDragAndDrop() {
                 const input = prompt((window.dragTimesTried <= 1) ? `Enter a name for the ${file.type.split("/")[0]}:` : `Invalid name, please enter a valid name for the ${file.type.split("/")[0]}:`);
                 if (input == null) {
                     //user cancelled asset
-                    showToast("Asset creation cancelled", 5000, "var(--metro-color-yellow)")
+                    showToast(i18n.t("settings.tweaks.asset_cancelled"), 5000, "var(--metro-color-yellow)")
                 } else if (isValidCSSVariableName(input)) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
@@ -1094,7 +1097,7 @@ function assetsDragAndDrop() {
                             const newRootContent = `${rootContent}--${input}: url('${dataUri}');`;
                             const newCss = css.replace(rootRegex, `:root {${newRootContent}}`);
                             editor.setValue(newCss);
-                            showToast("Asset created", 5000, "var(--metro-color-green)")
+                            showToast(i18n.t("settings.tweaks.asset_created"), 5000, "var(--metro-color-green)")
                             try {
                                 window.loadAssetItems()
                             } catch (error) {
@@ -1102,7 +1105,7 @@ function assetsDragAndDrop() {
                             }
                         } else {
                             //asset couldnt be created unknown error
-                            showToast("Asset creation failed", 5000, "var(--metro-color-red)")
+                            showToast(i18n.t("settings.tweaks.asset_failed"), 5000, "var(--metro-color-red)")
 
                         }
 
@@ -1114,7 +1117,7 @@ function assetsDragAndDrop() {
                 }
             }
         } else {
-            showToast("Only font and image assets are allowed", 5000, "var(--metro-color-red)")
+            showToast(i18n.t("settings.tweaks.asset_types"), 5000, "var(--metro-color-red)")
         }
     });
 }

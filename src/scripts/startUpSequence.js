@@ -9,7 +9,7 @@ const startUpSequence = function (loaders, finish) {
 
     var lastindex = 0
     timeouttimer = setTimeout(() => {
-        onError({ message: "System took too long to launch" })
+        onError({ message: window.i18n?.t("common.errors.launch_timeout") || "System took too long to launch" })
     }, timeout);
     const next = (index) => {
         lastindex = index

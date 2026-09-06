@@ -229,7 +229,7 @@ function setupIconDropdown(appdetail, tilePrefs) {
     const defaultOption = document.createElement("div");
     defaultOption.classList.add("metro-dropdown-option");
     defaultOption.setAttribute("value", "default");
-    defaultOption.innerText = "Default";
+    defaultOption.innerText = i18n.t("settings.apps.icon_selections.default");
     iconDropdown.appendChild(defaultOption);
 
     // Add monochrome option (only if supported)
@@ -237,7 +237,7 @@ function setupIconDropdown(appdetail, tilePrefs) {
         const monochromeOption = document.createElement("div");
         monochromeOption.classList.add("metro-dropdown-option");
         monochromeOption.setAttribute("value", "monochrome");
-        monochromeOption.innerText = "Monochrome";
+        monochromeOption.innerText = i18n.t("settings.apps.icon_selections.monochrome");
         iconDropdown.appendChild(monochromeOption);
     } else {
     }
@@ -286,10 +286,10 @@ function setupIconDropdown(appdetail, tilePrefs) {
             window.parent.Disco.applyIconPackPerApp(appdetail.packageName, selectedValue);
             
             window.parent.DiscoBoard.alert(
-                "Notice",
-                "You need to restart the app to apply the icon pack.",
+                i18n.t("common.alerts.default.title"),
+                i18n.t("settings.alerts.icon_pack_restart.message"),
                 [{
-                    title: "Ok", style: "default", action: () => {
+                    title: i18n.t("common.actions.ok"), style: "default", action: () => {
                         window.parent.location.reload()
                     }
                 },
@@ -302,10 +302,10 @@ function setupIconDropdown(appdetail, tilePrefs) {
             window.parent.Disco.applyIconPackPerApp(appdetail.packageName, "");
             
             window.parent.DiscoBoard.alert(
-                "Notice",
-                "You need to restart the app to apply the icon pack.",
+                i18n.t("common.alerts.default.title"),
+                i18n.t("settings.alerts.icon_pack_restart.message"),
                 [{
-                    title: "Ok", style: "default", action: () => {
+                    title: i18n.t("common.actions.ok"), style: "default", action: () => {
                         window.parent.location.reload()
                     }
                 },

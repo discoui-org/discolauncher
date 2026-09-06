@@ -317,7 +317,7 @@ function renderNoResultMessage(container) {
         if (index < parts.length - 1) {
             const query = document.createElement("span")
             query.style.color = "var(--accent-color)"
-            query.textContent = "SEARCH"
+            query.textContent = i18n.toUpperCase(i18n.t("common.search.title"))
             fragment.append(query)
         }
     })

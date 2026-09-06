@@ -122,9 +122,9 @@ document.querySelector("#about-app-version").setAttribute("data-i18n-params", `{
 document.querySelector("#about-webview-version").setAttribute("data-i18n-params", `{version: "${Disco.getWebViewVersion()}"}`)
 function incompatibleWebViewVersion(compatible = false) {
     if (compatible) {
-        document.querySelector("#about-webview-version").innerHTML += " <span style='color:var(--metro-color-green);'>(compatible)</span>"
+        document.querySelector("#about-webview-version").innerHTML += ` <span style='color:var(--metro-color-green);'>(${window.i18n.t("settings.about.compatible")})</span>`
     } else {
-        document.querySelector("#about-webview-version").innerHTML += " <span style='color:var(--metro-color-red);'>(incompatible)</span>"
+        document.querySelector("#about-webview-version").innerHTML += ` <span style='color:var(--metro-color-red);'>(${window.i18n.t("settings.about.incompatible")})</span>`
     }
 }
 try {

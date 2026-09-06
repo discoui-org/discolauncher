@@ -217,8 +217,9 @@ function createFolderNameEditor(folder, panel, topBar) {
 
   nameButton.type = "button";
   nameButton.className = "disco-folder-name-button";
-  nameButton.textContent = nameBeforeEdit || "Name folder";
-  nameButton.setAttribute("aria-label", "Name folder");
+  const folderNameLabel = window.i18n?.t("common.folder.name") || "Name folder";
+  nameButton.textContent = nameBeforeEdit || folderNameLabel;
+  nameButton.setAttribute("aria-label", folderNameLabel);
   topBar.classList.toggle("has-folder-name", Boolean(nameBeforeEdit));
 
   nameInput.type = "text";
@@ -226,7 +227,7 @@ function createFolderNameEditor(folder, panel, topBar) {
   nameInput.maxLength = 64;
   nameInput.autocomplete = "off";
   nameInput.enterKeyHint = "done";
-  nameInput.setAttribute("aria-label", "Folder name");
+  nameInput.setAttribute("aria-label", window.i18n?.t("common.folder.label") || "Folder name");
 
   const refreshLayout = () => {
     const state = openFolderState;
@@ -241,7 +242,7 @@ function createFolderNameEditor(folder, panel, topBar) {
     folder
       .querySelector(":scope > .disco-folder-title-layer > .disco-folder-title")
       ?.replaceChildren(nextName);
-    nameButton.textContent = nextName || "Name folder";
+    nameButton.textContent = nextName || folderNameLabel;
     topBar.classList.toggle("has-folder-name", Boolean(nextName));
     topBar.classList.remove("folder-name-editing");
     refreshLayout();

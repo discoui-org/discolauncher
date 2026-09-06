@@ -7,6 +7,7 @@
   "theme": {
     "title": "Home+Theme",
     "accent_color": "Accent color",
+    "color": "color",
     "background": "Background",
     "home_background": "Home background",
     "choose_photo": "Choose photo",
@@ -118,6 +119,9 @@
     "copy_success": {
       "title": "Copied to Clipboard!",
       "message": "Installed apps copied to JSON format successfully."
+    },
+    "icon_pack_restart": {
+      "message": "You need to restart the app to apply the icon pack."
     }
   },
   "about": {
@@ -125,10 +129,13 @@
     "description": "Disco Launcher",
     "version": "Version: {{version}}",
     "webview_version": "WebView Version: {{version}}",
+    "compatible": "compatible",
+    "incompatible": "incompatible",
     "reset_launcher": "Reset Launcher",
     "check_updates": "Check Updates"
   },
   "apps": {
+    "info": "Info",
     "uninstall_app": "Uninstall App",
     "show_in_app_list": "Show this app in App List",
     "name": "Name",
@@ -151,6 +158,68 @@
     },
     "live_tile": "Live tile",
     "show_app": "Show in apps list"
+  },
+  "color_picker": {
+    "not_supported": "This color is not supported.",
+    "hex": "Hex Color:",
+    "hue": "Hue:",
+    "saturation": "Saturation:",
+    "value": "Value:",
+    "apply": "Apply"
+  },
+  "tweaks": {
+    "title": "Tweaks",
+    "tabs": {
+      "styles": "Styles",
+      "tiles": "Tiles"
+    },
+    "icon_pack": "Icon pack",
+    "external_link_title": "External Link Warning",
+    "external_link_message": "This link opens up an external website. Proceed with caution.",
+    "install": "Install",
+    "installing": "Installing...",
+    "installed_title": "Style Installed",
+    "installed_message": "The style has been installed successfully.",
+    "error": "Error",
+    "load_error": "An error occurred while loading the CSS file. Please check the URL and try again.",
+    "install_error": "An error occurred while installing the style. Please try again later.",
+    "invalid_css_url": "The URL you entered is not a valid CSS file.",
+    "enter_style_url": "Enter the style URL",
+    "style_url_placeholder": "Style URL",
+    "add": "Add",
+    "write_or_paste_css": "Write or Paste CSS",
+    "paste_css_placeholder": "Paste your CSS here...",
+    "discard_edits_title": "Discard Edits?",
+    "discard_edits_message": "You have unsaved changes. Discard them?",
+    "discard": "Discard",
+    "no_css": "Please enter some CSS.",
+    "no_fonts": "No fonts found",
+    "no_images": "No images found",
+    "wallpaper": "Wallpaper",
+    "fonts": "Fonts",
+    "images": "Images",
+    "colors": "Colors",
+    "formatted": "Style formatted",
+    "saved": "Style saved",
+    "no_title": "No title specified!",
+    "no_author": "No author specified!",
+    "no_icon": "No icon specified!",
+    "no_description": "No description specified!",
+    "source_downloaded": "Source code downloaded",
+    "compiled_downloaded": "Compiled CSS downloaded",
+    "selector_copied": "Selector copied and nested structure added",
+    "asset_cancelled": "Asset creation cancelled",
+    "asset_created": "Asset created",
+    "asset_failed": "Asset creation failed",
+    "asset_types": "Only font and image assets are allowed",
+    "preview_element": "Preview Element",
+    "wallpaper_variable_copied": "Wallpaper image variable is copied to clipboard",
+    "add_file": "Add File",
+    "edit": "Edit",
+    "later": "Later",
+    "notice": "Notice",
+    "restart_message": "You need to restart the app to apply the icon pack.",
+    "empty": "It’s quiet here. Nothing has been added yet."
   },
   "roles": {
     "team_disco": "Team Disco",

@@ -118,8 +118,8 @@ setup.whats_new = !Disco.getAppVersion().includes("nightly") || BuildConfig["CHA
 setup.permissions = !allPermissions.some(e => !Disco.checkPermission(e))
 
 if (updatedApp) {
-    document.querySelector("#page-welcome > div.setup-body > h1").innerText = "Welcome back"
-    document.querySelector("#page-welcome > div.setup-footer > p:nth-child(1)").innerText = "Let’s check a few details to enhance your updated experience."
+    document.querySelector("#page-welcome > div.setup-body > h1").innerText = i18n.t("welcome.welcome.update")
+    document.querySelector("#page-welcome > div.setup-footer > p:nth-child(1)").innerText = i18n.t("welcome.welcome.updated_description")
 }
 if ((Disco.getWebViewVersion().includes("chrome") || Disco.getAppVersion().includes("nightly")) && BuildConfig["CHANGELOG"] && setup.whats_new) {
     try {
@@ -167,7 +167,7 @@ document.querySelector("#page-wizard button.right-btn").addEventListener("flowCl
 
         loader.classList.add("finished");
         const updateLoadingText = document.querySelector("#update-loading p");
-        if (updateLoadingText) updateLoadingText.innerText = "All done!"
+        if (updateLoadingText) updateLoadingText.innerText = i18n.t("welcome.welcome.all_done")
         document.querySelector("#update-loader").remove()
         const updateLoadingFooter = document.querySelector("#update-loading div.setup-footer");
         if (updateLoadingFooter) updateLoadingFooter.style.removeProperty("display")
@@ -260,11 +260,11 @@ document.querySelector("#page-readme button.right-btn").addEventListener("flowCl
     goToPage(7);
     setTimeout(() => {
         if (DiscoBoard.backendMethods.setupNeeded()) {
-            DiscoBoard.alert("Setup Error", "Something went wrong while setting up. Please try again.", [{
-                title: "Retry", style: "default", action: () => {
+            DiscoBoard.alert(i18n.t("welcome.errors.setup_title"), i18n.t("common.errors.setup_failed"), [{
+                title: i18n.t("common.actions.try_again"), style: "default", action: () => {
                     window.location.reload()
                 }
-            }, { title: "Cancel", style: "default", action: () => { } }])
+            }, { title: i18n.t("common.actions.cancel"), style: "default", action: () => { } }])
         } else {
             goToPage(7)
             if (!localStorage["homeConfiguration"]) {
@@ -399,7 +399,7 @@ function flipWelcome() {
         welcomeTitle.removeAttribute("data-i18n")
         welcomeTitle.innerText = welcomei % 2 == 0 ?
             i18n.t(welcomeType) :
-            (greetings.getRandomWelcome()[firstWelcome ? "welcome" : "welcome_back"] || (firstWelcome ? "Welcome" : "Welcome back"));
+            (greetings.getRandomWelcome()[firstWelcome ? "welcome" : "welcome_back"] || i18n.t(welcomeType));
     }, 100);
     setTimeout(() => {
         welcomeTitle.classList.remove("flip", "flip2")
@@ -477,15 +477,15 @@ document.querySelectorAll("div.permission-group").forEach((e, index) => {
     }
     e.querySelector("button").addEventListener("flowClick", () => {
         if (allPermissions[index] == "ACCESSIBILITY") {
-            const alert = DiscoBoard.alert("Enable Double-Tap to Lock", "This feature needs Accessibility permission to lock your screen with a double-tap. Do you want to enable it?", [
+            const alert = DiscoBoard.alert(i18n.t("welcome.permissions.groups.accessibility.double_tap_title"), i18n.t("welcome.permissions.groups.accessibility.double_tap_message"), [
                 {
-                    title: "Accept",
+                    title: i18n.t("common.actions.allow"),
                     action: () => {
                         Disco.requestPermission(allPermissions[index])
                     }
                 },
                 {
-                    title: "Decline"
+                    title: i18n.t("common.actions.cancel")
                 }
             ], true)
         } else {
@@ -513,24 +513,24 @@ document.querySelector("#page-welcome > div.setup-body > h1").addEventListener("
                 try {
                     json = JSON.parse(text);
                 } catch (e) {
-                    DiscoBoard.alert("Who is this?", "You found the easter egg! But the clipboard does not contain valid JSON.", [{ title: "OK", style: "default", action: () => { } }]);
+                    DiscoBoard.alert(i18n.t("welcome.easter_egg.title"), i18n.t("welcome.easter_egg.invalid_json"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }]);
                     return;
                 }
                 const allowedKeys = ["theme", "tileColumns", "accentColor", "UIScale", "homeConfiguration", "autoTheme", "hapticFeedback", "highContrast", "reducedMotion", "globalTilePreferences"];
                 const filteredJson = json && typeof json === "object" ? Object.fromEntries(Object.entries(json).filter(([key, value]) => allowedKeys.includes(key))) : null;
                 if (!filteredJson || Object.keys(filteredJson).length === 0) {
-                    DiscoBoard.alert("Who is this?", "You found the easter egg! But the clipboard does not contain any valid settings.", [{ title: "OK", style: "default", action: () => { } }]);
+                    DiscoBoard.alert(i18n.t("welcome.easter_egg.title"), i18n.t("welcome.easter_egg.invalid_settings"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }]);
                     return;
                 }
                 //save each key in localstorage
                 Object.entries(filteredJson).forEach(([key, value]) => {
                     localStorage.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
                 });
-                DiscoBoard.alert("Welcome back!", "Easter egg settings have been applied successfully.", [{ title: "Reload", style: "default", action: () => { location.reload(); } }]);
+                DiscoBoard.alert(i18n.t("welcome.easter_egg.success_title"), i18n.t("welcome.easter_egg.success_message"), [{ title: i18n.t("welcome.easter_egg.reload"), style: "default", action: () => { location.reload(); } }]);
                 return;
 
             } catch (err) {
-                DiscoBoard.alert("Who is this?", "You found the easter egg! But clipboard access was denied.", [{ title: "OK", style: "default", action: () => { } }]);
+                DiscoBoard.alert(i18n.t("welcome.easter_egg.title"), i18n.t("welcome.easter_egg.clipboard_denied"), [{ title: i18n.t("common.actions.ok"), style: "default", action: () => { } }]);
                 return;
             }
         })();

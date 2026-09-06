@@ -28,7 +28,8 @@
   "errors": {
     "webview_old": "WebView is too old!",
     "home_reset": "Your home screen was reset because of a fatal error :( Please report this:",
-    "launch_timeout": "System took too long to launch"
+    "launch_timeout": "System took too long to launch",
+    "setup_failed": "Something went wrong while setting up. Please try again."
   },
   "app_menu": {
     "pin_to_home": "Pin to home",
@@ -44,6 +45,10 @@
       "title": "Uninstall this app?",
       "message": "This app, plus any information it contains, will be deleted from your device."
     }
+  },
+  "folder": {
+    "name": "Name folder",
+    "label": "Folder name"
   },
   "numbers": {
     "percent": "{{value}}%",
